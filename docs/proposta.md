@@ -1,7 +1,7 @@
 # CorsinoTones #
 
 ## Problema a ser resolvido ##
-- Com o tempo, senti falta de um lugar para compartilhar meus presets de pedaleiras de guitarra — os conjuntos de ajustes salvos no equipamento — com meus amigos e com quem quisesse ter acesso a eles e testá-los por conta própria. Daí veio a ideia do CorsinoTones: uma plataforma onde vou disponibilizar meus presets de pedais e pedaleiras de guitarra para quem queira usá-los em seus respectivos equipamentos.
+- Com o tempo, senti falta de um lugar para compartilhar meus presets de pedaleiras de guitarra ,os conjuntos de ajustes salvos no equipamento — com meus amigos e com quem quisesse ter acesso a eles e testá-los por conta própria. Daí veio a ideia do CorsinoTones: uma plataforma onde vou disponibilizar meus presets de pedais e pedaleiras de guitarra para quem queira usá-los em seus respectivos equipamentos.
 
 ## Público alvo ##
 - Qualquer guitarrista que queira usar os presets que eu, Ryan Corsino, uso em meus equipamentos.
