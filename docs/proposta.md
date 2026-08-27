@@ -11,12 +11,12 @@
 
 ## Funcionalidades ##
 - Cadastro e login de usuários, com autenticação por e-mail e senha.
-- Publicação de presets pelo autor, informando nome, equipamento de origem, estilo musical, descrição e os valores de cada parâmetro (ganho, equalização, efeitos, nível, etc.).
+- Publicação de presets pelo administrador, informando nome, equipamento de origem, estilo musical, descrição e os valores de cada parâmetro (ganho, equalização, efeitos, nível, etc.).
 - Listagem dos presets do mais recente para o mais antigo, com paginação, busca por texto e filtros por equipamento e estilo musical.
 - Página de detalhe do preset, exibindo todos os parâmetros em formato de tabela e um passo a passo de como aplicá-los no equipamento.
 - Favoritar presets, com uma lista pessoal de presets salvos por usuário.
 - Comentários em cada preset, para retorno de quem testou.
-- Área administrativa restrita ao autor, para criar, editar e remover presets e apagar comentários indevidos.
+- Área administrativa restrita ao administrador, para criar, editar e remover presets e apagar comentários indevidos.
 
 ## Descrição de telas ##
 1. **Tela inicial (listagem de presets)** — Apresenta os presets mais recentes em cartões, cada um com nome, equipamento e estilo musical. No topo ficam o menu de navegação e a barra de busca; ao lado da lista, um painel de filtros por equipamento e estilo, que atualiza o resultado sem recarregar a página.
