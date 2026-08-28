@@ -1,0 +1,120 @@
+:root{
+    --color-dark-900: #16181b;
+  --color-dark-800: #212429;
+  --color-dark-600: #3a3e45;
+  --color-gray-400: #a8adb5;
+  --color-gray-100: #f0f0f0;
+  --color-red-500:  #e7473c;
+
+  --bg-app:          var(--color-dark-900);
+  --bg-card:         var(--color-dark-800);
+  --border-subtle:   var(--color-dark-600);
+  --text-secondary:  var(--color-gray-400);
+  --text-primary:    var(--color-gray-100);
+  --brand-accent:    var(--color-red-500);
+}
+
+body{
+    font-family: "Century Gothic", CenturyGothic, AppleGothic, "URW Gothic", "Questrial", sans-serif;
+    background-color: var(--bg-app);
+    margin: 0;
+    color: var(--text-primary);
+}
+
+.cabecalio{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-primary);
+    height: 300px;
+}
+
+.icone{
+    height: 300px;
+    width: 300px;
+}
+.navegation{
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 50px;
+    color: var(--text-secondary);
+    font-size: large; 
+    text-decoration: underline;
+}
+
+.welcome{
+    padding: 80px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 200px;
+
+}
+.frasePrincipal{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 300px;
+    width: 300px;
+    color: var(--text-primary);
+}
+.fotoAdm{
+    
+    height: 300px;
+    width: 500px;
+    background-color: #a8adb5;
+}
+
+.tituloCarrossel{
+    display: flex;
+    margin-left: 40px;
+}
+
+.carrossel{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 0 30px;
+    gap: 30px;
+    height: 400px;
+    overflow-x: auto;
+    scrollbar-width: thin;                          /* Deixa a barra mais fina */
+    scrollbar-color: var(--border-subtle) var(--bg-app); /* [Cor do indicador] [Cor do fundo] */
+}
+
+.cartao{
+    width: 300px;
+    height: 300px;
+    background: var(--bg-card);
+    flex-shrink: 0;    
+}
+
+.carrossel::-webkit-scrollbar {
+  height: 8px;
+}
+
+.carrossel::-webkit-scrollbar-track {
+  background: var(--bg-app);
+  border-radius: 4px;
+}
+
+.carrossel::-webkit-scrollbar-thumb {
+  background: var(--border-subtle);
+  border-radius: 4px;
+}
+
+.carrossel::-webkit-scrollbar-thumb:hover {
+  background: var(--text-secondary);
+}
+.rodape{
+    height: 100px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: var(--text-primary);
+}
+
+
