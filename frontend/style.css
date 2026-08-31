@@ -26,11 +26,12 @@ body{
     align-items: center;
     justify-content: center;
     color: var(--text-primary);
-    height: 300px;
+    height: 120px;
+
 }
 
 .icone{
-    height: 300px;
+    height: 90px;
     width: 300px;
 }
 .navegation{
@@ -38,10 +39,25 @@ body{
     display: flex;
     justify-content: center;
     align-items: center;
+    position: -webkit-sticky; 
+    position: sticky;       
+    top: 0;                
+    z-index: 1000;
     gap: 50px;
-    color: var(--text-secondary);
-    font-size: large; 
+    background-color: var(--bg-app);
+}
+.nav-txt{
+    font-size: larger; 
     text-decoration: underline;
+    color: var(--text-secondary);
+}
+.nav-txt:hover{
+    
+    transform:
+        translateY(-3px)
+        scale(1.05);
+    cursor: pointer;   
+
 }
 
 .welcome{
@@ -50,7 +66,6 @@ body{
     flex-direction: row;
     justify-content: center;
     gap: 200px;
-
 }
 .frasePrincipal{
     display: flex;
@@ -81,8 +96,8 @@ body{
     gap: 30px;
     height: 400px;
     overflow-x: auto;
-    scrollbar-width: thin;                          /* Deixa a barra mais fina */
-    scrollbar-color: var(--border-subtle) var(--bg-app); /* [Cor do indicador] [Cor do fundo] */
+    scrollbar-width: thin;                         
+    scrollbar-color: var(--border-subtle) var(--bg-app);
 }
 
 .cartao{
