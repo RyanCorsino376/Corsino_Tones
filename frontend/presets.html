@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Lista de presets de pedais e pedaleiras de guitarra, com busca e filtros por equipamento e estilo musical.">
+    <link rel="stylesheet" href="style.css">
+    <title>Presets | CorsinoTones</title>
+</head>
+<body>
+    <header class="cabecalho">
+        <a href="index.html"><img src="../imagens/LogoSite.svg" alt="CorsinoTones" class="icone"></a>
+    </header>
+    <nav class="navegacao">
+        <div class="nav-links">
+            <a href="index.html" class="nav-txt">Página Inicial</a>
+            <a href="presets.html" class="nav-txt" aria-current="page">Presets</a>
+            <a href="biblioteca.html" class="nav-txt">Biblioteca</a>
+        </div>
+        <a href="login.html" class="entrar">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none"
+                stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <circle cx="12" cy="7" r="4"/>
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+            </svg>
+            <span>Entrar</span>
+        </a>
+    </nav>
+    <div class="layout">
+        <aside class="filtros" aria-labelledby="titulo-filtros">
+            <div class="filtros-fixos">
+                <h2 id="titulo-filtros">Filtros</h2>
+                <form>
+                    <fieldset>
+                        <legend>Marcas</legend>
+                        <ul>
+                            <li>
+                                <input type="checkbox" id="marca-boss" name="marca" value="boss">
+                                <label for="marca-boss">Boss</label>
+                            </li>
+                            <li>
+                                <input type="checkbox" id="marca-line6" name="marca" value="line6">
+                                <label for="marca-line6">Line 6</label>
+                            </li>
+                            <li>
+                                <input type="checkbox" id="marca-nux" name="marca" value="nux">
+                                <label for="marca-nux">NUX</label>
+                            </li>
+                            <li>
+                                <input type="checkbox" id="marca-mooer" name="marca" value="mooer">
+                                <label for="marca-mooer">Mooer</label>
+                            </li>
+                            <li>
+                                <input type="checkbox" id="marca-zoom" name="marca" value="zoom">
+                                <label for="marca-zoom">Zoom</label>
+                            </li>
+                            <li>
+                                <input type="checkbox" id="marca-headrush" name="marca" value="headrush">
+                                <label for="marca-headrush">HeadRush</label>
+                            </li>
+                            <li>
+                                <input type="checkbox" id="marca-valeton" name="marca" value="valeton">
+                                <label for="marca-valeton">Valeton</label>
+                            </li>
+                            <li>
+                                <input type="checkbox" id="marca-hotone" name="marca" value="hotone">
+                                <label for="marca-hotone">Hotone</label>
+                            </li>
+                        </ul>
+                    </fieldset>
+                    <div class="filtro-acoes">
+                        <button type="submit">Aplicar</button>
+                        <button type="reset">Limpar</button>
+                    </div>
+                </form>
+            </div>
+        </aside>
+        <main class="conteudo">
+            <h1>Presets</h1>
+            <section class="grade-presets">
+                <a href="preset.html" class="cartao"></a>
+                <a href="preset.html" class="cartao"></a>
+                <a href="preset.html" class="cartao"></a>
+                <a href="preset.html" class="cartao"></a>
+                <a href="preset.html" class="cartao"></a>
+                <a href="preset.html" class="cartao"></a>
+                <a href="preset.html" class="cartao"></a>
+                <a href="preset.html" class="cartao"></a>
+                <a href="preset.html" class="cartao"></a>
+            </section>
+        </main>
+    </div>
+    <footer class="rodape">Copyright 2026 ®</footer>
+</body>
+</html>

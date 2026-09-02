@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Entre na sua conta do CorsinoTones para favoritar e comentar presets.">
+    <link rel="stylesheet" href="style.css">
+    <title>Entrar | CorsinoTones</title>
+</head>
+<body>
+    <header class="cabecalho">
+        <a href="index.html"><img src="../imagens/LogoSite.svg" alt="CorsinoTones" class="icone"></a>
+    </header>
+    <nav class="navegacao">
+        <div class="nav-links">
+            <a href="index.html" class="nav-txt">Página Inicial</a>
+            <a href="presets.html" class="nav-txt">Presets</a>
+            <a href="biblioteca.html" class="nav-txt">Biblioteca</a>
+        </div>
+    </nav>
+    <main class="loginForm">
+        <section class="login" id="login">
+            <h1>Entrar</h1>
+            <!-- action stays empty until the Spring Boot auth endpoint exists -->
+            <form action="" method="post" class="loginCampos">
+                <fieldset>
+                    <label for="email">Seu Email</label>
+                    <input type="email" id="email" name="email"
+                        autocomplete="email" required>
+                </fieldset>
+                <fieldset>
+                    <label for="senha">Senha</label>
+                    <input type="password" id="senha" name="senha"
+                        autocomplete="current-password" required>
+                </fieldset>
+                <button type="submit" class="loginBt">Login</button>
+                <button type="button" class="loginBt">Não tenho conta</button>
+            </form>
+            <a href="#" class="loginLink">Esqueci a senha</a>
+        </section>
+    </main>
+    <footer class="rodape">Copyright 2026 ®</footer>
+</body>
+</html>

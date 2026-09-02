@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Biblioteca pessoal com os presets favoritados pelo usuário.">
+    <meta name="description" content="Página de um preset: capa, descrição, download e vídeos de demonstração.">
     <link rel="stylesheet" href="style.css">
-    <title>Biblioteca | CorsinoTones</title>
+    <title>Preset | CorsinoTones</title>
 </head>
 <body>
     <header class="cabecalho">
@@ -14,8 +14,8 @@
     <nav class="navegacao">
         <div class="nav-links">
             <a href="index.html" class="nav-txt">Página Inicial</a>
-            <a href="presets.html" class="nav-txt">Presets</a>
-            <a href="biblioteca.html" class="nav-txt" aria-current="page">Biblioteca</a>
+            <a href="presets.html" class="nav-txt" aria-current="page">Presets</a>
+            <a href="biblioteca.html" class="nav-txt">Biblioteca</a>
         </div>
         <a href="login.html" class="entrar">
             <svg viewBox="0 0 24 24" width="20" height="20" fill="none"
@@ -28,10 +28,22 @@
         </a>
     </nav>
     <main class="conteudo">
-        <h1>Biblioteca</h1>
-        <section class="biblioteca-vazia">
-            <p>Sua biblioteca ainda está vazia.</p>
-            <a href="presets.html">Explorar presets</a>
+        <section class="preset-topo">
+            <div class="preset-capa"></div>
+            <div class="preset-info">
+                <h1>Nome do preset</h1>
+                <p class="preset-equipamento">Marca · Equipamento</p>
+                <p>Descrição do preset.</p>
+                <a href="#" class="preset-download" download>Download</a>
+            </div>
+        </section>
+        <section class="preset-video">
+            <h2>Demonstração</h2>
+            <!-- Each placeholder is replaced by the video iframe; both share the same box. -->
+            <div class="grade-videos">
+                <div></div>
+                <div></div>
+            </div>
         </section>
     </main>
     <footer class="rodape">Copyright 2026 ®</footer>

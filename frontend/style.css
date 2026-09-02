@@ -1,5 +1,5 @@
 :root{
-    --color-dark-900: #16181b;
+  --color-dark-900: #16181b;
   --color-dark-800: #212429;
   --color-dark-600: #3a3e45;
   --color-gray-400: #a8adb5;
@@ -21,66 +21,118 @@ body{
     color: var(--text-primary);
 }
 
-.cabecalio{
+/* Keyboard users need to see where focus is; the mouse hover alone is not enough. */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible{
+    outline: 2px solid var(--brand-accent);
+    outline-offset: 2px;
+}
+
+/*------------- Cabeçalho e navegação (todas as páginas) --------------*/
+
+.cabecalho{
     display: flex;
     align-items: center;
     justify-content: center;
     color: var(--text-primary);
     height: 120px;
-
 }
 
 .icone{
     height: 90px;
     width: 300px;
+    max-width: 100%;
+    object-fit: contain;
 }
-.navegation{
-    height: 50px;
+
+.navegacao{
+    min-height: 50px;
     display: flex;
     justify-content: center;
     align-items: center;
-    position: -webkit-sticky; 
-    position: sticky;       
-    top: 0;                
+    position: sticky;
+    top: 0;
     z-index: 1000;
-    gap: 50px;
     background-color: var(--bg-app);
+    border-bottom: 1px solid var(--border-subtle);
+    border-top: 1px solid var(--border-subtle);
 }
-.nav-txt{
-    font-size: larger; 
-    text-decoration: underline;
-    color: var(--text-secondary);
-}
-.nav-txt:hover{
-    
-    transform:
-        translateY(-3px)
-        scale(1.05);
-    cursor: pointer;   
 
+.nav-links{
+    display: flex;
+    align-items: center;
+    gap: 50px;
 }
+
+.navegacao a{
+    text-decoration: none;
+}
+
+/* inline-block is required: transform has no effect on inline elements. */
+.nav-txt{
+    display: inline-block;
+    font-size: larger;
+    color: var(--text-secondary);
+    transition: transform .2s ease, color .2s ease;
+}
+
+.nav-txt:hover{
+    transform: translateY(-3px) scale(1.05);
+    color: var(--text-primary);
+}
+
+.entrar{
+    position: absolute;
+    right: 24px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: large;
+    color: var(--text-secondary);
+    transition: transform .2s ease, color .2s ease;
+}
+
+.entrar:hover{
+    transform: translateY(-3px) scale(1.05);
+    color: var(--text-primary);
+}
+
+/* The current page is marked with aria-current, which also announces it to screen readers. */
+.nav-txt[aria-current="page"],
+.entrar[aria-current="page"]{
+    color: var(--text-primary);
+}
+
+/*------------- Página inicial ----------------------------------------*/
 
 .welcome{
-    padding: 80px;
+    padding: clamp(24px, 6vw, 80px);
     display: flex;
     flex-direction: row;
+    flex-wrap: wrap;
     justify-content: center;
-    gap: 200px;
+    align-items: center;
+    gap: clamp(24px, 10vw, 200px);
 }
+
+.fotoAdm{
+    width: min(500px, 100%);
+    height: auto;
+    aspect-ratio: 5 / 3;
+    object-fit: cover;
+    background-color: var(--color-gray-400);
+}
+
 .frasePrincipal{
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    height: 300px;
-    width: 300px;
+    text-align: center;
+    min-height: 300px;
+    width: min(300px, 100%);
     color: var(--text-primary);
-}
-.fotoAdm{
-    
-    height: 300px;
-    width: 500px;
-    background-color: #a8adb5;
 }
 
 .tituloCarrossel{
@@ -96,15 +148,15 @@ body{
     gap: 30px;
     height: 400px;
     overflow-x: auto;
-    scrollbar-width: thin;                         
+    scrollbar-width: thin;
     scrollbar-color: var(--border-subtle) var(--bg-app);
 }
 
 .cartao{
-    width: 300px;
+    width: min(300px, 75vw);
     height: 300px;
     background: var(--bg-card);
-    flex-shrink: 0;    
+    flex-shrink: 0;
 }
 
 .carrossel::-webkit-scrollbar {
@@ -124,6 +176,7 @@ body{
 .carrossel::-webkit-scrollbar-thumb:hover {
   background: var(--text-secondary);
 }
+
 .rodape{
     height: 100px;
     display: flex;
@@ -132,4 +185,356 @@ body{
     color: var(--text-primary);
 }
 
+/*------------- Páginas internas (presets, biblioteca) ----------------*/
 
+.conteudo{
+    min-height: 50vh;
+    padding: clamp(24px, 5vw, 60px);
+}
+
+/*------------- Filtros (presets) -------------------------------------*/
+
+/* No height is set: the grid stretches the sidebar down to the footer on its own. */
+.layout{
+    display: grid;
+    grid-template-columns: minmax(180px, 240px) 1fr;
+}
+
+.filtros{
+    border-right: 1px solid var(--border-subtle);
+    padding: clamp(24px, 3vw, 40px) 24px;
+}
+
+/* The stretched aside has no room to stick, so this wrapper is what follows the
+   scroll; 70px clears the sticky nav and the max-height keeps a long list reachable. */
+.filtros-fixos{
+    position: sticky;
+    top: 70px;
+    max-height: calc(100vh - 90px);
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border-subtle) var(--bg-app);
+}
+
+.filtros h2{
+    margin: 0 0 16px;
+    font-size: large;
+}
+
+.filtros legend{
+    padding: 0 0 8px;
+    color: var(--text-secondary);
+}
+
+/* Scoped to the aside so a new filter group needs no extra class. */
+.filtros ul{
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 10px;
+}
+
+.filtros li{
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.filtros input{
+    accent-color: var(--brand-accent);
+    width: 16px;
+    height: 16px;
+    margin: 0;
+    cursor: pointer;
+}
+
+.filtros label{
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: color .2s ease;
+}
+
+.filtros li:hover label,
+.filtros input:checked + label{
+    color: var(--text-primary);
+}
+
+.filtro-acoes{
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 20px;
+}
+
+.filtro-acoes button{
+    min-height: 32px;
+    font-family: inherit;
+    font-size: medium;
+    cursor: pointer;
+}
+
+.filtro-acoes button[type="submit"]{
+    background-color: var(--brand-accent);
+    border: 0;
+    color: var(--text-primary);
+}
+
+/* The secondary action stays quiet so the accent colour marks only one path. */
+.filtro-acoes button[type="reset"]{
+    background-color: transparent;
+    border: 1px solid var(--border-subtle);
+    color: var(--text-secondary);
+    transition: color .2s ease, border-color .2s ease;
+}
+
+.filtro-acoes button[type="submit"]:hover{
+    filter: brightness(1.1);
+}
+
+.filtro-acoes button[type="reset"]:hover{
+    color: var(--text-primary);
+    border-color: var(--text-secondary);
+}
+
+/*------------- Página do preset --------------------------------------*/
+
+.preset-topo{
+    display: grid;
+    grid-template-columns: minmax(240px, 360px) 1fr;
+    gap: clamp(24px, 4vw, 48px);
+    align-items: start;
+}
+
+.preset-capa{
+    aspect-ratio: 1 / 1;
+    background-color: var(--bg-card);
+}
+
+/* Removed so the title lines up with the top of the cover. */
+.preset-info h1{
+    margin-top: 0;
+}
+
+.preset-equipamento{
+    color: var(--text-secondary);
+}
+
+.preset-download{
+    display: inline-block;
+    margin-top: 24px;
+    padding: 10px 24px;
+    background-color: var(--brand-accent);
+    color: var(--text-primary);
+    text-decoration: none;
+}
+
+.preset-download:hover{
+    filter: brightness(1.1);
+}
+
+.preset-video{
+    margin-top: clamp(40px, 6vw, 80px);
+}
+
+.grade-videos{
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: clamp(16px, 2vw, 24px);
+}
+
+/* Applies to the placeholder and to the iframe that will take its place. */
+.grade-videos > *{
+    aspect-ratio: 16 / 9;
+    width: 100%;
+    border: 0;
+    background-color: var(--bg-card);
+}
+
+/*------------- Biblioteca vazia --------------------------------------*/
+
+.biblioteca-vazia{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    min-height: 40vh;
+    color: var(--text-secondary);
+    text-align: center;
+}
+
+.biblioteca-vazia a{
+    color: var(--text-primary);
+    border: 1px solid var(--border-subtle);
+    padding: 8px 16px;
+    text-decoration: none;
+    transition: border-color .2s ease;
+}
+
+.biblioteca-vazia a:hover{
+    border-color: var(--text-secondary);
+}
+
+/*------------- Cards de preset ---------------------------------------*/
+
+/* auto-fill lets the number of columns follow the width left by the sidebar. */
+.grade-presets{
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: clamp(16px, 2vw, 24px);
+}
+
+/* .cartao is sized for the carousel; in the grid the track defines the width.
+   display is needed because the card is an <a>, which is inline by default. */
+.grade-presets .cartao{
+    display: block;
+    width: auto;
+    transition: transform .2s ease;
+}
+
+.grade-presets .cartao:hover{
+    transform: translateY(-3px);
+}
+
+/*------------- Login -------------------------------------------------*/
+
+fieldset{
+    border: 0;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 4px;
+}
+
+.loginForm{
+    margin: 0;
+    min-height: 60vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+}
+
+.login{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: min(400px, 100%);
+    min-height: 400px;
+    padding: 32px;
+    box-sizing: border-box;
+    background-color: var(--bg-card);
+    gap: 16px;
+    font-size: large;
+}
+
+.loginCampos{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+}
+
+.login input{
+    width: min(200px, 100%);
+    padding: 6px 8px;
+    box-sizing: border-box;
+    border: 1px solid var(--border-subtle);
+    background-color: var(--bg-app);
+    color: var(--text-primary);
+}
+
+.loginBt{
+    background-color: var(--brand-accent);
+    border: 0;
+    min-height: 32px;
+    width: min(200px, 100%);
+    color: var(--text-primary);
+    font-size: medium;
+    font-family: inherit;
+    cursor: pointer;
+}
+
+.loginBt:hover{
+    filter: brightness(1.1);
+}
+
+.loginLink{
+    color: var(--text-secondary);
+    font-size: medium;
+}
+
+/*------------- Responsivo --------------------------------------------*/
+
+@media (max-width: 700px){
+    .cabecalho{
+        height: 90px;
+    }
+
+    .icone{
+        height: 60px;
+        width: 200px;
+    }
+
+    /* Absolute positioning would overlap the links once they wrap. */
+    .navegacao{
+        flex-wrap: wrap;
+        gap: 16px;
+        padding: 10px 16px;
+    }
+
+    .nav-links{
+        gap: 24px;
+    }
+
+    .entrar{
+        position: static;
+    }
+
+    .nav-txt{
+        font-size: medium;
+    }
+
+    .layout{
+        grid-template-columns: 1fr;
+    }
+
+    .filtros{
+        border-right: 0;
+        border-bottom: 1px solid var(--border-subtle);
+    }
+
+    /* Stacked above the list, a sticky sidebar would cover the results. */
+    .filtros-fixos{
+        position: static;
+        max-height: none;
+    }
+
+    .filtros ul{
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    }
+
+    .filtro-acoes{
+        flex-direction: row;
+    }
+
+    .filtro-acoes button{
+        flex: 1;
+    }
+
+    .preset-topo{
+        grid-template-columns: 1fr;
+    }
+
+    .tituloCarrossel{
+        margin-left: 20px;
+    }
+
+    .carrossel{
+        padding: 0 20px;
+        gap: 20px;
+    }
+}
