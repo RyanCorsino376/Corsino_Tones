@@ -117,15 +117,17 @@ T6 -> T7 -> T8
 
 **Done when**:
 
-- [ ] `webServer` starts `python3 -m http.server 8080` from the repository root and reuses an existing server locally
-- [ ] `baseURL` resolves so a test can navigate to `login.html` and the logo at `../imagens/LogoSite.svg` returns 200
-- [ ] Three projects exist with viewports 375x667, 820x1180 and 1440x900
-- [ ] Build gate passes: `node -e "require('./playwright.config.js')"`
+- [x] `webServer` starts `python3 -m http.server 8080` from the repository root and reuses an existing server locally
+- [x] `baseURL` resolves so a test can navigate to `login.html` and the logo at `../imagens/LogoSite.svg` returns 200 -> both returned 200 over the same server
+- [x] Three projects exist with viewports 375x667, 820x1180 and 1440x900 -> `mobile@375, tablet@820, desktop@1440`
+- [x] Build gate passes: `node -e "require('./playwright.config.js')"`, exit 0
 
 **Tests**: none
 **Gate**: build
 
 **Commit**: `chore(test): configure playwright with mobile, tablet and desktop projects`
+
+**Status**: Complete
 
 ---
 
