@@ -179,17 +179,23 @@ Corrected after the fact: the task originally specified three viewport *projects
 
 **Done when**:
 
-- [ ] Clicking "Não tenho conta" sets `data-vista="cadastro"`; clicking "Já tenho conta" sets it back to `login`
-- [ ] The hidden face carries `inert`, so tabbing from the last visible control never lands inside it
-- [ ] Focus moves to the revealed face's first input on every switch
-- [ ] Three rapid alternating clicks settle on the face matching the last click
-- [ ] Full gate passes: `npx playwright test`
-- [ ] Test count: 10 tests pass (no silent deletions)
+- [x] Clicking "Não tenho conta" sets `data-vista="cadastro"`; clicking "Já tenho conta" sets it back to `login` -> `tests/login-flip.spec.js:54-66`
+- [x] The hidden face carries `inert`, so tabbing from the last visible control never lands inside it -> `tests/login-flip.spec.js:75-98`
+- [x] Focus moves to the revealed face's first input on every switch -> `tests/login-flip.spec.js:101-107`
+- [x] Three rapid alternating clicks settle on the face matching the last click -> `tests/login-flip.spec.js:110-119`
+- [x] Full gate passes: `npx playwright test`, exit 0
+- [x] Test count: 10 tests pass (no silent deletions)
 
 **Tests**: e2e
 **Gate**: full
 
 **Commit**: `feat(login): toggle card faces with inert and focus management`
+
+**Status**: Complete
+
+Two test-side corrections were needed and are recorded here rather than hidden:
+1. The "Já tenho conta" test passed against a no-op implementation, because `data-vista` already starts at `login`. An intermediate assertion on `cadastro` was added so the test can actually fail.
+2. The EDGE-01 test now flips the card before submitting. The submit button sits on the inert face, which is exactly what FLIP-05 mandates; the assertions themselves are unchanged.
 
 ---
 

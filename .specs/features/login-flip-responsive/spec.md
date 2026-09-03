@@ -102,13 +102,13 @@ Every ambiguity is resolved or recorded here - nothing is left silently unclear.
 | -------------- | ----- | ----- | ------ |
 | FLIP-01 | P1: Flip between login and registration | Tasks | Pending |
 | FLIP-02 | P1: Flip between login and registration | Tasks | Pending |
-| FLIP-03 | P1: Flip between login and registration | Tasks | Pending |
-| FLIP-04 | P1: Flip between login and registration | Tasks | Pending |
-| FLIP-05 | P1: Flip between login and registration | Tasks | Pending |
+| FLIP-03 | P1: Flip between login and registration | Tasks | Implementing |
+| FLIP-04 | P1: Flip between login and registration | Tasks | Implementing |
+| FLIP-05 | P1: Flip between login and registration | Tasks | Implementing |
 | FLIP-06 | P1: Flip between login and registration | Tasks | Pending |
 | FLIP-07 | P1: Flip between login and registration | Tasks | Implementing |
 | FLIP-08 | P1: Flip between login and registration | Tasks | Pending |
-| FLIP-09 | P1: Flip between login and registration | Tasks | Pending |
+| FLIP-09 | P1: Flip between login and registration | Tasks | Implementing |
 | FLIP-10 | P1: Flip between login and registration | Tasks | Implementing |
 | RESP-01 | P1: Three deliberate viewport ranges | Tasks | Pending |
 | RESP-02 | P1: Three deliberate viewport ranges | Tasks | Pending |
