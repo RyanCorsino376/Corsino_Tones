@@ -35,9 +35,9 @@ Rationale for e2e everywhere: the acceptance criteria are about rendered layout,
 | ---------- | ----------- | ------- |
 | Quick | After tasks that only touch the flip behaviour | `npx playwright test tests/login-flip.spec.js` |
 | Full | After tasks that touch responsive layout, or any task after T5 | `npx playwright test` |
-| Build | After config-only tasks (T1, T2) | `npx playwright test --list` |
+| Build | After config-only tasks | T1: `npx playwright --version` - T2: `node -e "require('./playwright.config.js')"` |
 
-The project has no linter or formatter configured, so the Build gate verifies only that the config loads and the suite is discoverable. Adding a linter is out of scope for this feature.
+The project has no linter or formatter configured, so the Build gate verifies only that the runner is installed (T1) and that the config file parses and loads (T2). `playwright test --list` cannot serve as their gate: it exits 1 with "No tests found" until T3 writes the first spec file. Adding a linter is out of scope for this feature.
 
 ---
 
@@ -88,15 +88,17 @@ T6 -> T7 -> T8
 
 **Done when**:
 
-- [ ] `package.json` declares `@playwright/test` as a devDependency and a `test` script running `playwright test`
-- [ ] `.gitignore` ignores `node_modules/`, `test-results/`, `playwright-report/`
-- [ ] `npm install` completes and `npx playwright install chromium` fetches the browser
-- [ ] Build gate passes: `npx playwright test --list`
+- [x] `package.json` declares `@playwright/test` as a devDependency and a `test` script running `playwright test`
+- [x] `.gitignore` ignores `node_modules/`, `test-results/`, `playwright-report/`
+- [x] `npm install` completes and `npx playwright install chromium` fetches the browser
+- [x] Build gate passes: `npx playwright --version` -> `Version 1.62.1`, exit 0
 
 **Tests**: none
 **Gate**: build
 
 **Commit**: `chore(test): add npm manifest and playwright dev dependency`
+
+**Status**: Complete
 
 ---
 
@@ -118,7 +120,7 @@ T6 -> T7 -> T8
 - [ ] `webServer` starts `python3 -m http.server 8080` from the repository root and reuses an existing server locally
 - [ ] `baseURL` resolves so a test can navigate to `login.html` and the logo at `../imagens/LogoSite.svg` returns 200
 - [ ] Three projects exist with viewports 375x667, 820x1180 and 1440x900
-- [ ] Build gate passes: `npx playwright test --list`
+- [ ] Build gate passes: `node -e "require('./playwright.config.js')"`
 
 **Tests**: none
 **Gate**: build

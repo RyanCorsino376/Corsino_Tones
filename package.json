@@ -1,0 +1,16 @@
+{
+  "name": "corsino-tones",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Presets de pedais e pedaleiras de guitarra",
+  "scripts": {
+    "test": "playwright test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/RyanCorsino376/Corsino_Tones.git"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.62.1"
+  }
+}
