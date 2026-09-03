@@ -214,17 +214,27 @@ Two test-side corrections were needed and are recorded here rather than hidden:
 
 **Done when**:
 
-- [ ] The card's computed transform reaches `rotateY(180deg)` on the registration face and `rotateY(0)` on the login face, over a 600ms transition
-- [ ] The card's bounding box height is identical on both faces, and the footer's Y position does not move during a flip
-- [ ] Under emulated `prefers-reduced-motion: reduce`, the computed `transition-duration` is `0s` and the face still switches
-- [ ] Resizing across 768px and 1024px while the registration face is shown keeps `data-vista="cadastro"`
-- [ ] Full gate passes: `npx playwright test`
-- [ ] Test count: 16 tests pass (no silent deletions)
+- [x] The card's computed transform reaches `rotateY(180deg)` on the registration face and `rotateY(0)` on the login face, over a 600ms transition -> `tests/login-flip.spec.js:128-151`
+- [x] Both faces occupy the same height, and the footer's Y position does not move during a flip -> `tests/login-flip.spec.js:154-181`
+- [x] Under emulated `prefers-reduced-motion: reduce`, the computed `transition-duration` is `0s` and the face still switches -> `tests/login-flip.spec.js:196-214`
+- [x] Resizing across 768px and 1024px while the registration face is shown keeps `data-vista="cadastro"` -> `tests/login-flip.spec.js:184-192`
+- [x] Full gate passes: `npx playwright test`, exit 0
+- [x] Test count: 16 tests pass (no silent deletions)
 
 **Tests**: e2e
 **Gate**: full
 
 **Commit**: `feat(login): flip the card in 3d with a shared height and reduced-motion fallback`
+
+**Status**: Complete
+
+Four of the six tests written for this task initially passed with no CSS at all, and were strengthened before implementing:
+1. Height was measured on the card, whose height is constant even with no flip. Now measured on the two faces, which differ by one field without the shared-box layout.
+2. The footer test passed on a page where nothing rotates. It now also asserts the card actually reached `matrix3d(-1, ...)`.
+3. `transition-duration` is `0s` by default when no transition is declared. The reduced-motion test now also asserts the final matrix applies on the first frame, which a 600ms transition would not do.
+4. `EDGE-03` passed unchanged: the attribute-driven state from T4 already satisfies it. Left as is, no weakening involved.
+
+Two later corrections were to the test mechanism, not to assertions: at 0deg the browser drops `transform` entirely, so the computed value is `none` rather than an identity matrix; and `test.use({ reducedMotion })` never reached the page (`matchMedia` still reported no-preference), so the test calls `page.emulateMedia()` instead.
 
 ---
 

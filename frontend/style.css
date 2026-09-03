@@ -467,6 +467,49 @@ fieldset{
     font-size: medium;
 }
 
+/*------------- Virada do card de login -------------------------------*/
+
+.cartao-login{
+    width: min(400px, 100%);
+}
+
+/* Scoped to .js-flip, added by login.js: without the script the two faces
+   stay stacked and both forms remain usable. */
+.cartao-login.js-flip{
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform .6s ease;
+}
+
+.cartao-login.js-flip .face{
+    width: 100%;
+    backface-visibility: hidden;
+}
+
+/* The registration face has one more field, so it is the taller one. Leaving
+   it in the flow makes it set the card's height, and the login face fills that
+   same box. Take it out of the flow instead and the card resizes mid-rotation,
+   shoving the footer up the page. */
+.cartao-login.js-flip .face-login{
+    position: absolute;
+    inset: 0;
+}
+
+.cartao-login.js-flip .face-cadastro{
+    transform: rotateY(180deg);
+}
+
+.cartao-login.js-flip[data-vista="cadastro"]{
+    transform: rotateY(180deg);
+}
+
+/* The flip is decoration; the form is the function. */
+@media (prefers-reduced-motion: reduce){
+    .cartao-login.js-flip{
+        transition: none;
+    }
+}
+
 /*------------- Responsivo --------------------------------------------*/
 
 @media (max-width: 700px){

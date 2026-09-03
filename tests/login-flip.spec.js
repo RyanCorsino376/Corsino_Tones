@@ -119,6 +119,102 @@ test.describe('T4 - face toggle: state, inert and focus', () => {
   });
 });
 
+test.describe('T5 - 3D flip styling', () => {
+  test.beforeEach(async ({ page }) => {
+    await page.goto('login.html');
+  });
+
+  // FLIP-01 / FLIP-02: rotate 180deg on the Y axis, and back to 0.
+  test('the card rotates 180 degrees on the Y axis and back', async ({ page }) => {
+    const cartao = page.locator('.cartao-login');
+    const lerTransform = () => cartao.evaluate((el) => getComputedStyle(el).transform);
+
+    expect(['none', 'matrix(1, 0, 0, 1, 0, 0)']).toContain(await lerTransform());
+
+    await page.locator('[data-alvo="cadastro"]').click();
+    await page.waitForTimeout(700);
+    // rotateY(180deg) computes to matrix3d with m11 = -1.
+    expect(await lerTransform()).toMatch(/^matrix3d\(-1,/);
+
+    await page.locator('[data-alvo="login"]').click();
+    await page.waitForTimeout(700);
+    // Back at 0deg the browser drops the property entirely, so the computed
+    // value is "none" - the same identity the card started at.
+    expect(['none', 'matrix(1, 0, 0, 1, 0, 0)']).toContain(await lerTransform());
+  });
+
+  test('the rotation runs over 600ms', async ({ page }) => {
+    const duracao = await page
+      .locator('.cartao-login')
+      .evaluate((el) => getComputedStyle(el).transitionDuration);
+    expect(duracao).toBe('0.6s');
+  });
+
+  // FLIP-06: the card occupies the same height on both faces.
+  // Measured on the faces, not the card: the card's own height is constant
+  // even with no flip styling at all, so it cannot detect a wrong layout.
+  test('both faces occupy the same height', async ({ page }) => {
+    const alturaLogin = (await page.locator('.face-login').boundingBox()).height;
+    const alturaCadastro = (await page.locator('.face-cadastro').boundingBox()).height;
+
+    expect(alturaLogin).toBe(alturaCadastro);
+  });
+
+  // FLIP-06: no surrounding element moves during the rotation.
+  test('the footer stays put throughout the rotation', async ({ page }) => {
+    const rodape = page.locator('.rodape');
+    const inicial = (await rodape.boundingBox()).y;
+
+    await page.locator('[data-alvo="cadastro"]').click();
+
+    const amostras = [];
+    for (let i = 0; i < 6; i += 1) {
+      amostras.push((await rodape.boundingBox()).y);
+      await page.waitForTimeout(100);
+    }
+
+    expect([...new Set(amostras)]).toEqual([inicial]);
+    // Without this the test passes on a page where nothing rotates at all.
+    expect(
+      await page.locator('.cartao-login').evaluate((el) => getComputedStyle(el).transform),
+    ).toMatch(/^matrix3d\(-1,/);
+  });
+
+  // EDGE-03: crossing a breakpoint keeps the presented face.
+  test('crossing a breakpoint keeps the registration face presented', async ({ page }) => {
+    await page.locator('[data-alvo="cadastro"]').click();
+
+    await page.setViewportSize({ width: 820, height: 1180 });
+    await page.setViewportSize({ width: 375, height: 667 });
+
+    await expect(page.locator('.cartao-login')).toHaveAttribute('data-vista', 'cadastro');
+    expect(await page.locator('.face-login').evaluate((el) => el.inert)).toBe(true);
+  });
+});
+
+// FLIP-08: WHERE prefers-reduced-motion: reduce, change faces with no rotation.
+test.describe('T5 - reduced motion', () => {
+  test('faces switch with no transition when motion is reduced', async ({ page }) => {
+    await page.goto('login.html');
+    // page.emulateMedia rather than test.use({ reducedMotion }): the fixture
+    // form does not reach the page here - matchMedia still reported
+    // no-preference - while this one does.
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+
+    const cartao = page.locator('.cartao-login');
+    expect(await cartao.evaluate((el) => getComputedStyle(el).transitionDuration)).toBe('0s');
+
+    await page.locator('[data-alvo="cadastro"]').click();
+    await expect(cartao).toHaveAttribute('data-vista', 'cadastro');
+
+    // No wait: with the transition suppressed the final matrix applies on the
+    // first frame. Under a 600ms transition this would still read an
+    // intermediate value, so the assertion distinguishes the two.
+    expect(await cartao.evaluate((el) => getComputedStyle(el).transform)).toMatch(/^matrix3d\(-1,/);
+    expect(await page.locator('.face-cadastro').evaluate((el) => el.inert)).toBe(false);
+  });
+});
+
 // FLIP-10: IF JavaScript does not run THEN the system SHALL present the login
 // form and the registration form stacked, both fully usable.
 test.describe('T3 - no-JavaScript fallback', () => {

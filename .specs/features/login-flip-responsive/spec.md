@@ -100,14 +100,14 @@ Every ambiguity is resolved or recorded here - nothing is left silently unclear.
 
 | Requirement ID | Story | Phase | Status |
 | -------------- | ----- | ----- | ------ |
-| FLIP-01 | P1: Flip between login and registration | Tasks | Pending |
-| FLIP-02 | P1: Flip between login and registration | Tasks | Pending |
+| FLIP-01 | P1: Flip between login and registration | Tasks | Implementing |
+| FLIP-02 | P1: Flip between login and registration | Tasks | Implementing |
 | FLIP-03 | P1: Flip between login and registration | Tasks | Implementing |
 | FLIP-04 | P1: Flip between login and registration | Tasks | Implementing |
 | FLIP-05 | P1: Flip between login and registration | Tasks | Implementing |
-| FLIP-06 | P1: Flip between login and registration | Tasks | Pending |
+| FLIP-06 | P1: Flip between login and registration | Tasks | Implementing |
 | FLIP-07 | P1: Flip between login and registration | Tasks | Implementing |
-| FLIP-08 | P1: Flip between login and registration | Tasks | Pending |
+| FLIP-08 | P1: Flip between login and registration | Tasks | Implementing |
 | FLIP-09 | P1: Flip between login and registration | Tasks | Implementing |
 | FLIP-10 | P1: Flip between login and registration | Tasks | Implementing |
 | RESP-01 | P1: Three deliberate viewport ranges | Tasks | Pending |
@@ -120,7 +120,7 @@ Every ambiguity is resolved or recorded here - nothing is left silently unclear.
 | RESP-08 | P1: Three deliberate viewport ranges | Tasks | Pending |
 | EDGE-01 | Edge cases | Tasks | Implementing |
 | EDGE-02 | Edge cases | Tasks | Pending |
-| EDGE-03 | Edge cases | Tasks | Pending |
+| EDGE-03 | Edge cases | Tasks | Implementing |
 
 **ID format:** `[CATEGORY]-[NUMBER]`
 
