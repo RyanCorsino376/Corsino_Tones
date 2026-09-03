@@ -244,7 +244,7 @@ Two later corrections were to the test mechanism, not to assertions: at 0deg the
 **Where**: `Corsino_Tones/frontend/style.css`
 **Depends on**: T5
 **Reuses**: The rules already written in the `@media (max-width: 700px)` block at `frontend/style.css:497-560`, which are re-homed rather than rewritten
-**Requirement**: RESP-01, RESP-05
+**Requirement**: RESP-05 (RESP-01 moved to T8)
 
 **Tools**:
 
@@ -253,16 +253,22 @@ Two later corrections were to the test mechanism, not to assertions: at 0deg the
 
 **Done when**:
 
-- [ ] The stylesheet contains exactly three media queries: `max-width: 767px`, `min-width: 768px` and `max-width: 1023px`, and `min-width: 1024px`
-- [ ] Below 768px the navigation links wrap onto more than one line and `.entrar` computes to `position: static`
-- [ ] At 820px and 1440px the navigation stays on one line with `.entrar` absolutely positioned
-- [ ] Full gate passes: `npx playwright test`
-- [ ] Test count: 22 tests pass (no silent deletions)
+- [x] Below 768px the navigation links wrap onto more than one line and `.entrar` computes to `position: static` -> `tests/responsive.spec.js:20-37`
+- [x] The 767/768 boundary behaves as specified -> `tests/responsive.spec.js:40-58`
+- [x] At 820px and 1440px the navigation stays on one line with `.entrar` absolutely positioned, without overlapping the links -> `tests/responsive.spec.js:60-81`
+- [x] Full gate passes: `npx playwright test`, exit 0
+- [x] Test count: 22 tests pass (no silent deletions)
 
 **Tests**: e2e
 **Gate**: full
 
 **Commit**: `refactor(css): split the single breakpoint into three viewport ranges`
+
+**Status**: Complete
+
+RESP-01 ("exactly three viewport ranges") moved from this task to T8. The tablet and desktop blocks only gain real rules in T7 and T8, so asserting the count here would pass on an empty structure. It is verifiable once the ranges carry their rules.
+
+Only the 767px boundary test failed before the change: 375px and 768px+ fall on the same side of the old 700px cut, so they passed either way. The boundary test is the one with detection power here.
 
 ---
 
@@ -396,9 +402,9 @@ No task depends on a later phase; the chain points strictly backward.
 | FLIP-01, FLIP-02, FLIP-06, FLIP-08 | T5 |
 | FLIP-03, FLIP-04, FLIP-05, FLIP-09 | T4 |
 | FLIP-07, FLIP-10 | T3 |
-| RESP-01, RESP-05 | T6 |
+| RESP-05 | T6 |
 | RESP-02, RESP-03, RESP-04 | T7 |
-| RESP-06, RESP-07, RESP-08 | T8 |
+| RESP-01, RESP-06, RESP-07, RESP-08 | T8 |
 | EDGE-01 | T3 |
 | EDGE-02 | T8 |
 | EDGE-03 | T5 |

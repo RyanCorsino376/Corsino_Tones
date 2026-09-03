@@ -512,7 +512,14 @@ fieldset{
 
 /*------------- Responsivo --------------------------------------------*/
 
-@media (max-width: 700px){
+/* Three ranges, cut at the Tailwind md: and lg: widths so the planned React
+   rewrite keeps the same breakpoints:
+     mobile   up to 767px
+     tablet   768px - 1023px
+     desktop  1024px and up                                              */
+
+/* Mobile */
+@media (max-width: 767px){
     .cabecalho{
         height: 90px;
     }

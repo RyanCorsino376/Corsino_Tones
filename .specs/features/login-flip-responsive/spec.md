@@ -114,7 +114,7 @@ Every ambiguity is resolved or recorded here - nothing is left silently unclear.
 | RESP-02 | P1: Three deliberate viewport ranges | Tasks | Pending |
 | RESP-03 | P1: Three deliberate viewport ranges | Tasks | Pending |
 | RESP-04 | P1: Three deliberate viewport ranges | Tasks | Pending |
-| RESP-05 | P1: Three deliberate viewport ranges | Tasks | Pending |
+| RESP-05 | P1: Three deliberate viewport ranges | Tasks | Implementing |
 | RESP-06 | P1: Three deliberate viewport ranges | Tasks | Pending |
 | RESP-07 | P1: Three deliberate viewport ranges | Tasks | Pending |
 | RESP-08 | P1: Three deliberate viewport ranges | Tasks | Pending |
