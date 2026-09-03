@@ -106,10 +106,10 @@ Every ambiguity is resolved or recorded here - nothing is left silently unclear.
 | FLIP-04 | P1: Flip between login and registration | Tasks | Pending |
 | FLIP-05 | P1: Flip between login and registration | Tasks | Pending |
 | FLIP-06 | P1: Flip between login and registration | Tasks | Pending |
-| FLIP-07 | P1: Flip between login and registration | Tasks | Pending |
+| FLIP-07 | P1: Flip between login and registration | Tasks | Implementing |
 | FLIP-08 | P1: Flip between login and registration | Tasks | Pending |
 | FLIP-09 | P1: Flip between login and registration | Tasks | Pending |
-| FLIP-10 | P1: Flip between login and registration | Tasks | Pending |
+| FLIP-10 | P1: Flip between login and registration | Tasks | Implementing |
 | RESP-01 | P1: Three deliberate viewport ranges | Tasks | Pending |
 | RESP-02 | P1: Three deliberate viewport ranges | Tasks | Pending |
 | RESP-03 | P1: Three deliberate viewport ranges | Tasks | Pending |
@@ -118,7 +118,7 @@ Every ambiguity is resolved or recorded here - nothing is left silently unclear.
 | RESP-06 | P1: Three deliberate viewport ranges | Tasks | Pending |
 | RESP-07 | P1: Three deliberate viewport ranges | Tasks | Pending |
 | RESP-08 | P1: Three deliberate viewport ranges | Tasks | Pending |
-| EDGE-01 | Edge cases | Tasks | Pending |
+| EDGE-01 | Edge cases | Tasks | Implementing |
 | EDGE-02 | Edge cases | Tasks | Pending |
 | EDGE-03 | Edge cases | Tasks | Pending |
 

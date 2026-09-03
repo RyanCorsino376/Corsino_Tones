@@ -148,17 +148,19 @@ Corrected after the fact: the task originally specified three viewport *projects
 
 **Done when**:
 
-- [ ] The registration face has labelled `name`, `email` and `password` inputs, all `required`, with `autocomplete="name"`, `"email"` and `"new-password"`
-- [ ] The "Não tenho conta" button and a new "Já tenho conta" button each carry an explicit `type="button"`
-- [ ] With JavaScript disabled, both forms render stacked and every field is fillable
-- [ ] Submitting the registration form with an empty required field is blocked by the browser
-- [ ] Full gate passes: `npx playwright test`
-- [ ] Test count: 4 tests pass (no silent deletions)
+- [x] The registration face has labelled `name`, `email` and `password` inputs, all `required`, with `autocomplete="name"`, `"email"` and `"new-password"` -> `tests/login-flip.spec.js:17-25`
+- [x] The "Não tenho conta" button and a new "Já tenho conta" button each carry an explicit `type="button"` -> `tests/login-flip.spec.js:31-32`
+- [x] With JavaScript disabled, both forms render stacked and every field is fillable -> `tests/login-flip.spec.js:57-70`
+- [x] Submitting the registration form with an empty required field is blocked by the browser -> `tests/login-flip.spec.js:45-47`
+- [x] Full gate passes: `npx playwright test`, exit 0
+- [x] Test count: 4 tests pass (no silent deletions)
 
 **Tests**: e2e
 **Gate**: full
 
 **Commit**: `feat(login): add registration form as the card's second face`
+
+**Status**: Complete
 
 ---
 

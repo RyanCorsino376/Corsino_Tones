@@ -19,25 +19,52 @@
         </div>
     </nav>
     <main class="loginForm">
-        <section class="login" id="login">
-            <h1>Entrar</h1>
-            <!-- action stays empty until the Spring Boot auth endpoint exists -->
-            <form action="" method="post" class="loginCampos">
-                <fieldset>
-                    <label for="email">Seu Email</label>
-                    <input type="email" id="email" name="email"
-                        autocomplete="email" required>
-                </fieldset>
-                <fieldset>
-                    <label for="senha">Senha</label>
-                    <input type="password" id="senha" name="senha"
-                        autocomplete="current-password" required>
-                </fieldset>
-                <button type="submit" class="loginBt">Login</button>
-                <button type="button" class="loginBt">Não tenho conta</button>
-            </form>
-            <a href="#" class="loginLink">Esqueci a senha</a>
-        </section>
+        <!-- data-vista names the presented face. Without the script it stays
+             "login" and both faces simply stack. -->
+        <div class="cartao-login" data-vista="login">
+            <section class="login face face-login" aria-label="Entrar">
+                <h1>Entrar</h1>
+                <!-- action stays empty until the Spring Boot auth endpoint exists -->
+                <form action="" method="post" class="loginCampos" id="form-login">
+                    <fieldset>
+                        <label for="email">Seu Email</label>
+                        <input type="email" id="email" name="email"
+                            autocomplete="email" required>
+                    </fieldset>
+                    <fieldset>
+                        <label for="senha">Senha</label>
+                        <input type="password" id="senha" name="senha"
+                            autocomplete="current-password" required>
+                    </fieldset>
+                    <button type="submit" class="loginBt">Login</button>
+                    <button type="button" class="loginBt" data-alvo="cadastro">Não tenho conta</button>
+                </form>
+                <a href="#" class="loginLink">Esqueci a senha</a>
+            </section>
+
+            <section class="login face face-cadastro" aria-label="Criar conta">
+                <h1>Criar conta</h1>
+                <form action="" method="post" class="loginCampos" id="form-cadastro">
+                    <fieldset>
+                        <label for="cadastro-nome">Seu nome</label>
+                        <input type="text" id="cadastro-nome" name="nome"
+                            autocomplete="name" required>
+                    </fieldset>
+                    <fieldset>
+                        <label for="cadastro-email">Seu Email</label>
+                        <input type="email" id="cadastro-email" name="email"
+                            autocomplete="email" required>
+                    </fieldset>
+                    <fieldset>
+                        <label for="cadastro-senha">Senha</label>
+                        <input type="password" id="cadastro-senha" name="senha"
+                            autocomplete="new-password" required>
+                    </fieldset>
+                    <button type="submit" class="loginBt">Cadastrar</button>
+                    <button type="button" class="loginBt" data-alvo="login">Já tenho conta</button>
+                </form>
+            </section>
+        </div>
     </main>
     <footer class="rodape">Copyright 2026 ®</footer>
 </body>
