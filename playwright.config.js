@@ -2,9 +2,10 @@
 const { defineConfig, devices } = require('@playwright/test');
 
 /**
- * The three projects are the three viewport ranges the spec defines: below
- * 768px, 768-1023px, and 1024px up. Every test runs once per range, so a rule
- * that only holds on one screen size fails the other two.
+ * Every acceptance criterion names the viewport it applies to ("WHILE the
+ * viewport is narrower than 768px..."), so each test sets its own width with
+ * page.setViewportSize(). Viewport projects would instead run every test at
+ * every width, and a range-specific rule would fail in the other two ranges.
  */
 module.exports = defineConfig({
   testDir: './tests',
@@ -20,23 +21,11 @@ module.exports = defineConfig({
   },
 
   use: {
+    ...devices['Desktop Chrome'],
     // Trailing slash matters: it makes page.goto('login.html') resolve inside
     // frontend/ instead of at the server root.
     baseURL: 'http://127.0.0.1:8080/frontend/',
+    // Desktop default; tests that assert a narrower range override it.
+    viewport: { width: 1440, height: 900 },
   },
-
-  projects: [
-    {
-      name: 'mobile',
-      use: { ...devices['Desktop Chrome'], viewport: { width: 375, height: 667 } },
-    },
-    {
-      name: 'tablet',
-      use: { ...devices['Desktop Chrome'], viewport: { width: 820, height: 1180 } },
-    },
-    {
-      name: 'desktop',
-      use: { ...devices['Desktop Chrome'], viewport: { width: 1440, height: 900 } },
-    },
-  ],
 });

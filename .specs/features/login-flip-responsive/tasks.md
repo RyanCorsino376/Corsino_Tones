@@ -104,7 +104,7 @@ T6 -> T7 -> T8
 
 ### T2: Playwright config with the three viewport projects
 
-**What**: Configure Playwright with a static `webServer` serving the repository over Python's built-in HTTP server, a `baseURL` pointing at `frontend/`, and three projects named mobile (375px), tablet (820px) and desktop (1440px).
+**What**: Configure Playwright with a static `webServer` serving the repository over Python's built-in HTTP server, a `baseURL` pointing at `frontend/`, and a desktop default viewport that range-specific tests override per test.
 **Where**: `Corsino_Tones/playwright.config.js`
 **Depends on**: T1
 **Reuses**: `frontend/` served as-is; pages reference `../imagens/`, so the server root is the repository root, not `frontend/`
@@ -119,8 +119,10 @@ T6 -> T7 -> T8
 
 - [x] `webServer` starts `python3 -m http.server 8080` from the repository root and reuses an existing server locally
 - [x] `baseURL` resolves so a test can navigate to `login.html` and the logo at `../imagens/LogoSite.svg` returns 200 -> both returned 200 over the same server
-- [x] Three projects exist with viewports 375x667, 820x1180 and 1440x900 -> `mobile@375, tablet@820, desktop@1440`
+- [x] The default viewport is 1440x900, and tests assert narrower ranges with `page.setViewportSize()`
 - [x] Build gate passes: `node -e "require('./playwright.config.js')"`, exit 0
+
+Corrected after the fact: the task originally specified three viewport *projects*. That runs every test at all three widths, so a range-specific criterion ("sidebar beside the results at 1024px up") would fail in the other two ranges and force `test.skip` noise into every spec. Each test now names its own width, matching how the acceptance criteria are written.
 
 **Tests**: none
 **Gate**: build
