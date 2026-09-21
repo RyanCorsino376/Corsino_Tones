@@ -287,17 +287,21 @@ Only the 767px boundary test failed before the change: 375px and 768px+ fall on 
 
 **Done when**:
 
-- [ ] At 375px the sidebar sits above the results and the preset grid renders one column
-- [ ] At 820px the sidebar sits above the results and the preset grid renders exactly two columns
-- [ ] At 1440px the sidebar sits beside the results and `.filtros-fixos` computes to `position: sticky`
-- [ ] Column counts are asserted from the cards' rendered X positions, not from the CSS text
-- [ ] Full gate passes: `npx playwright test`
-- [ ] Test count: 28 tests pass (no silent deletions)
+- [x] At 375px the sidebar sits above the results and the preset grid renders one column -> `tests/responsive.spec.js:99-113`
+- [x] At 820px the sidebar sits above the results and the preset grid renders exactly two columns -> `tests/responsive.spec.js:116-133`
+- [x] At 1440px the sidebar sits beside the results and `.filtros-fixos` computes to `position: sticky` -> `tests/responsive.spec.js:136-152`
+- [x] Column counts are asserted from the cards' rendered X positions, not from the CSS text -> `colunasGrade()` in `tests/responsive.spec.js`
+- [x] Full gate passes: `npx playwright test`, exit 0
+- [x] Test count: 28 tests pass (no silent deletions)
 
 **Tests**: e2e
 **Gate**: full
 
 **Commit**: `feat(css): lay out filters and preset grid per viewport range`
+
+**Status**: Complete
+
+Only the two tablet tests failed before the change; the mobile and desktop behaviour already existed from T6 and earlier. The two-column test checks 768px, 820px and 1023px: at 820px an auto-fill grid beside the sidebar also lands on two columns, so that width alone could not fail. The tablet block also carries the mobile block's stacked-filter rules (`.filtros ul`, `.filtro-acoes`), since a stacked sidebar with a one-per-row filter list ran ~1900px tall.
 
 ---
 

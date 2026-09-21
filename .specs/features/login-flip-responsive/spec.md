@@ -111,9 +111,9 @@ Every ambiguity is resolved or recorded here - nothing is left silently unclear.
 | FLIP-09 | P1: Flip between login and registration | Tasks | Implementing |
 | FLIP-10 | P1: Flip between login and registration | Tasks | Implementing |
 | RESP-01 | P1: Three deliberate viewport ranges | Tasks | Pending |
-| RESP-02 | P1: Three deliberate viewport ranges | Tasks | Pending |
-| RESP-03 | P1: Three deliberate viewport ranges | Tasks | Pending |
-| RESP-04 | P1: Three deliberate viewport ranges | Tasks | Pending |
+| RESP-02 | P1: Three deliberate viewport ranges | Tasks | Implementing |
+| RESP-03 | P1: Three deliberate viewport ranges | Tasks | Implementing |
+| RESP-04 | P1: Three deliberate viewport ranges | Tasks | Implementing |
 | RESP-05 | P1: Three deliberate viewport ranges | Tasks | Implementing |
 | RESP-06 | P1: Three deliberate viewport ranges | Tasks | Pending |
 | RESP-07 | P1: Three deliberate viewport ranges | Tasks | Pending |

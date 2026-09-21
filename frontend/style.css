@@ -579,6 +579,11 @@ fieldset{
         grid-template-columns: 1fr;
     }
 
+    /* The base 320px track minimum is wider than a 320px screen once the page padding is added. */
+    .grade-videos{
+        grid-template-columns: 1fr;
+    }
+
     .tituloCarrossel{
         margin-left: 20px;
     }
@@ -586,5 +591,40 @@ fieldset{
     .carrossel{
         padding: 0 20px;
         gap: 20px;
+    }
+}
+
+/* Tablet */
+@media (min-width: 768px) and (max-width: 1023px){
+    .layout{
+        grid-template-columns: 1fr;
+    }
+
+    .filtros{
+        border-right: 0;
+        border-bottom: 1px solid var(--border-subtle);
+    }
+
+    /* Stacked above the list, a sticky sidebar would cover the results. */
+    .filtros-fixos{
+        position: static;
+        max-height: none;
+    }
+
+    .filtros ul{
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    }
+
+    .filtro-acoes{
+        flex-direction: row;
+    }
+
+    .filtro-acoes button{
+        flex: 1;
+    }
+
+    /* Fixed rather than auto-fill: the tablet range always shows two columns. */
+    .grade-presets{
+        grid-template-columns: repeat(2, 1fr);
     }
 }
