@@ -34,38 +34,37 @@ We will verify with Playwright against a real browser, one project with a deskto
 
 The acceptance criteria are about rendered layout, focus order and computed transforms; no DOM-only runner can observe them. Rejected: viewport *projects*, which run every test at all three widths, so a range-specific criterion fails in the other two and forces `test.skip` guards into every file.
 
+### AD-006: Presets come from a local array
+
+We will keep the preset catalogue in `frontend/dados.js` as `window.PRESETS`, and page scripts will only read that array.
+
+Chosen over fetching a JSON file, which adds Promises and network-error handling with no server to justify them. When the Spring Boot API exists, only the source of `PRESETS` changes; filter, sort and render functions stay as they are. Feature: `etapa04-interatividade`.
+
+### AD-007: Auth forms validate in script, with `novalidate`
+
+We will add `novalidate` to the login and registration forms and let `frontend/login.js` write every message, next to its field, linked through `aria-describedby`.
+
+The `required` and `type` attributes stay in the markup: they still drive `validity` and keep the browser's own checks when the script does not run. Rejected: native validation bubbles, which cannot be styled or worded consistently. Feature: `etapa04-interatividade`.
+
 ---
 
 ## Handoff
 
-**Feature**: `login-flip-responsive`
-**Branch**: `feat/login-flip-responsive`
-**Phase**: 3 of 3 (Three-tier responsive layout)
-**Working tree**: clean, everything committed
+**Feature**: `etapa04-interatividade`
+**Branch**: `main` (no feature branch yet)
+**Phase**: Execute complete; Verifier PASS on iteration 3 of 3
+**Working tree**: everything uncommitted. The user will commit it themselves.
 
-**Completed**: T1 through T6.
+**Completed**: T1 through T8, plus two rounds of Verifier fixes (see the end of `tasks.md`). All 27 requirements are `Verified` in `spec.md`; `validation.md` holds the report and `validate_state.py` exits 0.
 
-| Task | Commit | What |
-| ---- | ------ | ---- |
-| - | `3899a18` | spec.md + tasks.md |
-| T1 | `9bc83ed` | npm manifest, Playwright dev dependency |
-| T2 | `36fd971` | Playwright config |
-| - | `df46dbc` | fix: viewport per test, not per project |
-| T3 | `464757d` | registration form as the card's second face |
-| - | `e767283` | fix: threaded server, workers capped at 2 |
-| T4 | `c509a82` | face toggle with `inert` and focus management |
-| T5 | `36a34ac` | 3D flip, shared height, reduced-motion fallback |
-| T6 | `2c73f48` | mobile breakpoint moved 700px -> 767px |
+**Test suite**: 83 passing. Run with `npx playwright test` from `Corsino_Tones/`.
 
-**Test suite**: 22 passing, ~22s. Run with `npx playwright test` from `Corsino_Tones/`.
+**Also done**: `docs/etapa-04.md` (stage write-up with the spec table) and its screenshots in `docs/evidencias/etapa-04/`. Shots 05-07 are rendered code excerpts, not editor screenshots.
 
-**Next step**: T7 - filter sidebar and preset grid per range (`frontend/style.css`). The tablet (768-1023px) and desktop (1024px+) media blocks do not exist yet; T7 creates them. Write `tests/responsive.spec.js` assertions first, deriving column counts from the cards' rendered X positions rather than from CSS text.
-
-**Then**: T8 (preset detail, login card fit, no horizontal overflow, plus RESP-01), followed by the Verifier sub-agent, which is mandatory and never prompted.
+**Next step**: the commits, by the user. The plan expected one commit per task (messages listed per task in `tasks.md`).
 
 **Blockers**: none.
 
 **Watch out for**:
-- Four of the six tests written for T5 initially passed with no implementation at all. Before implementing any task, confirm its new tests actually fail, and for the right reason.
-- RESP-01 was moved from T6 to T8; the requirement coverage table in `tasks.md` reflects this.
-- The two `Tests: none` warnings from `validate_tasks.py` are expected: T1 and T2 create no product behaviour.
+- Lessons L-001 to L-004 in `.specs/LESSONS.md` are candidates from this feature: assertions that pass vacuously (`toBeHidden` on a missing element), sample data that cannot tell two sort rules apart, and regex anchors tested on one side only.
+- The Playwright config reuses any server already on port 8080 outside CI. A stray server from another copy of the project makes the suite test that copy.

@@ -31,7 +31,7 @@
         <aside class="filtros" aria-labelledby="titulo-filtros">
             <div class="filtros-fixos">
                 <h2 id="titulo-filtros">Filtros</h2>
-                <form>
+                <form id="form-filtros">
                     <fieldset>
                         <legend>Marcas</legend>
                         <ul>
@@ -69,6 +69,27 @@
                             </li>
                         </ul>
                     </fieldset>
+                    <fieldset>
+                        <legend>Estilos</legend>
+                        <ul>
+                            <li>
+                                <input type="checkbox" id="estilo-rock" name="estilo" value="rock">
+                                <label for="estilo-rock">Rock</label>
+                            </li>
+                            <li>
+                                <input type="checkbox" id="estilo-blues" name="estilo" value="blues">
+                                <label for="estilo-blues">Blues</label>
+                            </li>
+                            <li>
+                                <input type="checkbox" id="estilo-metal" name="estilo" value="metal">
+                                <label for="estilo-metal">Metal</label>
+                            </li>
+                            <li>
+                                <input type="checkbox" id="estilo-clean" name="estilo" value="clean">
+                                <label for="estilo-clean">Clean</label>
+                            </li>
+                        </ul>
+                    </fieldset>
                     <div class="filtro-acoes">
                         <button type="submit">Aplicar</button>
                         <button type="reset">Limpar</button>
@@ -78,19 +99,39 @@
         </aside>
         <main class="conteudo">
             <h1>Presets</h1>
-            <section class="grade-presets">
-                <a href="preset.html" class="cartao"></a>
-                <a href="preset.html" class="cartao"></a>
-                <a href="preset.html" class="cartao"></a>
-                <a href="preset.html" class="cartao"></a>
-                <a href="preset.html" class="cartao"></a>
-                <a href="preset.html" class="cartao"></a>
-                <a href="preset.html" class="cartao"></a>
-                <a href="preset.html" class="cartao"></a>
-                <a href="preset.html" class="cartao"></a>
-            </section>
+            <!-- form="form-filtros" ties these controls to the sidebar form, so
+                 "Limpar" resets them too and Enter never reloads the page. -->
+            <div class="barra-lista">
+                <div class="campo-busca">
+                    <label for="busca">Buscar</label>
+                    <input type="search" id="busca" name="busca" form="form-filtros"
+                        placeholder="Nome, equipamento ou descrição" autocomplete="off">
+                </div>
+                <div class="campo-ordem">
+                    <label for="ordem">Ordenar por</label>
+                    <!-- "selected" is what reset restores, so it marks the default order. -->
+                    <select id="ordem" name="ordem" form="form-filtros">
+                        <option value="recentes" selected>Mais recentes</option>
+                        <option value="antigos">Mais antigos</option>
+                        <option value="nome">Nome (A-Z)</option>
+                    </select>
+                </div>
+            </div>
+            <p id="contagem" class="contagem-resultados" role="status" aria-live="polite"></p>
+            <!-- Cards are built by presets.js from dados.js. -->
+            <section class="grade-presets"></section>
+            <div class="lista-vazia" hidden>
+                <p>Nenhum preset encontrado</p>
+                <p>Tente outra busca ou clique em "Limpar" para remover os filtros.</p>
+            </div>
+            <noscript>
+                <p class="aviso-sem-js">A lista de presets requer JavaScript. Ative-o no navegador para ver os presets.</p>
+            </noscript>
         </main>
     </div>
     <footer class="rodape">Copyright 2026 ®</footer>
+    <script src="dados.js" defer></script>
+    <script src="cartao.js" defer></script>
+    <script src="presets.js" defer></script>
 </body>
 </html>

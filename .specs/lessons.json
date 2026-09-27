@@ -1,0 +1,82 @@
+{
+  "schema": 1,
+  "promote_threshold": 2,
+  "window_days": 45,
+  "quarantine_threshold": 2,
+  "next_id": 5,
+  "lessons": [
+    {
+      "id": "L-001",
+      "key": "surviving_mutant::assert pluralized count text at zero as well as at one and many zero is where singular plural bugs hide",
+      "text": "Assert pluralized count text at zero as well as at one and many; zero is where singular/plural bugs hide.",
+      "signal": "surviving_mutant",
+      "scope": "tests",
+      "status": "candidate",
+      "features": [
+        "etapa04-interatividade"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "M14 frontend/presets.js:54 (tests)"
+      ],
+      "created": "2026-09-27T15:34:56Z",
+      "last_seen": "2026-09-27T15:34:56Z"
+    },
+    {
+      "id": "L-002",
+      "key": "surviving_mutant::when a spec fixes an anchored regex include a rejection sample that embeds a valid match inside invalid text",
+      "text": "When a spec fixes an anchored regex, include a rejection sample that embeds a valid match inside invalid text.",
+      "signal": "surviving_mutant",
+      "scope": "tests",
+      "status": "candidate",
+      "features": [
+        "etapa04-interatividade"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "V02 frontend/login.js:42 (tests)",
+        "V02b frontend/login.js:42 (tests) (tests)"
+      ],
+      "created": "2026-09-27T15:34:56Z",
+      "last_seen": "2026-09-27T16:00:23Z"
+    },
+    {
+      "id": "L-003",
+      "key": "spec_precision_gap::a locale collation requirement needs sample data whose order differs between code point and locale comparison",
+      "text": "A locale-collation requirement needs sample data whose order differs between code-point and locale comparison.",
+      "signal": "spec_precision_gap",
+      "scope": "tests",
+      "status": "candidate",
+      "features": [
+        "etapa04-interatividade"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "FILT-07 / M12 (tests)"
+      ],
+      "created": "2026-09-27T15:34:56Z",
+      "last_seen": "2026-09-27T15:34:56Z"
+    },
+    {
+      "id": "L-004",
+      "key": "spec_precision_gap::if a requirement names the message language either assert a language marker or drop the language from the ac",
+      "text": "If a requirement names the message language, either assert a language marker or drop the language from the AC.",
+      "signal": "spec_precision_gap",
+      "scope": "spec",
+      "status": "candidate",
+      "features": [
+        "etapa04-interatividade"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "VAL-03 / V19 (spec)"
+      ],
+      "created": "2026-09-27T15:34:56Z",
+      "last_seen": "2026-09-27T15:34:56Z"
+    }
+  ]
+}

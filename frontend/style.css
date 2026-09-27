@@ -221,6 +221,11 @@ input:focus-visible{
     font-size: large;
 }
 
+/* Separates the filter groups (Marcas, Estilos) inside the sidebar form. */
+.filtros fieldset + fieldset{
+    margin-top: 20px;
+}
+
 .filtros legend{
     padding: 0 0 8px;
     color: var(--text-secondary);
@@ -353,7 +358,8 @@ input:focus-visible{
 
 /*------------- Biblioteca vazia --------------------------------------*/
 
-.biblioteca-vazia{
+.biblioteca-vazia,
+.lista-vazia{
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -385,16 +391,108 @@ input:focus-visible{
     gap: clamp(16px, 2vw, 24px);
 }
 
-/* .cartao is sized for the carousel; in the grid the track defines the width.
-   display is needed because the card is an <a>, which is inline by default. */
+/* .cartao is sized for the carousel; in the grid the track defines the width. */
 .grade-presets .cartao{
-    display: block;
     width: auto;
     transition: transform .2s ease;
 }
 
 .grade-presets .cartao:hover{
     transform: translateY(-3px);
+}
+
+/* Card text sits at the bottom, leaving the top free for a future cover image.
+   display is needed because the card is an <a>, which is inline by default. */
+.cartao{
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    gap: 6px;
+    padding: 20px;
+    box-sizing: border-box;
+    color: var(--text-primary);
+    text-decoration: none;
+}
+
+.cartao-nome{
+    margin: 0;
+    font-size: large;
+}
+
+.cartao-equipamento{
+    margin: 0;
+    color: var(--text-secondary);
+}
+
+.cartao-estilo{
+    margin: 0;
+    color: var(--brand-accent);
+    font-size: small;
+    text-transform: uppercase;
+    letter-spacing: .05em;
+}
+
+.aviso-sem-js{
+    color: var(--text-secondary);
+}
+
+/*------------- Contagem e lista vazia --------------------------------*/
+
+.contagem-resultados{
+    margin: 0 0 16px;
+    color: var(--text-secondary);
+}
+
+/* display: flex above would otherwise override the hidden attribute. */
+.lista-vazia[hidden]{
+    display: none;
+}
+
+.lista-vazia p{
+    margin: 0;
+}
+
+/*------------- Barra da lista (busca e ordenação) --------------------*/
+
+.barra-lista{
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.campo-busca,
+.campo-ordem{
+    display: grid;
+    gap: 4px;
+    color: var(--text-secondary);
+}
+
+.campo-busca{
+    flex: 1 1 240px;
+}
+
+.campo-ordem{
+    flex: 0 1 200px;
+}
+
+.barra-lista input,
+.barra-lista select{
+    min-height: 36px;
+    padding: 6px 10px;
+    box-sizing: border-box;
+    border: 1px solid var(--border-subtle);
+    background-color: var(--bg-card);
+    color: var(--text-primary);
+    font-family: inherit;
+    font-size: medium;
+}
+
+.barra-lista input:focus-visible,
+.barra-lista select:focus-visible{
+    outline: 2px solid var(--brand-accent);
+    outline-offset: 2px;
 }
 
 /*------------- Login -------------------------------------------------*/
@@ -465,6 +563,32 @@ fieldset{
 .loginLink{
     color: var(--text-secondary);
     font-size: medium;
+}
+
+/*------------- Validação dos formulários de login --------------------*/
+
+.login input[aria-invalid="true"]{
+    border-color: var(--brand-accent);
+}
+
+/* Same width as the input, so a long message wraps instead of widening the
+   field. Not min(200px, 100%): a percentage is ignored when the fieldset sizes
+   itself to its content, and the full message width would win. */
+.erro-campo,
+.mensagem-sucesso{
+    width: 200px;
+    max-width: 100%;
+    margin: 0;
+    font-size: small;
+}
+
+.erro-campo{
+    color: var(--brand-accent);
+}
+
+.mensagem-sucesso{
+    color: var(--text-secondary);
+    text-align: center;
 }
 
 /*------------- Virada do card de login -------------------------------*/
