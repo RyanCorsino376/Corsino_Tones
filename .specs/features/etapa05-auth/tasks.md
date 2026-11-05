@@ -205,18 +205,22 @@ Test count: 138 (124 + 14). `exigirLogin` is written here but its redirect is as
 
 **Done when**:
 
-- [ ] `entrar('ryan@exemplo.com', 'teste123')` resolves with the seed user -> `tests/auth.spec.js`
-- [ ] `entrar('  Ryan@Exemplo.COM ', 'teste123')` resolves with the seed user (EDGE-01)
-- [ ] Wrong password and unknown e-mail each reject with `CredenciaisInvalidas`
-- [ ] A communication failure (route aborted) rejects with `ErroApi`, not `CredenciaisInvalidas`
-- [ ] `cadastrar({ nome: '  Ana ', email: ' Ana.X@Y.com ', senha })` sends `POST` with `nome: 'Ana'` and the e-mail lowercased and trimmed
-- [ ] `cadastrar` with the seed e-mail in any case rejects with `EmailEmUso` and sends no `POST`
-- [ ] Full gate passes: `npx playwright test`, exit 0
-- [ ] Test count: T3 total + new tests pass
+- [x] `entrar('ryan@exemplo.com', 'teste123')` resolves with the seed user -> `tests/auth.spec.js`
+- [x] `entrar('  Ryan@Exemplo.COM ', 'teste123')` resolves with the seed user (EDGE-01)
+- [x] Wrong password and unknown e-mail each reject with `CredenciaisInvalidas`
+- [x] A communication failure (route aborted) rejects with `ErroApi`, not `CredenciaisInvalidas`
+- [x] `cadastrar({ nome: '  Ana ', email: ' Ana.X@Y.com ', senha })` sends `POST` with `nome: 'Ana'` and the e-mail lowercased and trimmed
+- [x] `cadastrar` with the seed e-mail in any case rejects with `EmailEmUso` and sends no `POST`
+- [x] Full gate passes: `npx playwright test`, exit 0
+- [x] Test count: T3 total + new tests pass
 
 **Tests**: e2e (`tests/auth.spec.js`)
 **Gate**: full
 **Commit**: `feat(auth): add sign-in and sign-up rules over the users API`
+
+**Status**: Complete
+
+Test count: 145 (138 + 7). One extra test (communication failure -> `ErroApi`) guards AUTH-05: a network error must never be reported as a wrong password.
 
 ---
 
