@@ -157,10 +157,10 @@ This slice moves the catalogue behind a json-server mock API and converts the pa
 | Requirement ID | Story | Phase | Status |
 | -------------- | ----- | ----- | ------ |
 | API-01 | P1: Catalogue served by the mock API | Tasks | Implementing |
-| API-02 | P1: Catalogue served by the mock API | Specify | Pending |
-| API-03 | P1: Catalogue served by the mock API | Specify | Pending |
-| API-04 | P1: Catalogue served by the mock API | Specify | Pending |
-| API-05 | P1: Catalogue served by the mock API | Specify | Pending |
+| API-02 | P1: Catalogue served by the mock API | Tasks | Implementing |
+| API-03 | P1: Catalogue served by the mock API | Tasks | Implementing |
+| API-04 | P1: Catalogue served by the mock API | Tasks | Implementing |
+| API-05 | P1: Catalogue served by the mock API | Tasks | Implementing |
 | LOAD-01 | P1: Loading state | Specify | Pending |
 | LOAD-02 | P1: Loading state | Specify | Pending |
 | LOAD-03 | P1: Loading state | Specify | Pending |
@@ -173,12 +173,12 @@ This slice moves the catalogue behind a json-server mock API and converts the pa
 | ERR-06 | P1: Communication error state | Specify | Pending |
 | ERR-07 | P1: Communication error state | Tasks | Implementing |
 | ERR-08 | P1: Communication error state | Specify | Pending |
-| MOD-01 | P1: Code organised as ES modules | Specify | Pending |
-| MOD-02 | P1: Code organised as ES modules | Specify | Pending |
-| MOD-03 | P1: Code organised as ES modules | Specify | Pending |
-| MOD-04 | P1: Code organised as ES modules | Specify | Pending |
-| REG-01 | P1: Etapa 04 behaviour preserved | Specify | Pending |
-| REG-02 | P1: Etapa 04 behaviour preserved | Specify | Pending |
+| MOD-01 | P1: Code organised as ES modules | Tasks | Implementing |
+| MOD-02 | P1: Code organised as ES modules | Tasks | Implementing |
+| MOD-03 | P1: Code organised as ES modules | Tasks | Implementing |
+| MOD-04 | P1: Code organised as ES modules | Tasks | Implementing |
+| REG-01 | P1: Etapa 04 behaviour preserved | Tasks | Implementing |
+| REG-02 | P1: Etapa 04 behaviour preserved | Tasks | Implementing |
 | EDGE-01 | Edge cases | Specify | Pending |
 | EDGE-02 | Edge cases | Specify | Pending |
 

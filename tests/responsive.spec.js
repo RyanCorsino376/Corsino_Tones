@@ -90,6 +90,8 @@ async function caixasLayout(page) {
 
 /** Column count read from the rendered X positions of the preset cards. */
 async function colunasGrade(page) {
+  // The cards arrive from the API after the page loads (etapa05-api-modulos).
+  await expect(page.locator('.grade-presets .cartao').first()).toBeVisible();
   return page.locator('.grade-presets .cartao').evaluateAll((cartoes) =>
     new Set(cartoes.map((c) => Math.round(c.getBoundingClientRect().x))).size);
 }

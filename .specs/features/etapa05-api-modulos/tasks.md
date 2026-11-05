@@ -159,19 +159,23 @@ Test count: 91 (85 + 6). The timeout test pauses the fake clock (`page.clock.pau
 
 **Done when**:
 
-- [ ] Both pages issue `GET :3000/presets` on load and render the 9 cards, newest first (`page.waitForRequest`) -> `tests/presets-lista.spec.js`
-- [ ] Every `window.PRESETS` read in `tests/presets-lista.spec.js` is replaced by one helper using Playwright's `request` against the API; no assertion is removed or loosened
-- [ ] All existing etapa04 tests pass with no other change (REG-01); `tests/login-*.spec.js` unchanged and passing (MOD-04)
-- [ ] An empty array from the API (`route.fulfill`) shows "0 presets encontrados" and the empty-state message (REG-02)
-- [ ] Every `<script>` on both pages has `type="module"`; `window.PRESETS`, `window.ROTULOS`, `window.criarCartao`, `window.ordenarMaisRecentes` are `undefined` -> `tests/modulos.spec.js`
-- [ ] No file under `frontend/` outside `frontend/api/` contains `fetch(`; no file under `frontend/` assigns those four names to `window` -> `tests/modulos.spec.js` (Node `fs`)
-- [ ] `frontend/dados.js`, `cartao.js`, `presets.js`, `inicio.js` no longer exist
-- [ ] Full gate passes: `npx playwright test`, exit 0
-- [ ] Test count: T2 total + new tests pass
+- [x] Both pages issue `GET :3000/presets` on load and render the 9 cards, newest first (`page.waitForRequest`) -> `tests/presets-lista.spec.js`
+- [x] Every `window.PRESETS` read in `tests/presets-lista.spec.js` is replaced by one helper using Playwright's `request` against the API; no assertion is removed or loosened
+- [x] All existing etapa04 tests pass with no other change (REG-01); `tests/login-*.spec.js` unchanged and passing (MOD-04)
+- [x] An empty array from the API (`route.fulfill`) shows "0 presets encontrados" and the empty-state message (REG-02)
+- [x] Every `<script>` on both pages has `type="module"`; `window.PRESETS`, `window.ROTULOS`, `window.criarCartao`, `window.ordenarMaisRecentes` are `undefined` -> `tests/modulos.spec.js`
+- [x] No file under `frontend/` outside `frontend/api/` contains `fetch(`; no file under `frontend/` assigns those four names to `window` -> `tests/modulos.spec.js` (Node `fs`)
+- [x] `frontend/dados.js`, `cartao.js`, `presets.js`, `inicio.js` no longer exist
+- [x] Full gate passes: `npx playwright test`, exit 0
+- [x] Test count: T2 total + new tests pass
 
 **Tests**: e2e (`tests/presets-lista.spec.js`, `tests/modulos.spec.js`)
 **Gate**: full
 **Commit**: `refactor(frontend): load the catalogue from the API through ES modules`
+
+**Status**: Complete
+
+Test count: 101 (91 + 10). Existing tests changed only in where they read data and when they start: `window.PRESETS` reads became `lerCatalogo()` (API via `page.request`), `goto('presets.html')` became `abrirLista()` (goto + wait for the count text), and `colunasGrade()` in `responsive.spec.js` waits for the first card. No assertion was removed. The page module dropped the old element guard: a top-level `return` is not allowed in a module, and the module is loaded only by `presets.html`. One extra test ("a lista mostra exatamente o que a API devolve") proves the cards come from the response, not a bundled copy.
 
 ---
 

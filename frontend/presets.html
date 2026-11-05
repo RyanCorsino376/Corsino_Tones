@@ -118,7 +118,7 @@
                 </div>
             </div>
             <p id="contagem" class="contagem-resultados" role="status" aria-live="polite"></p>
-            <!-- Cards are built by presets.js from dados.js. -->
+            <!-- Cards are built by paginas/presets.js from the API catalogue. -->
             <section class="grade-presets"></section>
             <div class="lista-vazia" hidden>
                 <p>Nenhum preset encontrado</p>
@@ -130,8 +130,6 @@
         </main>
     </div>
     <footer class="rodape">Copyright 2026 ®</footer>
-    <script src="dados.js" defer></script>
-    <script src="cartao.js" defer></script>
-    <script src="presets.js" defer></script>
+    <script type="module" src="paginas/presets.js"></script>
 </body>
 </html>

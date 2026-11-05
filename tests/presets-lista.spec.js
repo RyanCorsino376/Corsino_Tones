@@ -1,24 +1,40 @@
 const { test, expect } = require('@playwright/test');
 
-// Tests derive from .specs/features/etapa04-interatividade/spec.md.
-// Expected counts and order are read from window.PRESETS so editing a sample
-// preset does not break them; the rules themselves come from the spec.
+// Tests derive from .specs/features/etapa04-interatividade/spec.md, plus
+// API-02..05 and REG-02 of .specs/features/etapa05-api-modulos/spec.md.
+// Expected counts and order are read from the mock API (the data source the
+// pages use) so editing a sample preset does not break them; the rules
+// themselves come from the spec.
 
 const CAMPOS = ['id', 'nome', 'marca', 'equipamento', 'estilo', 'data', 'descricao'];
 const ESTILOS = ['rock', 'blues', 'metal', 'clean'];
 
+const API_PRESETS = 'http://127.0.0.1:3000/presets';
+
+/** The catalogue as the API serves it. */
+async function lerCatalogo(page) {
+  const resposta = await page.request.get(API_PRESETS);
+  expect(resposta.ok()).toBe(true);
+  return resposta.json();
+}
+
+/** Opens presets.html and waits until the catalogue has loaded (etapa04 criteria apply from then on). */
+async function abrirLista(page) {
+  await page.goto('presets.html');
+  await expect(page.locator('#contagem')).toHaveText(/encontrados?$/);
+}
+
 /** Catalogue entries sorted newest first, as the spec's default order requires. */
 async function catalogoMaisRecentes(page) {
-  return page.evaluate(() =>
-    [...window.PRESETS].sort((a, b) => (a.data < b.data ? 1 : a.data > b.data ? -1 : 0)));
+  return [...await lerCatalogo(page)].sort((a, b) => (a.data < b.data ? 1 : a.data > b.data ? -1 : 0));
 }
 
 test.describe('T1 - preset catalogue rendered from data', () => {
   // CAT-01: the catalogue is an array of 9 objects with the seven fields.
   test('the catalogue holds 9 presets with every required field', async ({ page }) => {
-    await page.goto('presets.html');
+    await abrirLista(page);
 
-    const presets = await page.evaluate(() => window.PRESETS);
+    const presets = await lerCatalogo(page);
     expect(Array.isArray(presets)).toBe(true);
     expect(presets).toHaveLength(9);
     for (const preset of presets) {
@@ -32,9 +48,9 @@ test.describe('T1 - preset catalogue rendered from data', () => {
   // Assumption table: every brand checkbox and each of the four styles is represented,
   // so no filter option can ever be a guaranteed dead end.
   test('every brand checkbox and every style appears in the catalogue', async ({ page }) => {
-    await page.goto('presets.html');
+    await abrirLista(page);
 
-    const presets = await page.evaluate(() => window.PRESETS);
+    const presets = await lerCatalogo(page);
     const marcas = await page.locator('input[name="marca"]').evaluateAll((els) => els.map((el) => el.value));
 
     for (const marca of marcas) {
@@ -50,7 +66,7 @@ test.describe('T1 - preset catalogue rendered from data', () => {
 
   // CAT-02: one card per entry, newest first.
   test('presets.html renders one card per preset, newest first', async ({ page }) => {
-    await page.goto('presets.html');
+    await abrirLista(page);
 
     const esperado = await catalogoMaisRecentes(page);
     const cartoes = page.locator('.grade-presets .cartao');
@@ -62,7 +78,7 @@ test.describe('T1 - preset catalogue rendered from data', () => {
 
   // CAT-03: each card shows name, brand + equipment and style, and links to preset.html.
   test('each card shows name, brand and equipment, style, and links to the detail page', async ({ page }) => {
-    await page.goto('presets.html');
+    await abrirLista(page);
 
     const esperado = await catalogoMaisRecentes(page);
     const cartoes = page.locator('.grade-presets .cartao');
@@ -114,13 +130,13 @@ async function nomesVisiveis(page) {
 
 /** Names of the catalogue entries accepted by `regra`, in any order. */
 async function nomesOnde(page, regra) {
-  const presets = await page.evaluate(() => window.PRESETS);
+  const presets = await lerCatalogo(page);
   return presets.filter(regra).map((p) => p.nome);
 }
 
 test.describe('T3 - brand and style filters without reload', () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto('presets.html');
+    await abrirLista(page);
   });
 
   // FILT-01: one checked brand shows only that brand.
@@ -193,7 +209,7 @@ function semAcento(texto) {
 
 test.describe('T4 - text search', () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto('presets.html');
+    await abrirLista(page);
   });
 
   const campos = (p) => [p.nome, p.equipamento, p.descricao].map(semAcento).join(' ');
@@ -257,7 +273,7 @@ test.describe('T4 - text search', () => {
 
 test.describe('T5 - sort order and full reset', () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto('presets.html');
+    await abrirLista(page);
   });
 
   const porData = (a, b) => (a.data < b.data ? -1 : a.data > b.data ? 1 : 0);
@@ -266,7 +282,7 @@ test.describe('T5 - sort order and full reset', () => {
   test('"Mais antigos" lists presets from the oldest date', async ({ page }) => {
     await page.getByLabel('Ordenar por').selectOption({ label: 'Mais antigos' });
 
-    const presets = await page.evaluate(() => window.PRESETS);
+    const presets = await lerCatalogo(page);
     expect(await nomesVisiveis(page)).toEqual([...presets].sort(porData).map((p) => p.nome));
   });
 
@@ -274,7 +290,7 @@ test.describe('T5 - sort order and full reset', () => {
   test('"Nome (A-Z)" lists presets alphabetically', async ({ page }) => {
     await page.getByLabel('Ordenar por').selectOption({ label: 'Nome (A-Z)' });
 
-    const presets = await page.evaluate(() => window.PRESETS);
+    const presets = await lerCatalogo(page);
     const esperado = presets.map((p) => p.nome).sort((a, b) => a.localeCompare(b, 'pt-BR'));
     expect(await nomesVisiveis(page)).toEqual(esperado);
   });
@@ -284,7 +300,7 @@ test.describe('T5 - sort order and full reset', () => {
     await page.getByLabel('Ordenar por').selectOption({ label: 'Nome (A-Z)' });
     await page.getByLabel('Ordenar por').selectOption({ label: 'Mais recentes' });
 
-    const presets = await page.evaluate(() => window.PRESETS);
+    const presets = await lerCatalogo(page);
     expect(await nomesVisiveis(page)).toEqual([...presets].sort(porData).reverse().map((p) => p.nome));
   });
 
@@ -310,14 +326,14 @@ test.describe('T5 - sort order and full reset', () => {
     await expect(page.getByLabel('Buscar')).toHaveValue('');
     await expect(page.getByLabel('Ordenar por')).toHaveValue('recentes');
     await expect(page.locator('.grade-presets .cartao')).toHaveCount(9);
-    const presets = await page.evaluate(() => window.PRESETS);
+    const presets = await lerCatalogo(page);
     expect(await nomesVisiveis(page)).toEqual([...presets].sort(porData).reverse().map((p) => p.nome));
   });
 });
 
 test.describe('T6 - result count and empty state', () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto('presets.html');
+    await abrirLista(page);
   });
 
   // EMPTY-01: the count lives in a polite live region and uses the plural form.
@@ -357,5 +373,50 @@ test.describe('T6 - result count and empty state', () => {
     await expect(page.getByText('Nenhum preset encontrado')).toBeHidden();
     await expect(page.locator('.grade-presets .cartao')).toHaveCount(9);
     await expect(page.getByRole('status')).toHaveText('9 presets encontrados');
+  });
+});
+
+test.describe('etapa05 T3 - catalogue loaded from the API', () => {
+  // API-02, API-04: presets.html fetches GET /presets and renders it newest first.
+  test('presets.html busca GET /presets e mostra o catálogo, mais recentes primeiro', async ({ page }) => {
+    const pedido = page.waitForRequest((req) => req.url() === API_PRESETS && req.method() === 'GET');
+    await page.goto('presets.html');
+    await pedido;
+
+    const esperado = await catalogoMaisRecentes(page);
+    await expect(page.locator('.grade-presets .cartao')).toHaveCount(9);
+    expect(await nomesVisiveis(page)).toEqual(esperado.map((p) => p.nome));
+  });
+
+  // API-03, API-05: index.html fetches GET /presets and fills the carousel newest first.
+  test('index.html busca GET /presets e preenche o carrossel, mais recentes primeiro', async ({ page }) => {
+    const pedido = page.waitForRequest((req) => req.url() === API_PRESETS && req.method() === 'GET');
+    await page.goto('index.html');
+    await pedido;
+
+    const esperado = await catalogoMaisRecentes(page);
+    await expect(page.locator('.carrossel .cartao')).toHaveCount(9);
+    const nomes = (await page.locator('.carrossel .cartao-nome').allTextContents()).map((n) => n.trim());
+    expect(nomes).toEqual(esperado.map((p) => p.nome));
+  });
+
+  // API-04: what the API returns is what is drawn (not a bundled copy).
+  test('a lista mostra exatamente o que a API devolve', async ({ page }) => {
+    const [primeiro] = await lerCatalogo(page);
+    await page.route(API_PRESETS, (rota) => rota.fulfill({ json: [{ ...primeiro, nome: 'Preset Só da API' }] }));
+    await page.goto('presets.html');
+
+    await expect(page.locator('.grade-presets .cartao')).toHaveCount(1);
+    expect(await nomesVisiveis(page)).toEqual(['Preset Só da API']);
+  });
+
+  // REG-02: an empty catalogue is a success with the existing empty state.
+  test('uma lista vazia da API mostra "0 presets encontrados" e o estado vazio', async ({ page }) => {
+    await page.route(API_PRESETS, (rota) => rota.fulfill({ json: [] }));
+    await page.goto('presets.html');
+
+    await expect(page.locator('#contagem')).toHaveText('0 presets encontrados');
+    await expect(page.getByText('Nenhum preset encontrado')).toBeVisible();
+    await expect(page.locator('.grade-presets .cartao')).toHaveCount(0);
   });
 });
