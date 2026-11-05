@@ -38,6 +38,12 @@ Seen once or not yet corroborated. Tracked, not trusted.
 - evidence: VAL-03 / V19 (spec)
 - last seen: 2026-09-27T15:34:56Z
 
+### L-005 - When a criterion places an element inside a region, name the container in the spec and scope the test locator to it
+- signal: `spec_precision_gap` · recurrence: 1 feature(s) · scope: `frontend-ui` · harmful: 0
+- features: etapa05-api-modulos
+- evidence: LOAD-02 tests/carga-estado.spec.js:177 (frontend-ui)
+- last seen: 2026-11-05T17:28:37Z
+
 ## Quarantined (failed when applied - ignore)
 
 A confirmed lesson that recurred alongside failure. Kept for the maintainer to review.

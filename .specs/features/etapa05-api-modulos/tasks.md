@@ -10,7 +10,7 @@ Implement these tasks with the `tlc-spec-driven` skill: **activate it by name an
 
 **Spec**: `.specs/features/etapa05-api-modulos/spec.md`
 **Design**: `.specs/features/etapa05-api-modulos/design.md`
-**Status**: Done (pending Verifier)
+**Status**: Done (Verifier PASS)
 
 ### Files removed by this feature
 

@@ -156,37 +156,37 @@ This slice moves the catalogue behind a json-server mock API and converts the pa
 
 | Requirement ID | Story | Phase | Status |
 | -------------- | ----- | ----- | ------ |
-| API-01 | P1: Catalogue served by the mock API | Tasks | Implementing |
-| API-02 | P1: Catalogue served by the mock API | Tasks | Implementing |
-| API-03 | P1: Catalogue served by the mock API | Tasks | Implementing |
-| API-04 | P1: Catalogue served by the mock API | Tasks | Implementing |
-| API-05 | P1: Catalogue served by the mock API | Tasks | Implementing |
-| LOAD-01 | P1: Loading state | Tasks | Implementing |
-| LOAD-02 | P1: Loading state | Tasks | Implementing |
-| LOAD-03 | P1: Loading state | Tasks | Implementing |
-| LOAD-04 | P1: Loading state | Tasks | Implementing |
-| ERR-01 | P1: Communication error state | Tasks | Implementing |
-| ERR-02 | P1: Communication error state | Tasks | Implementing |
-| ERR-03 | P1: Communication error state | Tasks | Implementing |
-| ERR-04 | P1: Communication error state | Tasks | Implementing |
-| ERR-05 | P1: Communication error state | Tasks | Implementing |
-| ERR-06 | P1: Communication error state | Tasks | Implementing |
-| ERR-07 | P1: Communication error state | Tasks | Implementing |
-| ERR-08 | P1: Communication error state | Tasks | Implementing |
-| MOD-01 | P1: Code organised as ES modules | Tasks | Implementing |
-| MOD-02 | P1: Code organised as ES modules | Tasks | Implementing |
-| MOD-03 | P1: Code organised as ES modules | Tasks | Implementing |
-| MOD-04 | P1: Code organised as ES modules | Tasks | Implementing |
-| REG-01 | P1: Etapa 04 behaviour preserved | Tasks | Implementing |
-| REG-02 | P1: Etapa 04 behaviour preserved | Tasks | Implementing |
-| EDGE-01 | Edge cases | Tasks | Implementing |
-| EDGE-02 | Edge cases | Tasks | Implementing |
+| API-01 | P1: Catalogue served by the mock API | Tasks | Verified |
+| API-02 | P1: Catalogue served by the mock API | Tasks | Verified |
+| API-03 | P1: Catalogue served by the mock API | Tasks | Verified |
+| API-04 | P1: Catalogue served by the mock API | Tasks | Verified |
+| API-05 | P1: Catalogue served by the mock API | Tasks | Verified |
+| LOAD-01 | P1: Loading state | Tasks | Verified |
+| LOAD-02 | P1: Loading state | Tasks | Verified |
+| LOAD-03 | P1: Loading state | Tasks | Verified |
+| LOAD-04 | P1: Loading state | Tasks | Verified |
+| ERR-01 | P1: Communication error state | Tasks | Verified |
+| ERR-02 | P1: Communication error state | Tasks | Verified |
+| ERR-03 | P1: Communication error state | Tasks | Verified |
+| ERR-04 | P1: Communication error state | Tasks | Verified |
+| ERR-05 | P1: Communication error state | Tasks | Verified |
+| ERR-06 | P1: Communication error state | Tasks | Verified |
+| ERR-07 | P1: Communication error state | Tasks | Verified |
+| ERR-08 | P1: Communication error state | Tasks | Verified |
+| MOD-01 | P1: Code organised as ES modules | Tasks | Verified |
+| MOD-02 | P1: Code organised as ES modules | Tasks | Verified |
+| MOD-03 | P1: Code organised as ES modules | Tasks | Verified |
+| MOD-04 | P1: Code organised as ES modules | Tasks | Verified |
+| REG-01 | P1: Etapa 04 behaviour preserved | Tasks | Verified |
+| REG-02 | P1: Etapa 04 behaviour preserved | Tasks | Verified |
+| EDGE-01 | Edge cases | Tasks | Verified |
+| EDGE-02 | Edge cases | Tasks | Verified |
 
 **ID format:** `[CATEGORY]-[NUMBER]`. `EDGE-*` is scoped to this feature.
 
 **Status values:** Pending -> In Design -> In Tasks -> Implementing -> Verified
 
-**Coverage:** 25 total, 0 mapped to tasks, 25 unmapped (tasks not written yet)
+**Coverage:** 25 total, 25 mapped to tasks (see `tasks.md`), 0 unmapped
 
 ---
 

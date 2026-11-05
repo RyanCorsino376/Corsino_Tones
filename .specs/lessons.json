@@ -3,7 +3,7 @@
   "promote_threshold": 2,
   "window_days": 45,
   "quarantine_threshold": 2,
-  "next_id": 5,
+  "next_id": 6,
   "lessons": [
     {
       "id": "L-001",
@@ -77,6 +77,24 @@
       ],
       "created": "2026-09-27T15:34:56Z",
       "last_seen": "2026-09-27T15:34:56Z"
+    },
+    {
+      "id": "L-005",
+      "key": "spec_precision_gap::when a criterion places an element inside a region name the container in the spec and scope the test locator to it",
+      "text": "When a criterion places an element inside a region, name the container in the spec and scope the test locator to it",
+      "signal": "spec_precision_gap",
+      "scope": "frontend-ui",
+      "status": "candidate",
+      "features": [
+        "etapa05-api-modulos"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "LOAD-02 tests/carga-estado.spec.js:177 (frontend-ui)"
+      ],
+      "created": "2026-11-05T17:28:37Z",
+      "last_seen": "2026-11-05T17:28:37Z"
     }
   ]
 }

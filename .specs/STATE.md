@@ -64,21 +64,20 @@ Rejected: keeping classic scripts with `window.*` globals, which hide dependenci
 
 ## Handoff
 
-**Feature**: `etapa04-interatividade`
-**Branch**: `main` (no feature branch yet)
-**Phase**: Execute complete; Verifier PASS on iteration 3 of 3
-**Working tree**: everything uncommitted. The user will commit it themselves.
+**Feature**: `etapa05-api-modulos` (slice 1 of `.specs/features/etapa05-loja/plano.md`)
+**Branch**: `feat/etapa05-loja`, not pushed
+**Phase**: Execute complete; Verifier PASS on iteration 1 (12 of 12 valid mutants killed)
 
-**Completed**: T1 through T8, plus two rounds of Verifier fixes (see the end of `tasks.md`). All 27 requirements are `Verified` in `spec.md`; `validation.md` holds the report and `validate_state.py` exits 0.
+**Completed**: T1 to T6, one commit each. All 25 requirements are `Verified` in `spec.md`; `validation.md` holds the report and `validate_state.py` exits 0.
 
-**Test suite**: 83 passing. Run with `npx playwright test` from `Corsino_Tones/`.
+**Test suite**: 112 passing. Run with `npx playwright test` from `Corsino_Tones/`; Playwright starts json-server on :3000 itself.
 
-**Also done**: `docs/etapa-04.md` (stage write-up with the spec table) and its screenshots in `docs/evidencias/etapa-04/`. Shots 05-07 are rendered code excerpts, not editor screenshots.
-
-**Next step**: the commits, by the user. The plan expected one commit per task (messages listed per task in `tasks.md`).
+**Next step**: slice 2 of the store plan (real login against the mock, session, `POST /usuarios`), which also delivers the stage 05 "operation submitted to the server". After it: `docs/etapa-05.md` and screenshots in `docs/evidencias/etapa-05/`.
 
 **Blockers**: none.
 
 **Watch out for**:
-- Lessons L-001 to L-004 in `.specs/LESSONS.md` are candidates from this feature: assertions that pass vacuously (`toBeHidden` on a missing element), sample data that cannot tell two sort rules apart, and regex anchors tested on one side only.
-- The Playwright config reuses any server already on port 8080 outside CI. A stray server from another copy of the project makes the suite test that copy.
+- Verifier gaps that did not block PASS: LOAD-02 never says where "inside the carousel area" is, so the test checks the message page-wide (`tests/carga-estado.spec.js:177`); the home error test covers only a network failure. Lesson L-005 (candidate) records the first.
+- Playwright reuses servers already on :8080 and :3000 outside CI. A running `npm run api` with an edited `mock/db.json` changes what the tests see; slice 2 adds a seed/reset step with the first write.
+- `index.html` still says "Todos disponíveis para o download gratuito", which contradicts the paid store.
+- Lessons L-001 to L-004 (etapa04) are still candidates.
