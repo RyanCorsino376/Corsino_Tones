@@ -178,12 +178,12 @@ This slice sends both forms to the json-server mock, opens a browser session on 
 
 | Requirement ID | Story | Phase | Status |
 | -------------- | ----- | ----- | ------ |
-| CAD-01 | P1: Registration through the API | Specify | Pending |
-| CAD-02 | P1: Registration through the API | Specify | Pending |
-| CAD-03 | P1: Registration through the API | Specify | Pending |
-| CAD-04 | P1: Registration through the API | Specify | Pending |
-| CAD-05 | P1: Registration through the API | Specify | Pending |
-| CAD-06 | P1: Registration through the API | Specify | Pending |
+| CAD-01 | P1: Registration through the API | Tasks | Implementing |
+| CAD-02 | P1: Registration through the API | Tasks | Implementing |
+| CAD-03 | P1: Registration through the API | Tasks | Implementing |
+| CAD-04 | P1: Registration through the API | Tasks | Implementing |
+| CAD-05 | P1: Registration through the API | Tasks | Implementing |
+| CAD-06 | P1: Registration through the API | Tasks | Implementing |
 | AUTH-01 | P1: Login through the API | Tasks | Implementing |
 | AUTH-02 | P1: Login through the API | Tasks | Implementing |
 | AUTH-03 | P1: Login through the API | Tasks | Implementing |

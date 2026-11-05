@@ -1,6 +1,6 @@
 // Entry module for login.html: card flip, field validation, and sending both
 // forms to the users API (etapa05-auth).
-import { CredenciaisInvalidas, entrar } from '../servicos/auth.js';
+import { cadastrar, CredenciaisInvalidas, EmailEmUso, entrar } from '../servicos/auth.js';
 import { abrirSessao, destinoSeguro, usuarioAtual } from '../servicos/sessao.js';
 
 const voltar = new URLSearchParams(location.search).get('voltar');
@@ -62,12 +62,8 @@ if (usuarioAtual()) location.replace(destinoSeguro(voltar));
         'cadastro-senha': (valor) => (valor.length >= 8 ? '' : 'A senha precisa ter pelo menos 8 caracteres.'),
     };
 
-    const sucesso = {
-        'form-cadastro': 'Dados válidos! O cadastro ficará disponível quando o servidor estiver pronto.',
-    };
-
     const MSG_CONEXAO = 'Não foi possível conectar ao servidor. Tente novamente.';
-    const TEXTO_PENDENTE = { 'form-login': 'Entrando...' };
+    const TEXTO_PENDENTE = { 'form-login': 'Entrando...', 'form-cadastro': 'Cadastrando...' };
 
     function validarCampo(campo) {
         const regra = regras[campo.id];
@@ -119,6 +115,13 @@ if (usuarioAtual()) location.replace(destinoSeguro(voltar));
             form.querySelector('#senha').value = '';
             return;
         }
+        if (erro instanceof EmailEmUso) {
+            // A field problem, so it uses the same message pattern as the etapa04 rules.
+            const campo = form.querySelector('#cadastro-email');
+            mostrarErro(campo, erro.message);
+            campo.focus();
+            return;
+        }
         // Anything else is a communication failure, already logged by api/cliente.js.
         mostrarAlerta(form, MSG_CONEXAO);
     }
@@ -162,12 +165,13 @@ if (usuarioAtual()) location.replace(destinoSeguro(voltar));
 
         if (form.id === 'form-login') {
             enviar(form, () => entrar(form.querySelector('#email').value, form.querySelector('#senha').value));
-            return;
+        } else {
+            enviar(form, () => cadastrar({
+                nome: form.querySelector('#cadastro-nome').value,
+                email: form.querySelector('#cadastro-email').value,
+                senha: form.querySelector('#cadastro-senha').value,
+            }));
         }
-        // Registration still shows the placeholder until it reaches the server (T6).
-        const aviso = form.querySelector('.mensagem-sucesso');
-        aviso.hidden = false;
-        aviso.textContent = sucesso[form.id];
     }
 
     // Only fields a submit already rejected are re-checked, so typing before the

@@ -275,17 +275,21 @@ Test count: 157 (145 + 12). Two rows of `login-validacao.spec.js` rewritten as p
 
 **Done when**:
 
-- [ ] Invalid registration data shows the etapa04 messages and no request is made -> `tests/login-validacao.spec.js` (rewritten rows)
-- [ ] A new unique e-mail creates exactly one record (`GET /usuarios?email=` returns one), opens a session with that `nome` and lands on `index.html` (or the valid `voltar`) -> `tests/login-api.spec.js`
-- [ ] The seed e-mail shows "Este e-mail já está cadastrado." next to `#cadastro-email` with `aria-invalid="true"`, and no `POST /usuarios` is sent
-- [ ] Aborted `POST`: alert "Não foi possível conectar ao servidor. Tente novamente.", the three values kept
-- [ ] While the request is held: "Cadastrar" disabled with "Cadastrando..."; re-enabled with "Cadastrar" after a failure
-- [ ] Full gate passes: `npx playwright test`, exit 0
-- [ ] Test count: T5 total + new tests pass
+- [x] Invalid registration data shows the etapa04 messages and no request is made -> `tests/login-validacao.spec.js` (rewritten rows)
+- [x] A new unique e-mail creates exactly one record (`GET /usuarios?email=` returns one), opens a session with that `nome` and lands on `index.html` (or the valid `voltar`) -> `tests/login-api.spec.js`
+- [x] The seed e-mail shows "Este e-mail já está cadastrado." next to `#cadastro-email` with `aria-invalid="true"`, and no `POST /usuarios` is sent
+- [x] Aborted `POST`: alert "Não foi possível conectar ao servidor. Tente novamente.", the three values kept
+- [x] While the request is held: "Cadastrar" disabled with "Cadastrando..."; re-enabled with "Cadastrar" after a failure
+- [x] Full gate passes: `npx playwright test`, exit 0
+- [x] Test count: T5 total + new tests pass
 
 **Tests**: e2e (`tests/login-api.spec.js`, `tests/login-validacao.spec.js`)
 **Gate**: full
 **Commit**: `feat(login): create the account through the users API`
+
+**Status**: Complete
+
+Test count: 163 (157 + 6). Three registration rows of `login-validacao.spec.js` rewritten as planned. In "accepts Ry..." the POST is left unanswered: a successful sign-up redirects, and the original `aria-invalid` checks need the form still on screen. The orphaned `.mensagem-sucesso` element and CSS were removed.
 
 ---
 

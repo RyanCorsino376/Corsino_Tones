@@ -68,14 +68,21 @@ test.describe('T7 - registration validation on submit', () => {
     await expect(page.locator('#cadastro-nome')).toBeFocused();
   });
 
-  // VAL-01: the boundary values are accepted.
+  // VAL-01, CAD-02: the boundary values are accepted, so the account reaches the server.
   test('accepts "Ry", "ryan@x.com" and an 8-character password', async ({ page }) => {
+    const pedidos = await interceptarUsuarios(page);
+    // The POST is left unanswered so the page stays (a success would redirect)
+    // and the fields can still be checked.
+    await page.route(API_USUARIOS, (rota) => {
+      if (rota.request().method() !== 'POST') return rota.fallback();
+      pedidos.push(`POST ${API_USUARIOS}`);
+    });
     await enviarCadastro(page, 'Ry', 'ryan@x.com', '12345678');
 
     for (const id of ['cadastro-nome', 'cadastro-email', 'cadastro-senha']) {
       await expect(page.locator(`#${id}`), id).not.toHaveAttribute('aria-invalid', 'true');
     }
-    await expect(page.locator('.face-cadastro .mensagem-sucesso')).toBeVisible();
+    await expect.poll(() => pedidos).toContain(`POST ${API_USUARIOS}`);
   });
 
   // VAL-04: focus lands on the first rejected field, not simply the first field.
@@ -108,26 +115,25 @@ test.describe('T7 - registration validation on submit', () => {
     }
   });
 
-  // VAL-06: a valid submit does not reload and shows success on the same face.
-  test('a valid submit keeps the page and shows a success message', async ({ page }) => {
-    const url = page.url();
-    await page.evaluate(() => { window.semRecarregar = true; });
+  // VAL-06 superseded by CAD-02/CAD-04: a valid submit sends the account to the server and signs in.
+  test('a valid submit sends the account to the server and signs in', async ({ page }) => {
+    const enviado = page.waitForRequest((req) => req.url() === API_USUARIOS && req.method() === 'POST');
+    await interceptarUsuarios(page);
 
     await enviarCadastro(page, 'Ryan Corsino', 'ryan@example.com', 'senhaForte1');
 
-    await expect(page.locator('.face-cadastro .mensagem-sucesso')).toBeVisible();
-    await expect(page.locator('.face-cadastro .mensagem-sucesso')).not.toHaveText('');
-    expect(page.url()).toBe(url);
-    expect(await page.evaluate(() => window.semRecarregar)).toBe(true);
+    expect((await enviado).postDataJSON()).toEqual({ nome: 'Ryan Corsino', email: 'ryan@example.com', senha: 'senhaForte1' });
+    await expect(page).toHaveURL(/\/frontend\/index\.html$/);
   });
 
-  // VAL-04: an invalid submit never shows the success message.
-  test('an invalid submit shows no success message', async ({ page }) => {
+  // VAL-04, CAD-01: an invalid submit sends nothing to the server.
+  test('an invalid submit sends no request', async ({ page }) => {
+    const pedidos = await interceptarUsuarios(page);
     await enviarCadastro(page, 'R', 'ryan@', '1234567');
 
-    // toBeHidden alone would pass if the element did not exist at all.
-    await expect(page.locator('.face-cadastro .mensagem-sucesso')).toHaveCount(1);
-    await expect(page.locator('.face-cadastro .mensagem-sucesso')).toBeHidden();
+    // aria-invalid proves the script ran, so an empty list is not vacuous.
+    await expect(page.locator('#cadastro-nome')).toHaveAttribute('aria-invalid', 'true');
+    expect(pedidos).toEqual([]);
   });
 });
 
