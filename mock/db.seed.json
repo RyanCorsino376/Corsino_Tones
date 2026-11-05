@@ -81,5 +81,13 @@
       "data": "2026-06-02",
       "descricao": "Drive de pedal verde sobre amplificador americano, com reverb de mola."
     }
+  ],
+  "usuarios": [
+    {
+      "id": 1,
+      "nome": "Ryan Corsino",
+      "email": "ryan@exemplo.com",
+      "senha": "teste123"
+    }
   ]
 }

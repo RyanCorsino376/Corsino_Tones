@@ -107,17 +107,21 @@ T5 -> T6 -> T7 -> T8
 
 **Done when**:
 
-- [ ] `mock/db.seed.json` holds the 9 presets and `usuarios: [{ id: 1, nome: 'Ryan Corsino', email: 'ryan@exemplo.com', senha: 'teste123' }]` -> `tests/api-mock.spec.js`
-- [ ] In a temporary copy of `mock/`, `node preparar.js` creates a missing `db.json` equal to the seed and leaves an existing one untouched; `node preparar.js --reset` overwrites it with the seed
-- [ ] `git check-ignore mock/db.json` succeeds and `git ls-files mock/db.json` is empty
-- [ ] `GET /usuarios?email=ryan@exemplo.com` on the running mock returns the seed user
-- [ ] `npm run api` and the Playwright web server both run `preparar.js` before json-server
-- [ ] Full gate passes: `npx playwright test`, exit 0
-- [ ] Test count: 112 + new tests pass
+- [x] `mock/db.seed.json` holds the 9 presets and `usuarios: [{ id: 1, nome: 'Ryan Corsino', email: 'ryan@exemplo.com', senha: 'teste123' }]` -> `tests/api-mock.spec.js`
+- [x] In a temporary copy of `mock/`, `node preparar.js` creates a missing `db.json` equal to the seed and leaves an existing one untouched; `node preparar.js --reset` overwrites it with the seed
+- [x] `git check-ignore mock/db.json` succeeds and `git ls-files mock/db.json` is empty
+- [x] `GET /usuarios?email=ryan@exemplo.com` on the running mock returns the seed user
+- [x] `npm run api` and the Playwright web server both run `preparar.js` before json-server
+- [x] Full gate passes: `npx playwright test`, exit 0
+- [x] Test count: 112 + new tests pass
 
 **Tests**: e2e (`tests/api-mock.spec.js`)
 **Gate**: full
 **Commit**: `build(api): serve the mock from a git-ignored copy of a seed file`
+
+**Status**: Complete
+
+Test count: 119 (112 + 7). The old `.gitignore` had no final newline, so the new entry was first glued to `playwright-report/`; the file was rewritten with one entry per line.
 
 ---
 

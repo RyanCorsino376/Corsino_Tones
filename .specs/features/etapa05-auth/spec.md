@@ -200,9 +200,9 @@ This slice sends both forms to the json-server mock, opens a browser session on 
 | PROT-03 | P1: Protected library and return path | Specify | Pending |
 | PROT-04 | P1: Protected library and return path | Specify | Pending |
 | PROT-05 | P1: Protected library and return path | Specify | Pending |
-| DB-01 | P1: Mock data and etapa04 behaviour preserved | Specify | Pending |
-| DB-02 | P1: Mock data and etapa04 behaviour preserved | Specify | Pending |
-| DB-03 | P1: Mock data and etapa04 behaviour preserved | Specify | Pending |
+| DB-01 | P1: Mock data and etapa04 behaviour preserved | Tasks | Implementing |
+| DB-02 | P1: Mock data and etapa04 behaviour preserved | Tasks | Implementing |
+| DB-03 | P1: Mock data and etapa04 behaviour preserved | Tasks | Implementing |
 | REG-01 | P1: Mock data and etapa04 behaviour preserved | Specify | Pending |
 | REG-02 | P1: Mock data and etapa04 behaviour preserved | Specify | Pending |
 | EDGE-01 | Edge cases | Specify | Pending |

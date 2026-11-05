@@ -32,7 +32,8 @@ module.exports = defineConfig({
     {
       // Mock API (AD-008). Same data file as `npm run api`, so a dev server
       // already on port 3000 is reused and serves the same catalogue.
-      command: 'npx json-server mock/db.json --port 3000 --host 127.0.0.1',
+      // preparar.js creates the git-ignored db.json from the seed when missing.
+      command: 'node mock/preparar.js && npx json-server mock/db.json --port 3000 --host 127.0.0.1',
       url: 'http://127.0.0.1:3000/presets',
       reuseExistingServer: !process.env.CI,
     },
