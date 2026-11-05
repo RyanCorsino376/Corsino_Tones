@@ -3,7 +3,7 @@
   "promote_threshold": 2,
   "window_days": 45,
   "quarantine_threshold": 2,
-  "next_id": 6,
+  "next_id": 11,
   "lessons": [
     {
       "id": "L-001",
@@ -95,6 +95,96 @@
       ],
       "created": "2026-11-05T17:28:37Z",
       "last_seen": "2026-11-05T17:28:37Z"
+    },
+    {
+      "id": "L-006",
+      "key": "surviving_mutant::test exact match secrets with a case variant input not only a value differing in another character",
+      "text": "Test exact-match secrets with a case-variant input, not only a value differing in another character",
+      "signal": "surviving_mutant",
+      "scope": "auth",
+      "status": "candidate",
+      "features": [
+        "etapa05-auth"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "M02 frontend/servicos/auth.js:31 (auth)"
+      ],
+      "created": "2026-11-05T18:35:42Z",
+      "last_seen": "2026-11-05T18:35:42Z"
+    },
+    {
+      "id": "L-007",
+      "key": "surviving_mutant::when the spec requires location replace assert history length or back navigation not just the final url",
+      "text": "When the spec requires location.replace, assert history.length or back-navigation, not just the final URL",
+      "signal": "surviving_mutant",
+      "scope": "navigation",
+      "status": "candidate",
+      "features": [
+        "etapa05-auth"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "M13 frontend/paginas/login.js:140 (navigation)"
+      ],
+      "created": "2026-11-05T18:35:42Z",
+      "last_seen": "2026-11-05T18:35:42Z"
+    },
+    {
+      "id": "L-008",
+      "key": "spec_precision_gap::state the navigation method for user initiated navigations separately from automatic redirects",
+      "text": "State the navigation method for user-initiated navigations separately from automatic redirects",
+      "signal": "spec_precision_gap",
+      "scope": "spec",
+      "status": "candidate",
+      "features": [
+        "etapa05-auth"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "SES-04 frontend/ui/cabecalho.js:24 (spec)"
+      ],
+      "created": "2026-11-05T18:35:42Z",
+      "last_seen": "2026-11-05T18:35:42Z"
+    },
+    {
+      "id": "L-009",
+      "key": "surviving_mutant::when a spec says a page must not navigate by itself assert the url after a wait or record navigations not only at one instant",
+      "text": "When a spec says a page must not navigate by itself, assert the URL after a wait or record navigations, not only at one instant",
+      "signal": "surviving_mutant",
+      "scope": "navigation",
+      "status": "candidate",
+      "features": [
+        "etapa05-auth"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "P07 frontend/paginas/biblioteca.js:10 (PROT-01) (navigation)"
+      ],
+      "created": "2026-11-05T18:55:35Z",
+      "last_seen": "2026-11-05T18:55:35Z"
+    },
+    {
+      "id": "L-010",
+      "key": "surviving_mutant::a fake clock only drives js timers to prove a page never navigates by itself also assert no meta refresh exists or wait real time",
+      "text": "A fake clock only drives JS timers; to prove a page never navigates by itself, also assert no meta refresh exists or wait real time",
+      "signal": "surviving_mutant",
+      "scope": "tests",
+      "status": "candidate",
+      "features": [
+        "etapa05-auth"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "P07e frontend/paginas/biblioteca.js:10 (tests)"
+      ],
+      "created": "2026-11-05T19:12:37Z",
+      "last_seen": "2026-11-05T19:12:37Z"
     }
   ]
 }

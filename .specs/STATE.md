@@ -64,20 +64,20 @@ Rejected: keeping classic scripts with `window.*` globals, which hide dependenci
 
 ## Handoff
 
-**Feature**: `etapa05-api-modulos` (slice 1 of `.specs/features/etapa05-loja/plano.md`)
+**Feature**: `etapa05-auth` (slice 2 of `.specs/features/etapa05-loja/plano.md`); slice 1 `etapa05-api-modulos` is done (Verifier PASS)
 **Branch**: `feat/etapa05-loja`, not pushed
-**Phase**: Execute complete; Verifier PASS on iteration 1 (12 of 12 valid mutants killed)
+**Phase**: Execute complete, closed by user decision. Verifier: iteration 1 FAIL (M02, M13), iteration 2 FAIL (P07), iteration 3 FAIL (P07e, a meta refresh). Each gap was a test gap and is fixed; the last fix is author-checked only (no fourth run, user choice), so `validate_state.py etapa05-auth` still exits 1 by design.
 
-**Completed**: T1 to T6, one commit each. All 25 requirements are `Verified` in `spec.md`; `validation.md` holds the report and `validate_state.py` exits 0.
+**Completed**: T1 to T9 (T9 = user change request: pop-up on the library instead of a redirect) plus three rounds of test fixes. 31 of 32 requirements `Verified`; PROT-01 marked as author-checked.
 
-**Test suite**: 112 passing. Run with `npx playwright test` from `Corsino_Tones/`; Playwright starts json-server on :3000 itself.
+**Test suite**: 180 passing. `npx playwright test` from `Corsino_Tones/`. `npm run api:reset` restores `mock/db.json` from the seed (tests add accounts with unique e-mails).
 
-**Next step**: slice 2 of the store plan (real login against the mock, session, `POST /usuarios`), which also delivers the stage 05 "operation submitted to the server". After it: `docs/etapa-05.md` and screenshots in `docs/evidencias/etapa-05/`.
+**Next step**: `docs/etapa-05.md` with screenshots in `docs/evidencias/etapa-05/` (query, submit, success, error, loading). Then slice 3 of the store plan (dynamic `preset.html?id=`, prices).
 
 **Blockers**: none.
 
 **Watch out for**:
-- Verifier gaps that did not block PASS: LOAD-02 never says where "inside the carousel area" is, so the test checks the message page-wide (`tests/carga-estado.spec.js:177`); the home error test covers only a network failure. Lesson L-005 (candidate) records the first.
-- Playwright reuses servers already on :8080 and :3000 outside CI. A running `npm run api` with an edited `mock/db.json` changes what the tests see; slice 2 adds a seed/reset step with the first write.
-- `index.html` still says "Todos disponíveis para o download gratuito", which contradicts the paid store.
-- Lessons L-001 to L-004 (etapa04) are still candidates.
+- Speed: the Verifier ran the full 180-test suite per mutant (~45 s each), ~15-20 min per round. Next slices: run only the spec files that cover the mutated module.
+- Candidate lessons L-006 to L-010 (password case, `replace` vs `assign`, delayed and declarative redirects). Also learned in the final fix: `toHaveCount(0)` retries can outlast a real-time navigation and pass on the next page; use one non-retrying read when proving something never appears.
+- Playwright reuses servers already on :8080/:3000 outside CI; a Verifier or `npm run api` running at the same time makes the suite test that copy.
+- `index.html` still says "Todos disponíveis para o download gratuito".

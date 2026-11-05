@@ -182,38 +182,38 @@ This slice sends both forms to the json-server mock, opens a browser session on 
 
 | Requirement ID | Story | Phase | Status |
 | -------------- | ----- | ----- | ------ |
-| CAD-01 | P1: Registration through the API | Tasks | Implementing |
-| CAD-02 | P1: Registration through the API | Tasks | Implementing |
-| CAD-03 | P1: Registration through the API | Tasks | Implementing |
-| CAD-04 | P1: Registration through the API | Tasks | Implementing |
-| CAD-05 | P1: Registration through the API | Tasks | Implementing |
-| CAD-06 | P1: Registration through the API | Tasks | Implementing |
-| AUTH-01 | P1: Login through the API | Tasks | Implementing |
-| AUTH-02 | P1: Login through the API | Tasks | Implementing |
-| AUTH-03 | P1: Login through the API | Tasks | Implementing |
-| AUTH-04 | P1: Login through the API | Tasks | Implementing |
-| AUTH-05 | P1: Login through the API | Tasks | Implementing |
-| AUTH-06 | P1: Login through the API | Tasks | Implementing |
-| SES-01 | P1: Session and header | Tasks | Implementing |
-| SES-02 | P1: Session and header | Tasks | Implementing |
-| SES-03 | P1: Session and header | Tasks | Implementing |
-| SES-04 | P1: Session and header | Tasks | Implementing |
-| SES-05 | P1: Session and header | Tasks | Implementing |
-| PROT-01 | P1: Protected library and return path | Tasks | Implementing |
-| PROT-02 | P1: Protected library and return path | Tasks | Implementing |
-| PROT-03 | P1: Protected library and return path | Tasks | Implementing |
-| PROT-04 | P1: Protected library and return path | Tasks | Implementing |
-| PROT-05 | P1: Protected library and return path | Tasks | Implementing |
-| PROT-06 | P1: Protected library and return path | Tasks | Implementing |
-| PROT-07 | P1: Protected library and return path | Tasks | Implementing |
-| DB-01 | P1: Mock data and etapa04 behaviour preserved | Tasks | Implementing |
-| DB-02 | P1: Mock data and etapa04 behaviour preserved | Tasks | Implementing |
-| DB-03 | P1: Mock data and etapa04 behaviour preserved | Tasks | Implementing |
-| REG-01 | P1: Mock data and etapa04 behaviour preserved | Tasks | Implementing |
-| REG-02 | P1: Mock data and etapa04 behaviour preserved | Tasks | Implementing |
-| EDGE-01 | Edge cases | Tasks | Implementing |
-| EDGE-02 | Edge cases | Tasks | Implementing |
-| EDGE-03 | Edge cases | Tasks | Implementing |
+| CAD-01 | P1: Registration through the API | Tasks | Verified |
+| CAD-02 | P1: Registration through the API | Tasks | Verified |
+| CAD-03 | P1: Registration through the API | Tasks | Verified |
+| CAD-04 | P1: Registration through the API | Tasks | Verified |
+| CAD-05 | P1: Registration through the API | Tasks | Verified |
+| CAD-06 | P1: Registration through the API | Tasks | Verified |
+| AUTH-01 | P1: Login through the API | Tasks | Verified |
+| AUTH-02 | P1: Login through the API | Tasks | Verified |
+| AUTH-03 | P1: Login through the API | Tasks | Verified |
+| AUTH-04 | P1: Login through the API | Tasks | Verified |
+| AUTH-05 | P1: Login through the API | Tasks | Verified |
+| AUTH-06 | P1: Login through the API | Tasks | Verified |
+| SES-01 | P1: Session and header | Tasks | Verified |
+| SES-02 | P1: Session and header | Tasks | Verified |
+| SES-03 | P1: Session and header | Tasks | Verified |
+| SES-04 | P1: Session and header | Tasks | Verified |
+| SES-05 | P1: Session and header | Tasks | Verified |
+| PROT-01 | P1: Protected library and return path | Tasks | Implementing (last test fix author-checked only; see validation.md) |
+| PROT-02 | P1: Protected library and return path | Tasks | Verified |
+| PROT-03 | P1: Protected library and return path | Tasks | Verified |
+| PROT-04 | P1: Protected library and return path | Tasks | Verified |
+| PROT-05 | P1: Protected library and return path | Tasks | Verified |
+| PROT-06 | P1: Protected library and return path | Tasks | Verified |
+| PROT-07 | P1: Protected library and return path | Tasks | Verified |
+| DB-01 | P1: Mock data and etapa04 behaviour preserved | Tasks | Verified |
+| DB-02 | P1: Mock data and etapa04 behaviour preserved | Tasks | Verified |
+| DB-03 | P1: Mock data and etapa04 behaviour preserved | Tasks | Verified |
+| REG-01 | P1: Mock data and etapa04 behaviour preserved | Tasks | Verified |
+| REG-02 | P1: Mock data and etapa04 behaviour preserved | Tasks | Verified |
+| EDGE-01 | Edge cases | Tasks | Verified |
+| EDGE-02 | Edge cases | Tasks | Verified |
+| EDGE-03 | Edge cases | Tasks | Verified |
 
 **ID format:** `[CATEGORY]-[NUMBER]`. `REG-*` and `EDGE-*` are scoped to this feature.
 

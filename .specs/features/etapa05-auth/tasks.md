@@ -10,7 +10,7 @@ Implement these tasks with the `tlc-spec-driven` skill: **activate it by name an
 
 **Spec**: `.specs/features/etapa05-auth/spec.md`
 **Design**: `.specs/features/etapa05-auth/design.md`
-**Status**: Done (pending Verifier iteration 3)
+**Status**: Done (Verifier iteration 3 FAIL on one test gap; fixed and author-checked, closed by user decision)
 
 ### Files removed or untracked by this feature
 
@@ -485,3 +485,9 @@ Test count: 180 passing.
 Iteration 2 closed both iteration 1 gaps (M02 and M13 now killed) and returned FAIL with one survivor: P07, a delayed `setTimeout(() => location.replace(...), 1500)` after the pop-up, because PROT-01's "SHALL NOT change the location by itself" was checked only once, right after the dialog appeared. The PROT-01 test now installs the fake clock, advances it 60 s, and asserts the URL, the open dialog and the list of main-frame navigations (only `biblioteca.html`). P07 re-applied in the real file fails that test; the file was restored.
 
 Test count: 180 passing (the fix strengthens an existing test, no new test).
+
+## Verifier Fixes (iteration 3)
+
+Iteration 3 killed P07 and its JS variants and returned FAIL with one survivor: P07e, a `<meta http-equiv="refresh">` injected after the pop-up, which runs on the real clock that `page.clock` does not control. The user chose to fix and close without a fourth run. The PROT-01 test now also asserts, with one non-retrying read, that no meta refresh exists. `toHaveCount(0)` was tried first and did not kill P07e: its retries outlasted the 2 s refresh, which moved the page to `login.html`. Details in `validation.md`, "Resolution after iteration 3".
+
+Test count: 180 passing.

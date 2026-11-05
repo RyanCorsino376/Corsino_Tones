@@ -90,6 +90,11 @@ test.describe('etapa05-auth T8/T9 - library requires a session', () => {
     await expect(page).toHaveURL(/\/frontend\/biblioteca\.html$/);
     await expect(dialogo).toBeVisible();
     expect(navegacoes.map((url) => new URL(url).pathname)).toEqual(['/frontend/biblioteca.html']);
+    // The fake clock drives JS timers only; a <meta http-equiv="refresh"> runs on
+    // the real clock and would fire after the test ends (Verifier gap, P07e).
+    // A single read, not toHaveCount(): its retries would wait until the refresh
+    // had moved to login.html, which has no such meta, and then pass.
+    expect(await page.locator('meta[http-equiv="refresh" i]').count()).toBe(0);
   });
 
   // PROT-06
