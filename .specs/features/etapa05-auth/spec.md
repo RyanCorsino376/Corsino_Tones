@@ -37,6 +37,8 @@ This slice sends both forms to the json-server mock, opens a browser session on 
 | After login | Redirect to the `voltar` page when valid, otherwise `index.html` | User choice | y |
 | Header while signed in | "Olá, {first word of nome}" + a "Sair" button | User choice | y |
 | `biblioteca.html` | Requires a session in this slice | User choice | y |
+| Signed-out visit to the library (changed 2026-11-05) | A modal pop-up on `biblioteca.html` says "Faça login para acessar sua biblioteca", with "Fazer login" (to `login.html?voltar=biblioteca.html`) and "Voltar" (to `index.html`); no automatic redirect | User request after T8: the visitor should be told why before leaving the page. Supersedes the first PROT-01 (automatic `location.replace`) | y |
+| Esc on the pop-up | Same as "Voltar" | A native modal closes on Esc; closing it must not leave a signed-out visitor on the library | n |
 | Endpoint for users | `GET /usuarios?email=<e-mail>` and `POST /usuarios` on json-server | json-server filters by exact field value; no custom routes needed | n |
 | User record | `{ id, nome, email, senha }`; seed user `Ryan Corsino`, `ryan@exemplo.com`, senha `teste123` | `senha` in plain text only because it is a mock; the seed lets tests and the demo sign in | n |
 | E-mail normalisation | Trimmed and lowercased before lookup and before saving | `Ryan@Exemplo.com` and `ryan@exemplo.com` must be the same account | n |
@@ -49,7 +51,7 @@ This slice sends both forms to the json-server mock, opens a browser session on 
 | "Sair" | Removes the session and goes to `index.html` | Leaving a protected page signed out would only redirect again | n |
 | `voltar` values | Accepted only if it matches `^[a-z0-9-]+\.html$`; anything else falls back to `index.html` | Prevents an open redirect such as `?voltar=https://evil.example` | n |
 | Visiting `login.html` already signed in | Redirect at once to `voltar` (validated) or `index.html` | The forms are pointless with a session | n |
-| Redirect method | `location.replace` | The back button must not return to a page that redirects again | n |
+| Redirect method | `location.replace` after login/registration and on `login.html` with a session; the pop-up buttons use normal navigation | The back button must not return to a page that redirects again; the pop-up never redirects by itself, so its history entry is harmless | n |
 | Mock data file | `mock/db.seed.json` is tracked; `mock/db.json` is git-ignored and copied from the seed when missing (`npm run api`) or on demand (`npm run api:reset`) | From this slice on the API writes; a tracked `db.json` would change on every test run | n |
 | Test data | Tests that create accounts use a unique e-mail per run | Tests stay independent without resetting a server that may be shared with `npm run api` | n |
 | etapa04 VAL-06 | Superseded: a valid submit now goes to the server instead of showing "Dados válidos! ..."; its tests are rewritten to the new outcome | The placeholder message only existed because there was no server | n |
@@ -132,19 +134,21 @@ This slice sends both forms to the json-server mock, opens a browser session on 
 
 ### P1: Protected library and return path ⭐ MVP
 
-**User Story**: As a visitor, I want to be sent to the login when I open my library, and brought back afterwards.
+**User Story**: As a visitor, I want to be told to sign in when I open my library, and brought back afterwards.
 
 **Why P1**: The library is personal; the same guard will protect checkout.
 
 **Acceptance Criteria**
 
-1. WHEN `biblioteca.html` loads without a session THEN the system SHALL replace the location with `login.html?voltar=biblioteca.html`.
+1. WHEN `biblioteca.html` loads without a session THEN the system SHALL open a modal dialog with the text "Faça login para acessar sua biblioteca" and the buttons "Fazer login" and "Voltar", and SHALL NOT change the location by itself.
 2. WHEN a login or registration succeeds THEN the system SHALL replace the location with the `voltar` page if it is valid, otherwise with `index.html`.
 3. IF `voltar` does not match `^[a-z0-9-]+\.html$` THEN the system SHALL treat it as absent.
 4. WHEN `login.html` loads with a session THEN the system SHALL replace the location with the valid `voltar` page or `index.html`.
-5. WHILE a session exists, `biblioteca.html` SHALL stay open.
+5. WHILE a session exists, `biblioteca.html` SHALL stay open and SHALL NOT show the dialog.
+6. WHEN the visitor activates "Fazer login" THEN the system SHALL go to `login.html?voltar=biblioteca.html`.
+7. WHEN the visitor activates "Voltar" or presses Esc on the dialog THEN the system SHALL go to `index.html`.
 
-**Independent Test**: Signed out, open `biblioteca.html`; the login page opens. Sign in; the library opens.
+**Independent Test**: Signed out, open `biblioteca.html`; the pop-up appears. Click "Fazer login" and sign in; the library opens.
 
 ---
 
@@ -200,6 +204,8 @@ This slice sends both forms to the json-server mock, opens a browser session on 
 | PROT-03 | P1: Protected library and return path | Tasks | Implementing |
 | PROT-04 | P1: Protected library and return path | Tasks | Implementing |
 | PROT-05 | P1: Protected library and return path | Tasks | Implementing |
+| PROT-06 | P1: Protected library and return path | Tasks | Implementing |
+| PROT-07 | P1: Protected library and return path | Tasks | Implementing |
 | DB-01 | P1: Mock data and etapa04 behaviour preserved | Tasks | Implementing |
 | DB-02 | P1: Mock data and etapa04 behaviour preserved | Tasks | Implementing |
 | DB-03 | P1: Mock data and etapa04 behaviour preserved | Tasks | Implementing |
@@ -213,7 +219,7 @@ This slice sends both forms to the json-server mock, opens a browser session on 
 
 **Status values:** Pending -> In Design -> In Tasks -> Implementing -> Verified
 
-**Coverage:** 30 total, 0 mapped to tasks, 30 unmapped (tasks not written yet)
+**Coverage:** 32 total, 32 mapped to tasks (see `tasks.md`), 0 unmapped
 
 ---
 

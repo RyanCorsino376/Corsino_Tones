@@ -33,14 +33,3 @@ export function encerrarSessao() {
 export function destinoSeguro(voltar) {
     return typeof voltar === 'string' && PAGINA_INTERNA.test(voltar) ? voltar : 'index.html';
 }
-
-/**
- * Sends a signed-out visitor to the login, asking to come back to `pagina`.
- * Returns true when the visitor may stay. replace() keeps the protected page
- * out of the history, so "back" does not bounce into the redirect again.
- */
-export function exigirLogin(pagina) {
-    if (usuarioAtual()) return true;
-    location.replace(`login.html?voltar=${encodeURIComponent(pagina)}`);
-    return false;
-}

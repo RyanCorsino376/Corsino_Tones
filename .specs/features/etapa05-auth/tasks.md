@@ -10,7 +10,7 @@ Implement these tasks with the `tlc-spec-driven` skill: **activate it by name an
 
 **Spec**: `.specs/features/etapa05-auth/spec.md`
 **Design**: `.specs/features/etapa05-auth/design.md`
-**Status**: Done (pending Verifier)
+**Status**: In Progress (T9 change request)
 
 ### Files removed or untracked by this feature
 
@@ -85,8 +85,10 @@ T1 -> T2 -> T3 -> T4
 Login first (it moves the script), then registration on the same page, then the header everywhere, then the guard that relies on all of them.
 
 ```
-T5 -> T6 -> T7 -> T8
+T5 -> T6 -> T7 -> T8 -> T9
 ```
+
+T9 is a change request made by the user after T8 (signed-out library visit shows a pop-up instead of redirecting).
 
 ---
 
@@ -358,12 +360,45 @@ Test count: 174 (171 + 3). Found while closing: the no-horizontal-overflow test 
 
 ---
 
+### T9: Sign-in pop-up on the library (change request)
+
+**What**: Replace the automatic redirect of a signed-out visit to `biblioteca.html` with a modal dialog ("Faça login para acessar sua biblioteca", "Fazer login", "Voltar"), and remove the now-unused `exigirLogin`.
+**Where**: `frontend/ui/aviso-login.js` (new); also `frontend/paginas/biblioteca.js`, `frontend/servicos/sessao.js`, `frontend/style.css`, `tests/cabecalho.spec.js`
+**Depends on**: T8
+**Reuses**: `usuarioAtual` (T3), `atualizarCabecalho` (T7), native `<dialog>` + `showModal()`; quiet/primary button looks of `.botao-sair` and `.botao-tentar`
+**Requirement**: PROT-01 (revised), PROT-05, PROT-06, PROT-07
+
+**Tools**:
+
+- MCP: NONE
+- Skill: NONE
+
+**Done when**:
+
+- [x] Signed out, `biblioteca.html` stays on its URL and shows a modal dialog (`:modal`) with "Faça login para acessar sua biblioteca" and the buttons "Fazer login" and "Voltar" -> `tests/cabecalho.spec.js`
+- [x] "Fazer login" lands on `login.html?voltar=biblioteca.html`; signing in there lands back on `biblioteca.html` without the dialog
+- [x] "Voltar" lands on `index.html`; Esc on the dialog lands on `index.html` too
+- [x] With a session, no dialog exists on `biblioteca.html`
+- [x] The two T8 tests that asserted the automatic redirect are rewritten to the revised PROT-01 (user change request)
+- [x] Full gate passes: `npx playwright test`, exit 0
+- [x] Test count: T8 total + new tests pass
+
+**Tests**: e2e (`tests/cabecalho.spec.js`)
+**Gate**: full
+**Commit**: `feat(library): ask signed-out visitors to sign in with a pop-up`
+
+**Status**: Complete
+
+Test count: 177 (174 - 3 old T8 tests + 6). User change request after T8. Esc is handled through the dialog's `cancel` event (prevented, then `index.html`), so closing the pop-up never leaves a signed-out visitor on the library. `exigirLogin` was removed from `servicos/sessao.js`: the pop-up replaced its only use. The first full run failed in unrelated files because the Verifier's mutated servers held ports 8080/3000; the re-run with the ports free is the gate result.
+
+---
+
 ## Phase Execution Map
 
 ```
 Phase 1 -> Phase 2
 
-T1 -> T2 -> T3 -> T4 -> T5 -> T6 -> T7 -> T8
+T1 -> T2 -> T3 -> T4 -> T5 -> T6 -> T7 -> T8 -> T9
 ```
 
 Eight tasks fit one task-budgeted batch, so execution runs inline. The Verifier runs automatically after T8.
@@ -382,6 +417,7 @@ Eight tasks fit one task-budgeted batch, so execution runs inline. The Verifier 
 | T6 | Registration branch of the same flow | Granular |
 | T7 | One UI module + one call per page | Granular |
 | T8 | One page module | Granular |
+| T9 | One UI module + its page use | Granular |
 
 ## Diagram-Definition Cross-Check
 
@@ -395,6 +431,7 @@ Eight tasks fit one task-budgeted batch, so execution runs inline. The Verifier 
 | T6 | T5 | T5 -> T6 | ✅ Match |
 | T7 | T6 | T6 -> T7 | ✅ Match |
 | T8 | T7 | T7 -> T8 | ✅ Match |
+| T9 | T8 | T8 -> T9 | ✅ Match |
 
 ## Test Co-location Validation
 
@@ -408,6 +445,7 @@ Eight tasks fit one task-budgeted batch, so execution runs inline. The Verifier 
 | T6 | Page module | e2e | e2e | ✅ OK |
 | T7 | UI module, page modules, markup, styles | e2e | e2e | ✅ OK |
 | T8 | Page module, markup | e2e | e2e | ✅ OK |
+| T9 | UI module, page module, service, styles | e2e | e2e | ✅ OK |
 
 ## Requirement Coverage
 
@@ -423,6 +461,7 @@ Eight tasks fit one task-budgeted batch, so execution runs inline. The Verifier 
 | AUTH-01, AUTH-05, AUTH-06, PROT-02, PROT-04, EDGE-02, REG-01 | T5 |
 | CAD-01, CAD-04, CAD-05, CAD-06 | T6 |
 | SES-02, SES-03, SES-05 | T7 (SES-02 also T8) |
-| PROT-01, PROT-05, REG-02 | T8 |
+| PROT-01, PROT-05, REG-02 | T8 (PROT-01, PROT-05 revised in T9) |
+| PROT-06, PROT-07 | T9 |
 
-**Coverage:** 30 requirements, 30 mapped to tasks, 0 unmapped.
+**Coverage:** 32 requirements, 32 mapped to tasks, 0 unmapped.

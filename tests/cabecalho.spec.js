@@ -65,31 +65,60 @@ test.describe('etapa05-auth T7 - header shows the signed-in user', () => {
   });
 });
 
-test.describe('etapa05-auth T8 - library requires a session', () => {
-  // PROT-01
-  test('sem sessão, biblioteca.html leva ao login com ?voltar= e não fica no histórico', async ({ page }) => {
-    await page.goto('index.html');
+const AVISO = 'Faça login para acessar sua biblioteca';
+const dialogoLogin = (page) => page.getByRole('dialog');
+
+test.describe('etapa05-auth T8/T9 - library requires a session', () => {
+  // PROT-01 (revised in T9): a pop-up explains, and the page does not move by itself.
+  test('sem sessão, biblioteca.html abre um pop-up modal pedindo login e não sai da página', async ({ page }) => {
     await page.goto('biblioteca.html');
 
+    const dialogo = dialogoLogin(page);
+    await expect(dialogo).toBeVisible();
+    await expect(dialogo).toContainText(AVISO);
+    await expect(dialogo.getByRole('button', { name: 'Fazer login' })).toBeVisible();
+    await expect(dialogo.getByRole('button', { name: 'Voltar' })).toBeVisible();
+    expect(await dialogo.evaluate((el) => el.matches(':modal'))).toBe(true);
+    await expect(page).toHaveURL(/\/frontend\/biblioteca\.html$/);
+  });
+
+  // PROT-06
+  test('"Fazer login" leva a login.html?voltar=biblioteca.html', async ({ page }) => {
+    await page.goto('biblioteca.html');
+    await dialogoLogin(page).getByRole('button', { name: 'Fazer login' }).click();
     await expect(page).toHaveURL(/\/frontend\/login\.html\?voltar=biblioteca\.html$/);
-    await page.goBack();
+  });
+
+  // PROT-07
+  test('"Voltar" leva à página inicial', async ({ page }) => {
+    await page.goto('biblioteca.html');
+    await dialogoLogin(page).getByRole('button', { name: 'Voltar' }).click();
+    await expect(page).toHaveURL(/\/frontend\/index\.html$/);
+  });
+
+  // PROT-07
+  test('Esc no pop-up também leva à página inicial', async ({ page }) => {
+    await page.goto('biblioteca.html');
+    await expect(dialogoLogin(page)).toBeVisible();
+    await page.keyboard.press('Escape');
     await expect(page).toHaveURL(/\/frontend\/index\.html$/);
   });
 
   // PROT-05, SES-02
-  test('com sessão, biblioteca.html continua aberta e mostra "Olá, Ryan"', async ({ page }) => {
+  test('com sessão, biblioteca.html continua aberta, sem pop-up, e mostra "Olá, Ryan"', async ({ page }) => {
     await abrirSessao(page);
     await page.goto('biblioteca.html');
 
     await expect(page.getByRole('heading', { name: 'Biblioteca' })).toBeVisible();
     await expect(page.getByText('Olá, Ryan', { exact: true })).toBeVisible();
+    await expect(page.locator('dialog')).toHaveCount(0);
     await expect(page).toHaveURL(/\/frontend\/biblioteca\.html$/);
   });
 
-  // PROT-01, PROT-02: the whole return path.
-  test('sem sessão → biblioteca → login com a conta de teste → volta à biblioteca', async ({ page }) => {
+  // PROT-01, PROT-06, PROT-02: the whole return path.
+  test('sem sessão → pop-up → "Fazer login" → login com a conta de teste → volta à biblioteca', async ({ page }) => {
     await page.goto('biblioteca.html');
-    await expect(page).toHaveURL(/login\.html\?voltar=biblioteca\.html$/);
+    await dialogoLogin(page).getByRole('button', { name: 'Fazer login' }).click();
 
     await page.locator('#email').fill('ryan@exemplo.com');
     await page.locator('#senha').fill('teste123');
@@ -97,5 +126,6 @@ test.describe('etapa05-auth T8 - library requires a session', () => {
 
     await expect(page).toHaveURL(/\/frontend\/biblioteca\.html$/);
     await expect(page.getByText('Olá, Ryan', { exact: true })).toBeVisible();
+    await expect(page.locator('dialog')).toHaveCount(0);
   });
 });
