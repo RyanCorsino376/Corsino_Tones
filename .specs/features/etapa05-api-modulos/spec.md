@@ -171,7 +171,7 @@ This slice moves the catalogue behind a json-server mock API and converts the pa
 | ERR-04 | P1: Communication error state | Specify | Pending |
 | ERR-05 | P1: Communication error state | Specify | Pending |
 | ERR-06 | P1: Communication error state | Specify | Pending |
-| ERR-07 | P1: Communication error state | Specify | Pending |
+| ERR-07 | P1: Communication error state | Tasks | Implementing |
 | ERR-08 | P1: Communication error state | Specify | Pending |
 | MOD-01 | P1: Code organised as ES modules | Specify | Pending |
 | MOD-02 | P1: Code organised as ES modules | Specify | Pending |

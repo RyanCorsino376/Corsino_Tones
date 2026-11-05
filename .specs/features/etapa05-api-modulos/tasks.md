@@ -125,18 +125,22 @@ Test count: 85 (83 + 2). Playwright starts json-server without `--watch`; tests 
 
 **Done when**:
 
-- [ ] `listarPresets()` resolves with the 9 presets from the mock -> `tests/api-cliente.spec.js`
-- [ ] Rejects with `ErroApi` (`status: 0`) when the route is aborted
-- [ ] Rejects with `ErroApi` (`status: 500`) on a 500 response
-- [ ] Rejects with `ErroApi` on a body that is not JSON, and on a JSON object that is not an array
-- [ ] Rejects with `ErroApi` (`status: 0`) when the route never answers and the clock advances 8001 ms (`page.clock`); does not reject at 7999 ms
-- [ ] Each rejection above writes one `console.error`; a success writes none
-- [ ] Full gate passes: `npx playwright test`, exit 0
-- [ ] Test count: T1 total + new tests pass
+- [x] `listarPresets()` resolves with the 9 presets from the mock -> `tests/api-cliente.spec.js`
+- [x] Rejects with `ErroApi` (`status: 0`) when the route is aborted
+- [x] Rejects with `ErroApi` (`status: 500`) on a 500 response
+- [x] Rejects with `ErroApi` on a body that is not JSON, and on a JSON object that is not an array
+- [x] Rejects with `ErroApi` (`status: 0`) when the route never answers and the clock advances 8001 ms (`page.clock`); does not reject at 7999 ms
+- [x] Each rejection above writes one `console.error`; a success writes none
+- [x] Full gate passes: `npx playwright test`, exit 0
+- [x] Test count: T1 total + new tests pass
 
 **Tests**: e2e (`tests/api-cliente.spec.js`, module imported via `page.evaluate`)
 **Gate**: full
 **Commit**: `feat(api): add a fetch client with timeout and error handling`
+
+**Status**: Complete
+
+Test count: 91 (85 + 6). The timeout test pauses the fake clock (`page.clock.pauseAt`): an installed clock keeps ticking in real time, so `runFor(7999)` alone overshot 8000 ms. Console lines are filtered by the `[api]` prefix because Chromium also logs failed loads as console errors.
 
 ---
 
