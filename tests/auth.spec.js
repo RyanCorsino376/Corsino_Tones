@@ -45,6 +45,11 @@ test.describe('etapa05-auth T4 - auth service', () => {
     expect(await chamar(page, 'entrar', 'ryan@exemplo.com', 'teste124')).toEqual({ ok: false, erro: 'CredenciaisInvalidas' });
   });
 
+  // AUTH-03 "senha equals": the comparison is exact, so case matters (Verifier gap, M02).
+  test('a senha com outra capitalização rejeita com CredenciaisInvalidas', async ({ page }) => {
+    expect(await chamar(page, 'entrar', 'ryan@exemplo.com', 'TESTE123')).toEqual({ ok: false, erro: 'CredenciaisInvalidas' });
+  });
+
   // AUTH-04
   test('e-mail sem conta rejeita com CredenciaisInvalidas', async ({ page }) => {
     expect(await chamar(page, 'entrar', emailUnico(), 'teste123')).toEqual({ ok: false, erro: 'CredenciaisInvalidas' });

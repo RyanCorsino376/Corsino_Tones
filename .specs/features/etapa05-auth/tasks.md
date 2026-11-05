@@ -465,3 +465,17 @@ Eight tasks fit one task-budgeted batch, so execution runs inline. The Verifier 
 | PROT-06, PROT-07 | T9 |
 
 **Coverage:** 32 requirements, 32 mapped to tasks, 0 unmapped.
+
+---
+
+## Verifier Fixes (iteration 1)
+
+The first Verifier run (`validation.md`) returned FAIL: behaviour was correct, but two mutants survived. Both fixes are tests; each was confirmed by re-applying its mutant and seeing the new test fail (then restoring the file).
+
+| Gap | Mutant | Fix | Kind |
+| --- | ------ | --- | ---- |
+| AUTH-03: case of the password unchecked | M02 (case-insensitive compare) | `tests/auth.spec.js`: `entrar('ryan@exemplo.com', 'TESTE123')` rejects with `CredenciaisInvalidas` (1 test fails under M02) | test |
+| PROT-02: "replace" unchecked, only the final URL was | M13 (`assign` after success) | `tests/login-api.spec.js`: `history.length` unchanged after a successful login and after a successful registration (2 tests fail under M13) | test |
+| SES-04: navigation method of "Sair" undefined | - (precision note) | Spec assumption now states `location.assign` and why | spec |
+
+Test count: 180 passing.

@@ -239,3 +239,32 @@ test.describe('etapa05-auth T6 - registration through the API', () => {
     await expect(botao).toHaveText('Cadastrar');
   });
 });
+
+test.describe('etapa05-auth Verifier fix - success replaces the login page in history', () => {
+  // PROT-02 "replace the location" (Verifier gap, M13): with replace() the login
+  // page leaves the history, so its length does not grow and "back" skips it.
+  test('depois do login, o histórico não ganha entrada e "voltar" pula o login', async ({ page }) => {
+    await page.goto('index.html');
+    await page.goto('login.html');
+    const tamanhoAntes = await page.evaluate(() => history.length);
+
+    await enviarLogin(page, 'ryan@exemplo.com', 'teste123');
+    await expect(page).toHaveURL(/\/frontend\/index\.html$/);
+
+    expect(await page.evaluate(() => history.length)).toBe(tamanhoAntes);
+    await page.goBack();
+    await expect(page).toHaveURL(/\/frontend\/index\.html$/);
+  });
+
+  // PROT-02 for registration.
+  test('depois do cadastro, o histórico não ganha entrada', async ({ page }) => {
+    await page.goto('index.html');
+    await page.goto('login.html');
+    const tamanhoAntes = await page.evaluate(() => history.length);
+
+    await enviarCadastro(page, 'Ana Teste', emailUnico(), 'senha1234');
+    await expect(page).toHaveURL(/\/frontend\/index\.html$/);
+
+    expect(await page.evaluate(() => history.length)).toBe(tamanhoAntes);
+  });
+});

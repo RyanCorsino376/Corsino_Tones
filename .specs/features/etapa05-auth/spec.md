@@ -48,7 +48,7 @@ This slice sends both forms to the json-server mock, opens a browser session on 
 | Communication failure message | "Não foi possível conectar ao servidor. Tente novamente." in an alert inside the form | Same cause as slice 1's error, worded for a form (no "Tentar novamente" button: the submit button is the retry) | n |
 | Pending submit | Submit button disabled with text "Entrando..." / "Cadastrando..." until the request ends | Loading state for the stage, and it blocks double submits (duplicate accounts) | n |
 | Session storage | `sessionStorage` key `corsino:sessao` holding `{ id, nome, email }`, never `senha` | Ends when the tab closes; storing the password in the browser would leak it | n |
-| "Sair" | Removes the session and goes to `index.html` | Leaving a protected page signed out would only redirect again | n |
+| "Sair" | Removes the session and goes to `index.html` with `location.assign` (a normal history entry) | Leaving a protected page signed out would only show the pop-up; going back to a public page after signing out is harmless, so no `replace` is needed (Verifier precision note, SES-04) | n |
 | `voltar` values | Accepted only if it matches `^[a-z0-9-]+\.html$`; anything else falls back to `index.html` | Prevents an open redirect such as `?voltar=https://evil.example` | n |
 | Visiting `login.html` already signed in | Redirect at once to `voltar` (validated) or `index.html` | The forms are pointless with a session | n |
 | Redirect method | `location.replace` after login/registration and on `login.html` with a session; the pop-up buttons use normal navigation | The back button must not return to a page that redirects again; the pop-up never redirects by itself, so its history entry is harmless | n |
