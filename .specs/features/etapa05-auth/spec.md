@@ -190,14 +190,14 @@ This slice sends both forms to the json-server mock, opens a browser session on 
 | AUTH-04 | P1: Login through the API | Specify | Pending |
 | AUTH-05 | P1: Login through the API | Specify | Pending |
 | AUTH-06 | P1: Login through the API | Specify | Pending |
-| SES-01 | P1: Session and header | Specify | Pending |
+| SES-01 | P1: Session and header | Tasks | Implementing |
 | SES-02 | P1: Session and header | Specify | Pending |
 | SES-03 | P1: Session and header | Specify | Pending |
 | SES-04 | P1: Session and header | Specify | Pending |
 | SES-05 | P1: Session and header | Specify | Pending |
 | PROT-01 | P1: Protected library and return path | Specify | Pending |
 | PROT-02 | P1: Protected library and return path | Specify | Pending |
-| PROT-03 | P1: Protected library and return path | Specify | Pending |
+| PROT-03 | P1: Protected library and return path | Tasks | Implementing |
 | PROT-04 | P1: Protected library and return path | Specify | Pending |
 | PROT-05 | P1: Protected library and return path | Specify | Pending |
 | DB-01 | P1: Mock data and etapa04 behaviour preserved | Tasks | Implementing |
@@ -207,7 +207,7 @@ This slice sends both forms to the json-server mock, opens a browser session on 
 | REG-02 | P1: Mock data and etapa04 behaviour preserved | Specify | Pending |
 | EDGE-01 | Edge cases | Specify | Pending |
 | EDGE-02 | Edge cases | Specify | Pending |
-| EDGE-03 | Edge cases | Specify | Pending |
+| EDGE-03 | Edge cases | Tasks | Implementing |
 
 **ID format:** `[CATEGORY]-[NUMBER]`. `REG-*` and `EDGE-*` are scoped to this feature.
 

@@ -172,17 +172,21 @@ Test count: 124 (119 + 5).
 
 **Done when**:
 
-- [ ] `abrirSessao({ id: 1, nome: 'Ryan Corsino', email: 'ryan@exemplo.com', senha: 'teste123' })` stores exactly `{"id":1,"nome":"Ryan Corsino","email":"ryan@exemplo.com"}` under `corsino:sessao` -> `tests/sessao.spec.js`
-- [ ] `usuarioAtual()` returns that object; returns `null` with no key
-- [ ] Invalid JSON, and JSON without `nome`, each make `usuarioAtual()` return `null` and remove the key
-- [ ] `encerrarSessao()` removes the key
-- [ ] `destinoSeguro` returns `biblioteca.html` and `checkout.html` unchanged, and `index.html` for `null`, `''`, `https://evil.example`, `//evil.example`, `../x.html`, `javascript:alert(1)`, `Biblioteca.html`
-- [ ] Full gate passes: `npx playwright test`, exit 0
-- [ ] Test count: T2 total + new tests pass
+- [x] `abrirSessao({ id: 1, nome: 'Ryan Corsino', email: 'ryan@exemplo.com', senha: 'teste123' })` stores exactly `{"id":1,"nome":"Ryan Corsino","email":"ryan@exemplo.com"}` under `corsino:sessao` -> `tests/sessao.spec.js`
+- [x] `usuarioAtual()` returns that object; returns `null` with no key
+- [x] Invalid JSON, and JSON without `nome`, each make `usuarioAtual()` return `null` and remove the key
+- [x] `encerrarSessao()` removes the key
+- [x] `destinoSeguro` returns `biblioteca.html` and `checkout.html` unchanged, and `index.html` for `null`, `''`, `https://evil.example`, `//evil.example`, `../x.html`, `javascript:alert(1)`, `Biblioteca.html`
+- [x] Full gate passes: `npx playwright test`, exit 0
+- [x] Test count: T2 total + new tests pass
 
 **Tests**: e2e (`tests/sessao.spec.js`)
 **Gate**: full
 **Commit**: `feat(session): store the signed-in user in sessionStorage`
+
+**Status**: Complete
+
+Test count: 138 (124 + 14). `exigirLogin` is written here but its redirect is asserted in T8, where a page uses it.
 
 ---
 
