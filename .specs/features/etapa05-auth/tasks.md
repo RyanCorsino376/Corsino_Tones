@@ -140,16 +140,20 @@ Test count: 119 (112 + 7). The old `.gitignore` had no final newline, so the new
 
 **Done when**:
 
-- [ ] `buscarUsuarioPorEmail('ryan@exemplo.com')` resolves with the seed user; an unknown e-mail resolves with `null` -> `tests/api-usuarios.spec.js`
-- [ ] The request URL encodes the e-mail (`a+b@x.com` arrives as `email=a%2Bb%40x.com`)
-- [ ] A non-list body rejects with `ErroApi`
-- [ ] `criarUsuario({...})` sends `POST /usuarios` with `Content-Type: application/json` and exactly the given `nome`, `email`, `senha`; resolves with the record including a numeric `id`; the record is then returned by `GET /usuarios?email=` (unique e-mail per run)
-- [ ] Full gate passes: `npx playwright test`, exit 0
-- [ ] Test count: T1 total + new tests pass
+- [x] `buscarUsuarioPorEmail('ryan@exemplo.com')` resolves with the seed user; an unknown e-mail resolves with `null` -> `tests/api-usuarios.spec.js`
+- [x] The request URL encodes the e-mail (`a+b@x.com` arrives as `email=a%2Bb%40x.com`)
+- [x] A non-list body rejects with `ErroApi`
+- [x] `criarUsuario({...})` sends `POST /usuarios` with `Content-Type: application/json` and exactly the given `nome`, `email`, `senha`; resolves with the record including a numeric `id`; the record is then returned by `GET /usuarios?email=` (unique e-mail per run)
+- [x] Full gate passes: `npx playwright test`, exit 0
+- [x] Test count: T1 total + new tests pass
 
 **Tests**: e2e (`tests/api-usuarios.spec.js`)
 **Gate**: full
 **Commit**: `feat(api): add users lookup and creation endpoints`
+
+**Status**: Complete
+
+Test count: 124 (119 + 5).
 
 ---
 
