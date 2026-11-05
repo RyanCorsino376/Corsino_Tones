@@ -4,13 +4,16 @@
   "private": true,
   "description": "Presets de pedais e pedaleiras de guitarra",
   "scripts": {
-    "test": "playwright test"
+    "test": "playwright test",
+    "api": "json-server --watch mock/db.json --port 3000 --host 127.0.0.1",
+    "api:lento": "json-server --watch mock/db.json --port 3000 --host 127.0.0.1 --delay 2000"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/RyanCorsino376/Corsino_Tones.git"
   },
   "devDependencies": {
-    "@playwright/test": "^1.62.1"
+    "@playwright/test": "^1.62.1",
+    "json-server": "^0.17.4"
   }
 }

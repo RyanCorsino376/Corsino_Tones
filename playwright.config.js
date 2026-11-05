@@ -17,17 +17,26 @@ module.exports = defineConfig({
   // on behaviour. Two workers run the suite in ~35s with no flakiness.
   workers: 2,
 
-  webServer: {
-    // Served from the repository root, not frontend/: the pages reference
-    // ../imagens/, which would 404 under a frontend-rooted server.
-    //
-    // ThreadingHTTPServer rather than `python3 -m http.server`: the latter is
-    // single-threaded, so parallel workers queue behind each other and tests
-    // time out waiting for a page that is merely stuck in line.
-    command: `python3 -c "from http.server import ThreadingHTTPServer, SimpleHTTPRequestHandler as H; ThreadingHTTPServer(('127.0.0.1', 8080), H).serve_forever()"`,
-    url: 'http://127.0.0.1:8080/frontend/login.html',
-    reuseExistingServer: !process.env.CI,
-  },
+  webServer: [
+    {
+      // Served from the repository root, not frontend/: the pages reference
+      // ../imagens/, which would 404 under a frontend-rooted server.
+      //
+      // ThreadingHTTPServer rather than `python3 -m http.server`: the latter is
+      // single-threaded, so parallel workers queue behind each other and tests
+      // time out waiting for a page that is merely stuck in line.
+      command: `python3 -c "from http.server import ThreadingHTTPServer, SimpleHTTPRequestHandler as H; ThreadingHTTPServer(('127.0.0.1', 8080), H).serve_forever()"`,
+      url: 'http://127.0.0.1:8080/frontend/login.html',
+      reuseExistingServer: !process.env.CI,
+    },
+    {
+      // Mock API (AD-008). Same data file as `npm run api`, so a dev server
+      // already on port 3000 is reused and serves the same catalogue.
+      command: 'npx json-server mock/db.json --port 3000 --host 127.0.0.1',
+      url: 'http://127.0.0.1:3000/presets',
+      reuseExistingServer: !process.env.CI,
+    },
+  ],
 
   use: {
     ...devices['Desktop Chrome'],

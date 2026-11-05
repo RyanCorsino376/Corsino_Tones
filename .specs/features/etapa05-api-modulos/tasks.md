@@ -94,15 +94,19 @@ T3 -> T4 -> T5 -> T6
 
 **Done when**:
 
-- [ ] `npm run api` runs `json-server --watch mock/db.json --port 3000 --host 127.0.0.1`; `npm run api:lento` adds `--delay 2000` (for the stage demo)
-- [ ] `GET http://127.0.0.1:3000/presets` returns 200 and a 9-item array, each item with exactly the seven spec fields, values equal to `dados.js` -> `tests/api-mock.spec.js`
-- [ ] The response carries `Access-Control-Allow-Origin` (pages on :8080 may call it)
-- [ ] Full gate passes: `npx playwright test`, exit 0
-- [ ] Test count: 83 + new tests pass (no silent deletions)
+- [x] `npm run api` runs `json-server --watch mock/db.json --port 3000 --host 127.0.0.1`; `npm run api:lento` adds `--delay 2000` (for the stage demo)
+- [x] `GET http://127.0.0.1:3000/presets` returns 200 and a 9-item array, each item with exactly the seven spec fields, values equal to `dados.js` -> `tests/api-mock.spec.js`
+- [x] The response carries `Access-Control-Allow-Origin` (pages on :8080 may call it)
+- [x] Full gate passes: `npx playwright test`, exit 0
+- [x] Test count: 83 + new tests pass (no silent deletions)
 
 **Tests**: e2e (`tests/api-mock.spec.js`)
 **Gate**: full
 **Commit**: `feat(api): serve the preset catalogue from a json-server mock`
+
+**Status**: Complete
+
+Test count: 85 (83 + 2). Playwright starts json-server without `--watch`; tests never write, so the file is never reloaded.
 
 ---
 

@@ -156,7 +156,7 @@ This slice moves the catalogue behind a json-server mock API and converts the pa
 
 | Requirement ID | Story | Phase | Status |
 | -------------- | ----- | ----- | ------ |
-| API-01 | P1: Catalogue served by the mock API | Specify | Pending |
+| API-01 | P1: Catalogue served by the mock API | Tasks | Implementing |
 | API-02 | P1: Catalogue served by the mock API | Specify | Pending |
 | API-03 | P1: Catalogue served by the mock API | Specify | Pending |
 | API-04 | P1: Catalogue served by the mock API | Specify | Pending |
