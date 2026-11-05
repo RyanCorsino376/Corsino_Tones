@@ -10,7 +10,7 @@ Implement these tasks with the `tlc-spec-driven` skill: **activate it by name an
 
 **Spec**: `.specs/features/etapa05-auth/spec.md`
 **Design**: `.specs/features/etapa05-auth/design.md`
-**Status**: In Progress (T9 change request)
+**Status**: Done (pending Verifier iteration 3)
 
 ### Files removed or untracked by this feature
 
@@ -479,3 +479,9 @@ The first Verifier run (`validation.md`) returned FAIL: behaviour was correct, b
 | SES-04: navigation method of "Sair" undefined | - (precision note) | Spec assumption now states `location.assign` and why | spec |
 
 Test count: 180 passing.
+
+## Verifier Fixes (iteration 2)
+
+Iteration 2 closed both iteration 1 gaps (M02 and M13 now killed) and returned FAIL with one survivor: P07, a delayed `setTimeout(() => location.replace(...), 1500)` after the pop-up, because PROT-01's "SHALL NOT change the location by itself" was checked only once, right after the dialog appeared. The PROT-01 test now installs the fake clock, advances it 60 s, and asserts the URL, the open dialog and the list of main-frame navigations (only `biblioteca.html`). P07 re-applied in the real file fails that test; the file was restored.
+
+Test count: 180 passing (the fix strengthens an existing test, no new test).

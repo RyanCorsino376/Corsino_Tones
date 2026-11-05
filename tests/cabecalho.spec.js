@@ -71,6 +71,11 @@ const dialogoLogin = (page) => page.getByRole('dialog');
 test.describe('etapa05-auth T8/T9 - library requires a session', () => {
   // PROT-01 (revised in T9): a pop-up explains, and the page does not move by itself.
   test('sem sessão, biblioteca.html abre um pop-up modal pedindo login e não sai da página', async ({ page }) => {
+    // Fake clock: a delayed redirect (setTimeout) would fire inside runFor below
+    // instead of after the test ends (Verifier gap, P07).
+    await page.clock.install();
+    const navegacoes = [];
+    page.on('framenavigated', (frame) => { if (frame === page.mainFrame()) navegacoes.push(frame.url()); });
     await page.goto('biblioteca.html');
 
     const dialogo = dialogoLogin(page);
@@ -79,7 +84,12 @@ test.describe('etapa05-auth T8/T9 - library requires a session', () => {
     await expect(dialogo.getByRole('button', { name: 'Fazer login' })).toBeVisible();
     await expect(dialogo.getByRole('button', { name: 'Voltar' })).toBeVisible();
     expect(await dialogo.evaluate((el) => el.matches(':modal'))).toBe(true);
+
+    // "SHALL NOT change the location by itself": a minute later, still here, still asking.
+    await page.clock.runFor(60_000);
     await expect(page).toHaveURL(/\/frontend\/biblioteca\.html$/);
+    await expect(dialogo).toBeVisible();
+    expect(navegacoes.map((url) => new URL(url).pathname)).toEqual(['/frontend/biblioteca.html']);
   });
 
   // PROT-06
