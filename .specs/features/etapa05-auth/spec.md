@@ -191,10 +191,10 @@ This slice sends both forms to the json-server mock, opens a browser session on 
 | AUTH-05 | P1: Login through the API | Tasks | Implementing |
 | AUTH-06 | P1: Login through the API | Tasks | Implementing |
 | SES-01 | P1: Session and header | Tasks | Implementing |
-| SES-02 | P1: Session and header | Specify | Pending |
-| SES-03 | P1: Session and header | Specify | Pending |
-| SES-04 | P1: Session and header | Specify | Pending |
-| SES-05 | P1: Session and header | Specify | Pending |
+| SES-02 | P1: Session and header | Tasks | Implementing |
+| SES-03 | P1: Session and header | Tasks | Implementing |
+| SES-04 | P1: Session and header | Tasks | Implementing |
+| SES-05 | P1: Session and header | Tasks | Implementing |
 | PROT-01 | P1: Protected library and return path | Specify | Pending |
 | PROT-02 | P1: Protected library and return path | Tasks | Implementing |
 | PROT-03 | P1: Protected library and return path | Tasks | Implementing |

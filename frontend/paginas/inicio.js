@@ -1,9 +1,12 @@
 // Entry module for index.html: fills the home carousel with the catalogue, newest first.
 import { listarPresets } from '../api/presets.js';
 import { criarCartao, ordenarMaisRecentes } from '../ui/cartao.js';
+import { atualizarCabecalho } from '../ui/cabecalho.js';
 import { carregarComEstado } from '../ui/estado.js';
 
 const carrossel = document.querySelector('.carrossel');
+
+atualizarCabecalho();
 
 carregarComEstado({
     alvo: document.querySelector('.estado-carga'),

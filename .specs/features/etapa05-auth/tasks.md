@@ -308,17 +308,21 @@ Test count: 163 (157 + 6). Three registration rows of `login-validacao.spec.js` 
 
 **Done when**:
 
-- [ ] With a session for "Ryan Corsino", `index.html`, `presets.html` and `preset.html` show "Olá, Ryan" and a "Sair" button, and no "Entrar" link -> `tests/cabecalho.spec.js`
-- [ ] Without a session, they show the "Entrar" link to `login.html`
-- [ ] "Sair" removes `corsino:sessao` and lands on `index.html` showing "Entrar"
-- [ ] A session named `<img src=x onerror=alert(1)>` shows that text literally and creates no `<img>` in the header
-- [ ] `tests/responsive.spec.js` passes unchanged
-- [ ] Full gate passes: `npx playwright test`, exit 0
-- [ ] Test count: T6 total + new tests pass
+- [x] With a session for "Ryan Corsino", `index.html`, `presets.html` and `preset.html` show "Olá, Ryan" and a "Sair" button, and no "Entrar" link -> `tests/cabecalho.spec.js`
+- [x] Without a session, they show the "Entrar" link to `login.html`
+- [x] "Sair" removes `corsino:sessao` and lands on `index.html` showing "Entrar"
+- [x] A session named `<img src=x onerror=alert(1)>` shows that text literally and creates no `<img>` in the header
+- [x] `tests/responsive.spec.js` passes unchanged
+- [x] Full gate passes: `npx playwright test`, exit 0
+- [x] Test count: T6 total + new tests pass
 
 **Tests**: e2e (`tests/cabecalho.spec.js`)
 **Gate**: full
 **Commit**: `feat(header): show the signed-in user and a sign-out button`
+
+**Status**: Complete
+
+Test count: 171 (163 + 8). The signed-in box keeps class `entrar` (position per breakpoint) and cancels its hover lift with `.sessao:hover`, so the button does not jump under the pointer. `preset.html` gets its first module, which only draws the header until slice 3.
 
 ---
 

@@ -3,6 +3,7 @@
 // read criteria -> filter -> sort -> draw.
 import { listarPresets } from '../api/presets.js';
 import { criarCartao, ordenarMaisRecentes } from '../ui/cartao.js';
+import { atualizarCabecalho } from '../ui/cabecalho.js';
 import { carregarComEstado } from '../ui/estado.js';
 
 // Fixed wording from the spec's assumption table.
@@ -88,6 +89,8 @@ form.addEventListener('submit', function (evento) {
     evento.preventDefault();
     atualizar();
 });
+
+atualizarCabecalho();
 
 carregarComEstado({
     alvo: document.querySelector('.estado-carga'),
