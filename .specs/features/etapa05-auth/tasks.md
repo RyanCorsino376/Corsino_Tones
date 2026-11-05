@@ -10,7 +10,7 @@ Implement these tasks with the `tlc-spec-driven` skill: **activate it by name an
 
 **Spec**: `.specs/features/etapa05-auth/spec.md`
 **Design**: `.specs/features/etapa05-auth/design.md`
-**Status**: Draft
+**Status**: Done (pending Verifier)
 
 ### Files removed or untracked by this feature
 
@@ -341,16 +341,20 @@ Test count: 171 (163 + 8). The signed-in box keeps class `entrar` (position per 
 
 **Done when**:
 
-- [ ] Without a session, opening `biblioteca.html` ends on `login.html?voltar=biblioteca.html`, and going back does not return to `biblioteca.html` (`location.replace`) -> `tests/cabecalho.spec.js`
-- [ ] With a session, `biblioteca.html` stays open and shows "Olá, Ryan"
-- [ ] Full flow: signed out → `biblioteca.html` → login as the seed user → lands on `biblioteca.html`
-- [ ] All slice 1 tests pass (REG-02)
-- [ ] Full gate passes: `npx playwright test`, exit 0
-- [ ] Test count: T7 total + new tests pass
+- [x] Without a session, opening `biblioteca.html` ends on `login.html?voltar=biblioteca.html`, and going back does not return to `biblioteca.html` (`location.replace`) -> `tests/cabecalho.spec.js`
+- [x] With a session, `biblioteca.html` stays open and shows "Olá, Ryan"
+- [x] Full flow: signed out → `biblioteca.html` → login as the seed user → lands on `biblioteca.html`
+- [x] All slice 1 tests pass (REG-02)
+- [x] Full gate passes: `npx playwright test`, exit 0
+- [x] Test count: T7 total + new tests pass
 
 **Tests**: e2e (`tests/cabecalho.spec.js`)
 **Gate**: full
 **Commit**: `feat(library): require a session to open the library`
+
+**Status**: Complete
+
+Test count: 174 (171 + 3). Found while closing: the no-horizontal-overflow test in `responsive.spec.js` visits `biblioteca.html`, which now redirects, so it was silently measuring `login.html`. It now opens a session for the library, clears it for the login, and asserts each page's URL before measuring. Strengthened, not weakened.
 
 ---
 

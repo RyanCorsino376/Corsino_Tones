@@ -64,3 +64,38 @@ test.describe('etapa05-auth T7 - header shows the signed-in user', () => {
     expect(dialogos).toEqual([]);
   });
 });
+
+test.describe('etapa05-auth T8 - library requires a session', () => {
+  // PROT-01
+  test('sem sessão, biblioteca.html leva ao login com ?voltar= e não fica no histórico', async ({ page }) => {
+    await page.goto('index.html');
+    await page.goto('biblioteca.html');
+
+    await expect(page).toHaveURL(/\/frontend\/login\.html\?voltar=biblioteca\.html$/);
+    await page.goBack();
+    await expect(page).toHaveURL(/\/frontend\/index\.html$/);
+  });
+
+  // PROT-05, SES-02
+  test('com sessão, biblioteca.html continua aberta e mostra "Olá, Ryan"', async ({ page }) => {
+    await abrirSessao(page);
+    await page.goto('biblioteca.html');
+
+    await expect(page.getByRole('heading', { name: 'Biblioteca' })).toBeVisible();
+    await expect(page.getByText('Olá, Ryan', { exact: true })).toBeVisible();
+    await expect(page).toHaveURL(/\/frontend\/biblioteca\.html$/);
+  });
+
+  // PROT-01, PROT-02: the whole return path.
+  test('sem sessão → biblioteca → login com a conta de teste → volta à biblioteca', async ({ page }) => {
+    await page.goto('biblioteca.html');
+    await expect(page).toHaveURL(/login\.html\?voltar=biblioteca\.html$/);
+
+    await page.locator('#email').fill('ryan@exemplo.com');
+    await page.locator('#senha').fill('teste123');
+    await page.locator('#form-login button[type="submit"]').click();
+
+    await expect(page).toHaveURL(/\/frontend\/biblioteca\.html$/);
+    await expect(page.getByText('Olá, Ryan', { exact: true })).toBeVisible();
+  });
+});

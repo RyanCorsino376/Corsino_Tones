@@ -195,16 +195,16 @@ This slice sends both forms to the json-server mock, opens a browser session on 
 | SES-03 | P1: Session and header | Tasks | Implementing |
 | SES-04 | P1: Session and header | Tasks | Implementing |
 | SES-05 | P1: Session and header | Tasks | Implementing |
-| PROT-01 | P1: Protected library and return path | Specify | Pending |
+| PROT-01 | P1: Protected library and return path | Tasks | Implementing |
 | PROT-02 | P1: Protected library and return path | Tasks | Implementing |
 | PROT-03 | P1: Protected library and return path | Tasks | Implementing |
 | PROT-04 | P1: Protected library and return path | Tasks | Implementing |
-| PROT-05 | P1: Protected library and return path | Specify | Pending |
+| PROT-05 | P1: Protected library and return path | Tasks | Implementing |
 | DB-01 | P1: Mock data and etapa04 behaviour preserved | Tasks | Implementing |
 | DB-02 | P1: Mock data and etapa04 behaviour preserved | Tasks | Implementing |
 | DB-03 | P1: Mock data and etapa04 behaviour preserved | Tasks | Implementing |
 | REG-01 | P1: Mock data and etapa04 behaviour preserved | Tasks | Implementing |
-| REG-02 | P1: Mock data and etapa04 behaviour preserved | Specify | Pending |
+| REG-02 | P1: Mock data and etapa04 behaviour preserved | Tasks | Implementing |
 | EDGE-01 | Edge cases | Tasks | Implementing |
 | EDGE-02 | Edge cases | Tasks | Implementing |
 | EDGE-03 | Edge cases | Tasks | Implementing |
