@@ -452,6 +452,28 @@ input:focus-visible{
     margin: 0;
 }
 
+/*------------- Carregamento e erro de comunicação --------------------*/
+
+.estado-carga{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    min-height: 200px;
+    color: var(--text-secondary);
+    text-align: center;
+}
+
+/* Empty once the data is on screen, so it takes no room above the list. */
+.estado-carga:empty{
+    display: none;
+}
+
+.estado-carga p{
+    margin: 0;
+}
+
 /*------------- Barra da lista (busca e ordenação) --------------------*/
 
 .barra-lista{

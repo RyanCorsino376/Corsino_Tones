@@ -3,6 +3,12 @@
 // read criteria -> filter -> sort -> draw.
 import { listarPresets } from '../api/presets.js';
 import { criarCartao, ordenarMaisRecentes } from '../ui/cartao.js';
+import { carregarComEstado } from '../ui/estado.js';
+
+// Fixed wording from the spec's assumption table.
+const MENSAGENS = {
+    carregando: 'Carregando presets...',
+};
 
 const grade = document.querySelector('.grade-presets');
 const form = document.getElementById('form-filtros');
@@ -82,9 +88,12 @@ form.addEventListener('submit', function (evento) {
     atualizar();
 });
 
-async function carregar() {
-    catalogo = await listarPresets();
-    atualizar();
-}
-
-carregar();
+carregarComEstado({
+    alvo: document.querySelector('.estado-carga'),
+    buscar: listarPresets,
+    aoCarregar(dados) {
+        catalogo = dados;
+        atualizar();
+    },
+    mensagens: MENSAGENS,
+});

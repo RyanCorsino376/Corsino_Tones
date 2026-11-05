@@ -194,15 +194,19 @@ Test count: 101 (91 + 10). Existing tests changed only in where they read data a
 
 **Done when**:
 
-- [ ] With the route held open, a `role="status"` element shows "Carregando presets...", there are 0 cards, `#contagem` is empty and `.lista-vazia` is hidden -> `tests/carga-estado.spec.js`
-- [ ] Releasing the route removes the loading text and shows 9 cards
-- [ ] Checking "Boss" while the route is held, then releasing, shows only Boss presets (EDGE-01)
-- [ ] Full gate passes: `npx playwright test`, exit 0
-- [ ] Test count: T3 total + new tests pass
+- [x] With the route held open, a `role="status"` element shows "Carregando presets...", there are 0 cards, `#contagem` is empty and `.lista-vazia` is hidden -> `tests/carga-estado.spec.js`
+- [x] Releasing the route removes the loading text and shows 9 cards
+- [x] Checking "Boss" while the route is held, then releasing, shows only Boss presets (EDGE-01)
+- [x] Full gate passes: `npx playwright test`, exit 0
+- [x] Test count: T3 total + new tests pass
 
 **Tests**: e2e (`tests/carga-estado.spec.js`)
 **Gate**: full
 **Commit**: `feat(presets): show a loading state while the catalogue loads`
+
+**Status**: Complete
+
+Test count: 104 (101 + 3). The loading text lives in a new `.estado-carga` element above the grid, hidden with `:empty` once the list is on screen. The failure branch is T5: until then a failed request leaves the loading text up.
 
 ---
 
