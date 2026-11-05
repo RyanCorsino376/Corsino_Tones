@@ -10,7 +10,7 @@ Implement these tasks with the `tlc-spec-driven` skill: **activate it by name an
 
 **Spec**: `.specs/features/etapa05-api-modulos/spec.md`
 **Design**: `.specs/features/etapa05-api-modulos/design.md`
-**Status**: Draft
+**Status**: Done (pending Verifier)
 
 ### Files removed by this feature
 
@@ -257,15 +257,19 @@ Test count: 110 (104 + 6). The retry button re-calls `carregarComEstado` with th
 
 **Done when**:
 
-- [ ] With the route held, `index.html` shows "Carregando presets..." in a `role="status"` element and no carousel cards -> `tests/carga-estado.spec.js`
-- [ ] With the route aborted, it shows the error message and button; retry with a working route fills the carousel with 9 cards
-- [ ] `tests/responsive.spec.js` on `index.html` still passes
-- [ ] Full gate passes: `npx playwright test`, exit 0
-- [ ] Test count: T5 total + new tests pass
+- [x] With the route held, `index.html` shows "Carregando presets..." in a `role="status"` element and no carousel cards -> `tests/carga-estado.spec.js`
+- [x] With the route aborted, it shows the error message and button; retry with a working route fills the carousel with 9 cards
+- [x] `tests/responsive.spec.js` on `index.html` still passes
+- [x] Full gate passes: `npx playwright test`, exit 0
+- [x] Test count: T5 total + new tests pass
 
 **Tests**: e2e (`tests/carga-estado.spec.js`)
 **Gate**: full
 **Commit**: `feat(home): show loading and error states on the carousel`
+
+**Status**: Complete
+
+Test count: 112 (110 + 2); two consecutive full runs green.
 
 ---
 

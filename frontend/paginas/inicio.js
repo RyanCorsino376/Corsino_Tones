@@ -1,12 +1,19 @@
 // Entry module for index.html: fills the home carousel with the catalogue, newest first.
 import { listarPresets } from '../api/presets.js';
 import { criarCartao, ordenarMaisRecentes } from '../ui/cartao.js';
+import { carregarComEstado } from '../ui/estado.js';
 
 const carrossel = document.querySelector('.carrossel');
 
-async function carregar() {
-    const catalogo = await listarPresets();
-    carrossel.replaceChildren(...ordenarMaisRecentes(catalogo).map(criarCartao));
-}
-
-carregar();
+carregarComEstado({
+    alvo: document.querySelector('.estado-carga'),
+    buscar: listarPresets,
+    aoCarregar(catalogo) {
+        carrossel.replaceChildren(...ordenarMaisRecentes(catalogo).map(criarCartao));
+    },
+    // Same wording as presets.html (spec assumption table).
+    mensagens: {
+        carregando: 'Carregando presets...',
+        erro: 'Não foi possível carregar os presets. Verifique sua conexão e tente novamente.',
+    },
+});

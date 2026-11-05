@@ -167,3 +167,39 @@ test.describe('etapa05 T5 - error state and retry on presets.html', () => {
     await expect(page.getByRole('button', { name: 'Tentar novamente' })).toHaveCount(1);
   });
 });
+
+test.describe('etapa05 T6 - loading and error states on index.html', () => {
+  // LOAD-02
+  test('enquanto a requisição está pendente, a home mostra "Carregando presets..." sem cards', async ({ page }) => {
+    const liberar = await segurarCatalogo(page);
+    await page.goto('index.html');
+
+    await expect(avisoCarregando(page)).toHaveText(CARREGANDO);
+    await expect(page.locator('.carrossel .cartao')).toHaveCount(0);
+
+    liberar();
+    await expect(page.locator('.carrossel .cartao')).toHaveCount(9);
+    await expect(avisoCarregando(page)).toHaveCount(0);
+  });
+
+  // ERR-08, ERR-05
+  test('com a rede falhando, a home mostra o erro e "Tentar novamente" preenche o carrossel', async ({ page }) => {
+    let tentativas = 0;
+    await page.route(URL_PRESETS, (rota) => {
+      tentativas += 1;
+      return tentativas === 1 ? rota.abort() : rota.continue();
+    });
+    await page.goto('index.html');
+
+    const alerta = page.getByRole('alert');
+    await expect(alerta).toHaveCount(1);
+    await expect(alerta.locator('p')).toHaveText(MENSAGEM_ERRO);
+    await expect(page.locator('.carrossel .cartao')).toHaveCount(0);
+
+    await alerta.getByRole('button', { name: 'Tentar novamente' }).click();
+
+    await expect(page.locator('.carrossel .cartao')).toHaveCount(9);
+    await expect(page.getByRole('alert')).toHaveCount(0);
+    expect(tentativas).toBe(2);
+  });
+});

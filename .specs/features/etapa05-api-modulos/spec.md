@@ -162,7 +162,7 @@ This slice moves the catalogue behind a json-server mock API and converts the pa
 | API-04 | P1: Catalogue served by the mock API | Tasks | Implementing |
 | API-05 | P1: Catalogue served by the mock API | Tasks | Implementing |
 | LOAD-01 | P1: Loading state | Tasks | Implementing |
-| LOAD-02 | P1: Loading state | Specify | Pending |
+| LOAD-02 | P1: Loading state | Tasks | Implementing |
 | LOAD-03 | P1: Loading state | Tasks | Implementing |
 | LOAD-04 | P1: Loading state | Tasks | Implementing |
 | ERR-01 | P1: Communication error state | Tasks | Implementing |
@@ -172,7 +172,7 @@ This slice moves the catalogue behind a json-server mock API and converts the pa
 | ERR-05 | P1: Communication error state | Tasks | Implementing |
 | ERR-06 | P1: Communication error state | Tasks | Implementing |
 | ERR-07 | P1: Communication error state | Tasks | Implementing |
-| ERR-08 | P1: Communication error state | Specify | Pending |
+| ERR-08 | P1: Communication error state | Tasks | Implementing |
 | MOD-01 | P1: Code organised as ES modules | Tasks | Implementing |
 | MOD-02 | P1: Code organised as ES modules | Tasks | Implementing |
 | MOD-03 | P1: Code organised as ES modules | Tasks | Implementing |
