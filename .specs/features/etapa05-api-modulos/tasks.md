@@ -225,16 +225,20 @@ Test count: 104 (101 + 3). The loading text lives in a new `.estado-carga` eleme
 
 **Done when**:
 
-- [ ] Aborted route, 500 response, non-array body, and a route held past 8000 ms (`page.clock`) each show exactly "Não foi possível carregar os presets. Verifique sua conexão e tente novamente." and a "Tentar novamente" button -> `tests/carga-estado.spec.js`
-- [ ] While the error shows: 0 cards, `#contagem` empty, `.lista-vazia` hidden, no loading text
-- [ ] First request fails, second succeeds: clicking "Tentar novamente" shows the loading text, sends a second request, then 9 cards
-- [ ] Two failures in a row: after the retry, exactly one error message and one button exist
-- [ ] Full gate passes: `npx playwright test`, exit 0
-- [ ] Test count: T4 total + new tests pass
+- [x] Aborted route, 500 response, non-array body, and a route held past 8000 ms (`page.clock`) each show exactly "Não foi possível carregar os presets. Verifique sua conexão e tente novamente." and a "Tentar novamente" button -> `tests/carga-estado.spec.js`
+- [x] While the error shows: 0 cards, `#contagem` empty, `.lista-vazia` hidden, no loading text
+- [x] First request fails, second succeeds: clicking "Tentar novamente" shows the loading text, sends a second request, then 9 cards
+- [x] Two failures in a row: after the retry, exactly one error message and one button exist
+- [x] Full gate passes: `npx playwright test`, exit 0
+- [x] Test count: T4 total + new tests pass
 
 **Tests**: e2e (`tests/carga-estado.spec.js`)
 **Gate**: full
 **Commit**: `feat(presets): show a retryable error when the catalogue fails to load`
+
+**Status**: Complete
+
+Test count: 110 (104 + 6). The retry button re-calls `carregarComEstado` with the same options; `replaceChildren` swaps the previous node, which is what keeps a second failure from stacking a second message (EDGE-02). The button reuses the look of "Aplicar" (`--brand-accent`).
 
 ---
 

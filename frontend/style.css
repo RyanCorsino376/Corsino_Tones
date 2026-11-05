@@ -474,6 +474,30 @@ input:focus-visible{
     margin: 0;
 }
 
+/* Error box: message above its retry button. */
+.estado-carga [role="alert"]{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+}
+
+/* Same look as the primary filter action: retrying is the one way forward. */
+.botao-tentar{
+    min-height: 32px;
+    padding: 0 16px;
+    font-family: inherit;
+    font-size: medium;
+    background-color: var(--brand-accent);
+    border: 0;
+    color: var(--text-primary);
+    cursor: pointer;
+}
+
+.botao-tentar:hover{
+    filter: brightness(1.1);
+}
+
 /*------------- Barra da lista (busca e ordenação) --------------------*/
 
 .barra-lista{

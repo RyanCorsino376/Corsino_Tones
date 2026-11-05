@@ -8,6 +8,7 @@ import { carregarComEstado } from '../ui/estado.js';
 // Fixed wording from the spec's assumption table.
 const MENSAGENS = {
     carregando: 'Carregando presets...',
+    erro: 'Não foi possível carregar os presets. Verifique sua conexão e tente novamente.',
 };
 
 const grade = document.querySelector('.grade-presets');

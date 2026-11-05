@@ -163,14 +163,14 @@ This slice moves the catalogue behind a json-server mock API and converts the pa
 | API-05 | P1: Catalogue served by the mock API | Tasks | Implementing |
 | LOAD-01 | P1: Loading state | Tasks | Implementing |
 | LOAD-02 | P1: Loading state | Specify | Pending |
-| LOAD-03 | P1: Loading state | Specify | Pending |
+| LOAD-03 | P1: Loading state | Tasks | Implementing |
 | LOAD-04 | P1: Loading state | Tasks | Implementing |
-| ERR-01 | P1: Communication error state | Specify | Pending |
-| ERR-02 | P1: Communication error state | Specify | Pending |
-| ERR-03 | P1: Communication error state | Specify | Pending |
-| ERR-04 | P1: Communication error state | Specify | Pending |
-| ERR-05 | P1: Communication error state | Specify | Pending |
-| ERR-06 | P1: Communication error state | Specify | Pending |
+| ERR-01 | P1: Communication error state | Tasks | Implementing |
+| ERR-02 | P1: Communication error state | Tasks | Implementing |
+| ERR-03 | P1: Communication error state | Tasks | Implementing |
+| ERR-04 | P1: Communication error state | Tasks | Implementing |
+| ERR-05 | P1: Communication error state | Tasks | Implementing |
+| ERR-06 | P1: Communication error state | Tasks | Implementing |
 | ERR-07 | P1: Communication error state | Tasks | Implementing |
 | ERR-08 | P1: Communication error state | Specify | Pending |
 | MOD-01 | P1: Code organised as ES modules | Tasks | Implementing |
@@ -180,7 +180,7 @@ This slice moves the catalogue behind a json-server mock API and converts the pa
 | REG-01 | P1: Etapa 04 behaviour preserved | Tasks | Implementing |
 | REG-02 | P1: Etapa 04 behaviour preserved | Tasks | Implementing |
 | EDGE-01 | Edge cases | Tasks | Implementing |
-| EDGE-02 | Edge cases | Specify | Pending |
+| EDGE-02 | Edge cases | Tasks | Implementing |
 
 **ID format:** `[CATEGORY]-[NUMBER]`. `EDGE-*` is scoped to this feature.
 
