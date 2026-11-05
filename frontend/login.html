@@ -24,7 +24,7 @@
         <div class="cartao-login" data-vista="login">
             <section class="login face face-login" aria-label="Entrar">
                 <h1>Entrar</h1>
-                <!-- action stays empty until the Spring Boot auth endpoint exists -->
+                <!-- action stays empty: paginas/login.js sends the form to the API -->
                 <!-- novalidate: login.js writes the messages; required/type still feed
                      validity and keep the browser checks when the script is off. -->
                 <form action="" method="post" class="loginCampos" id="form-login" novalidate>
@@ -38,7 +38,6 @@
                         <input type="password" id="senha" name="senha"
                             autocomplete="current-password" required>
                     </fieldset>
-                    <p class="mensagem-sucesso" role="status" hidden></p>
                     <button type="submit" class="loginBt">Login</button>
                     <button type="button" class="loginBt" data-alvo="cadastro">Não tenho conta</button>
                 </form>
@@ -71,6 +70,6 @@
         </div>
     </main>
     <footer class="rodape">Copyright 2026 ®</footer>
-    <script src="login.js" defer></script>
+    <script type="module" src="paginas/login.js"></script>
 </body>
 </html>

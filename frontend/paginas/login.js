@@ -1,3 +1,13 @@
+// Entry module for login.html: card flip, field validation, and sending both
+// forms to the users API (etapa05-auth).
+import { CredenciaisInvalidas, entrar } from '../servicos/auth.js';
+import { abrirSessao, destinoSeguro, usuarioAtual } from '../servicos/sessao.js';
+
+const voltar = new URLSearchParams(location.search).get('voltar');
+
+// Already signed in: the forms have nothing to do, so go where the visitor was heading.
+if (usuarioAtual()) location.replace(destinoSeguro(voltar));
+
 // Progressive enhancement: the flip styling is scoped to .js-flip, added below.
 // If this script never runs, both faces stay stacked and usable.
 (function () {
@@ -53,9 +63,11 @@
     };
 
     const sucesso = {
-        'form-login': 'Dados válidos! O login ficará disponível quando o servidor estiver pronto.',
         'form-cadastro': 'Dados válidos! O cadastro ficará disponível quando o servidor estiver pronto.',
     };
+
+    const MSG_CONEXAO = 'Não foi possível conectar ao servidor. Tente novamente.';
+    const TEXTO_PENDENTE = { 'form-login': 'Entrando...' };
 
     function validarCampo(campo) {
         const regra = regras[campo.id];
@@ -84,12 +96,57 @@
         campo.removeAttribute('aria-describedby');
     }
 
+    // One alert per form, reused, so a second failure never stacks a second message.
+    function mostrarAlerta(form, mensagem) {
+        let alerta = form.querySelector('.erro-formulario');
+        if (!alerta) {
+            alerta = document.createElement('p');
+            alerta.className = 'erro-formulario';
+            alerta.setAttribute('role', 'alert');
+            form.querySelector('button[type="submit"]').before(alerta);
+        }
+        alerta.textContent = mensagem;
+    }
+
+    function limparAlerta(form) {
+        const alerta = form.querySelector('.erro-formulario');
+        if (alerta) alerta.remove();
+    }
+
+    function tratarFalha(form, erro) {
+        if (erro instanceof CredenciaisInvalidas) {
+            mostrarAlerta(form, erro.message);
+            form.querySelector('#senha').value = '';
+            return;
+        }
+        // Anything else is a communication failure, already logged by api/cliente.js.
+        mostrarAlerta(form, MSG_CONEXAO);
+    }
+
+    /** Runs `acao` with the submit button in its pending state; on success, signs in and leaves. */
+    async function enviar(form, acao) {
+        const botao = form.querySelector('button[type="submit"]');
+        const textoOriginal = botao.textContent;
+        limparAlerta(form);
+        // Disabled while pending: a double click must not send the form twice.
+        botao.disabled = true;
+        botao.textContent = TEXTO_PENDENTE[form.id];
+        try {
+            abrirSessao(await acao());
+            // The button stays disabled while the next page loads.
+            location.replace(destinoSeguro(voltar));
+            return;
+        } catch (erro) {
+            tratarFalha(form, erro);
+        }
+        botao.disabled = false;
+        botao.textContent = textoOriginal;
+    }
+
     function aoEnviar(evento) {
-        // No server yet: a valid form is never sent either.
         evento.preventDefault();
         const form = evento.currentTarget;
         const campos = Array.from(form.querySelectorAll('input'));
-        const aviso = form.querySelector('.mensagem-sucesso');
 
         campos.forEach((campo) => {
             const mensagem = validarCampo(campo);
@@ -98,9 +155,19 @@
         });
 
         const valido = campos.every((campo) => !campo.hasAttribute('aria-invalid'));
-        aviso.hidden = !valido;
-        aviso.textContent = valido ? sucesso[form.id] : '';
-        if (!valido) campos.find((campo) => campo.hasAttribute('aria-invalid')).focus();
+        if (!valido) {
+            campos.find((campo) => campo.hasAttribute('aria-invalid')).focus();
+            return;
+        }
+
+        if (form.id === 'form-login') {
+            enviar(form, () => entrar(form.querySelector('#email').value, form.querySelector('#senha').value));
+            return;
+        }
+        // Registration still shows the placeholder until it reaches the server (T6).
+        const aviso = form.querySelector('.mensagem-sucesso');
+        aviso.hidden = false;
+        aviso.textContent = sucesso[form.id];
     }
 
     // Only fields a submit already rejected are re-checked, so typing before the
@@ -113,7 +180,7 @@
         else limparErro(campo);
     }
 
-    for (const id of Object.keys(sucesso)) {
+    for (const id of ['form-login', 'form-cadastro']) {
         const form = document.getElementById(id);
         if (!form) continue;
         form.addEventListener('submit', aoEnviar);

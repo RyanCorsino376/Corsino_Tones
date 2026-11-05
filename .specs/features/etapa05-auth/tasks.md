@@ -239,20 +239,24 @@ Test count: 145 (138 + 7). One extra test (communication failure -> `ErroApi`) g
 
 **Done when**:
 
-- [ ] Invalid login data shows the etapa04 messages and no request to `/usuarios` is made -> `tests/login-validacao.spec.js` (rewritten rows)
-- [ ] `ryan@exemplo.com` / `teste123` opens the session and lands on `index.html`; with `?voltar=biblioteca.html` it lands on `biblioteca.html`; with `?voltar=https://evil.example` on `index.html` -> `tests/login-api.spec.js`
-- [ ] Wrong password: alert "E-mail ou senha incorretos.", password field empty, no `corsino:sessao`, still on `login.html`
-- [ ] Aborted route: alert "Não foi possível conectar ao servidor. Tente novamente.", e-mail and password kept
-- [ ] While the route is held: "Login" button disabled with text "Entrando..."; after a failure it is enabled with text "Login" again
-- [ ] Two failed submits leave exactly one alert in the form
-- [ ] Opening `login.html` with a session redirects to `index.html` (or the valid `voltar`)
-- [ ] `tests/login-flip.spec.js` and the remaining `tests/login-validacao.spec.js` tests pass unchanged; `frontend/login.js` no longer exists; `login.html` loads one `<script type="module">`
-- [ ] Full gate passes: `npx playwright test`, exit 0
-- [ ] Test count: T4 total + new tests pass (rewritten tests count once)
+- [x] Invalid login data shows the etapa04 messages and no request to `/usuarios` is made -> `tests/login-validacao.spec.js` (rewritten rows)
+- [x] `ryan@exemplo.com` / `teste123` opens the session and lands on `index.html`; with `?voltar=biblioteca.html` it lands on `biblioteca.html`; with `?voltar=https://evil.example` on `index.html` -> `tests/login-api.spec.js`
+- [x] Wrong password: alert "E-mail ou senha incorretos.", password field empty, no `corsino:sessao`, still on `login.html`
+- [x] Aborted route: alert "Não foi possível conectar ao servidor. Tente novamente.", e-mail and password kept
+- [x] While the route is held: "Login" button disabled with text "Entrando..."; after a failure it is enabled with text "Login" again
+- [x] Two failed submits leave exactly one alert in the form
+- [x] Opening `login.html` with a session redirects to `index.html` (or the valid `voltar`)
+- [x] `tests/login-flip.spec.js` and the remaining `tests/login-validacao.spec.js` tests pass unchanged; `frontend/login.js` no longer exists; `login.html` loads one `<script type="module">`
+- [x] Full gate passes: `npx playwright test`, exit 0
+- [x] Test count: T4 total + new tests pass (rewritten tests count once)
 
 **Tests**: e2e (`tests/login-api.spec.js`, `tests/login-validacao.spec.js`)
 **Gate**: full
 **Commit**: `feat(login): sign in through the users API`
+
+**Status**: Complete
+
+Test count: 157 (145 + 12). Two rows of `login-validacao.spec.js` rewritten as planned (no assertion removed: the placeholder-message checks became request checks). `login.js` moved with `git mv`, so its history follows. The registration branch keeps the placeholder message until T6.
 
 ---
 

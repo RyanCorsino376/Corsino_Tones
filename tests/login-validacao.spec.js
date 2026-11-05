@@ -3,6 +3,24 @@ const { test, expect } = require('@playwright/test');
 // Tests derive from .specs/features/etapa04-interatividade/spec.md (VAL-*, EDGE-02, EDGE-03).
 // Messages are only required to be Portuguese and per field, so the tests check
 // that they exist, differ and are linked, not their exact wording.
+// VAL-06 is superseded by .specs/features/etapa05-auth/spec.md (AUTH-01, CAD-01):
+// a valid form now reaches the server and an invalid one sends nothing. Those
+// requests are intercepted here, so validation tests never write to the database.
+
+const API_USUARIOS = 'http://127.0.0.1:3000/usuarios';
+
+/** Answers every /usuarios request locally and records it as "METHOD url". */
+async function interceptarUsuarios(page) {
+  const pedidos = [];
+  await page.route(`${API_USUARIOS}**`, (rota) => {
+    const req = rota.request();
+    pedidos.push(`${req.method()} ${req.url()}`);
+    return req.method() === 'POST'
+      ? rota.fulfill({ status: 201, json: { id: 999, ...req.postDataJSON() } })
+      : rota.fulfill({ json: [] });
+  });
+  return pedidos;
+}
 
 /** The message element linked to a field through aria-describedby. */
 function mensagemDe(page, id) {
@@ -118,8 +136,9 @@ test.describe('T7 - login validation on submit', () => {
     await page.goto('login.html');
   });
 
-  // VAL-02, VAL-03, VAL-04: bad e-mail and empty password are both rejected.
+  // VAL-02, VAL-03, VAL-04, AUTH-01: bad e-mail and empty password are both rejected, and nothing is sent.
   test('rejects a bad e-mail and an empty password', async ({ page }) => {
+    const pedidos = await interceptarUsuarios(page);
     await enviarLogin(page, 'ryan@x', '');
 
     for (const id of ['email', 'senha']) {
@@ -127,16 +146,16 @@ test.describe('T7 - login validation on submit', () => {
       expect(await mensagemDe(page, id), id).toBeTruthy();
     }
     await expect(page.locator('#email')).toBeFocused();
-    await expect(page.locator('.face-login .mensagem-sucesso')).toHaveCount(1);
-    await expect(page.locator('.face-login .mensagem-sucesso')).toBeHidden();
+    expect(pedidos).toEqual([]);
   });
 
-  // VAL-02: login does not apply the 8-character rule.
+  // VAL-02, AUTH-02: login does not apply the 8-character rule, so a short password reaches the server.
   test('accepts a short password on login', async ({ page }) => {
+    const pedidos = await interceptarUsuarios(page);
     await enviarLogin(page, 'ryan@x.com', '123');
 
     await expect(page.locator('#senha')).not.toHaveAttribute('aria-invalid', 'true');
-    await expect(page.locator('.face-login .mensagem-sucesso')).toBeVisible();
+    await expect.poll(() => pedidos).toEqual([`GET ${API_USUARIOS}?email=ryan%40x.com`]);
   });
 });
 

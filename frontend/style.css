@@ -621,6 +621,7 @@ fieldset{
    field. Not min(200px, 100%): a percentage is ignored when the fieldset sizes
    itself to its content, and the full message width would win. */
 .erro-campo,
+.erro-formulario,
 .mensagem-sucesso{
     width: 200px;
     max-width: 100%;
@@ -628,7 +629,8 @@ fieldset{
     font-size: small;
 }
 
-.erro-campo{
+.erro-campo,
+.erro-formulario{
     color: var(--brand-accent);
 }
 
