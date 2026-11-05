@@ -1,0 +1,34 @@
+Etapa 05 - separação do código em módulos (ES modules: import/export).
+
+Cada página carrega um único <script type="module"> da pasta paginas/.
+Regra de dependência (decisão AD-009 em .specs/STATE.md):
+  paginas/ -> servicos/ e ui/ -> api/
+  - só api/ chama fetch;
+  - só servicos/sessao.js mexe no sessionStorage;
+  - ui/ nunca importa api/ (recebe a requisição como função).
+
+frontend/
+├── api/                    comunicação HTTP com o servidor
+│   ├── cliente.js          requisicao(): fetch + limite de 8 s + erro padronizado (ErroApi)
+│   ├── presets.js          listarPresets()            GET  /presets
+│   └── usuarios.js         buscarUsuarioPorEmail()    GET  /usuarios?email=
+│                           criarUsuario()             POST /usuarios
+├── servicos/               regras do negócio e estado do navegador
+│   ├── auth.js             entrar(), cadastrar(): e-mail normalizado, senha, e-mail já usado
+│   └── sessao.js           abrirSessao(), usuarioAtual(), encerrarSessao(), destinoSeguro()
+├── ui/                     peças de interface reaproveitadas
+│   ├── aviso-login.js      pop-up "Faça login para acessar sua biblioteca"
+│   ├── cabecalho.js        "Entrar" ou "Olá, {nome}" + "Sair"
+│   ├── cartao.js           criarCartao(), ordenarMaisRecentes()
+│   ├── estado.js           carregarComEstado(): carregando / sucesso / erro + "Tentar novamente"
+│   └── formato.js          ROTULOS (nomes de marcas e estilos)
+└── paginas/                um módulo de entrada por página
+    ├── inicio.js           index.html       carrossel
+    ├── presets.js          presets.html     lista, filtros, busca, ordenação
+    ├── preset.js           preset.html      cabeçalho
+    ├── login.js            login.html       virada do cartão, validação, login e cadastro
+    └── biblioteca.js       biblioteca.html  exige login (pop-up)
+
+mock/                       servidor simulado (json-server)
+├── db.seed.json            dados iniciais versionados: 9 presets + usuário de teste
+└── preparar.js             cria mock/db.json (ignorado pelo git) a partir da semente
