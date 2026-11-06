@@ -67,7 +67,7 @@ test.describe('etapa05-packs T3 - pack cards on packs.html', () => {
   });
 
   // LIST-01: the same menu on the other pages.
-  for (const pagina of ['index.html', 'biblioteca.html', 'login.html']) {
+  for (const pagina of ['index.html', 'pack.html?id=rock-boss-gt-1000', 'biblioteca.html', 'login.html']) {
     test(`${pagina} mostra o menu sem o link Presets`, async ({ page }) => {
       await page.goto(pagina);
       await expect(page.locator('.nav-links a')).toHaveText(['Página Inicial', 'Packs', 'Biblioteca']);
@@ -246,6 +246,20 @@ test.describe('etapa05-packs T3 - search (LIST-07, rev. 2)', () => {
     expect((await nomesVisiveis(page)).sort()).toEqual(['Blues · Line 6 HX Stomp', 'Rock · Line 6 HX Stomp']);
   });
 
+  // LIST-07 equipamento branch (Verifier gap): in the sample data the name always
+  // contains the model, so this pack's name leaves it out on purpose.
+  test('a busca acha o modelo mesmo quando ele não está no nome do pack', async ({ page }) => {
+    await page.route(`${API}/packs`, (rota) => rota.fulfill({ json: [
+      { id: 'a', nome: 'Pack A', estilo: 'rock', marca: 'boss', equipamento: 'Katana', descricao: 'x', precoCentavos: 4990 },
+      { id: 'b', nome: 'Pack B', estilo: 'rock', marca: 'boss', equipamento: 'GT-1000', descricao: 'y', precoCentavos: 4990 },
+    ] }));
+    await page.route(`${API}/presets`, (rota) => rota.fulfill({ json: [] }));
+    await page.goto('packs.html');
+    await expect(page.locator('#contagem')).toHaveText('2 packs encontrados');
+    await page.getByLabel('Buscar').fill('katana');
+    expect(await nomesVisiveis(page)).toEqual(['Pack A']);
+  });
+
   test('a busca acha o nome e a descrição do próprio pack', async ({ page }) => {
     await page.getByLabel('Buscar').fill('clean · nux');
     expect(await nomesVisiveis(page)).toEqual(['Clean · NUX MG-30']);
@@ -302,6 +316,22 @@ test.describe('etapa05-packs T3 - sort and reset (LIST-08, LIST-09)', () => {
     const antigos = [...packs].sort(porData).map((p) => p.nome);
     const nome = packs.map((p) => p.nome).sort((a, b) => a.localeCompare(b, 'pt-BR'));
     expect(new Set([recentes.join(), antigos.join(), nome.join()]).size).toBe(3);
+  });
+
+  // LIST-08 pt-BR collation (Verifier gap, lesson L-003): names whose pt-BR order
+  // differs from plain code-point order.
+  test('"Nome (A-Z)" usa a ordem do português, não a ordem dos códigos dos caracteres', async ({ page }) => {
+    const nomes = ['Blues · B', 'acústico · A', 'Ácido · C', 'zumbido · D'];
+    const ptBR = [...nomes].sort((a, b) => a.localeCompare(b, 'pt-BR'));
+    const codigos = [...nomes].sort();
+    expect(ptBR).not.toEqual(codigos);
+    await page.route(`${API}/packs`, (rota) => rota.fulfill({ json: nomes.map((nome, i) => (
+      { id: `p${i}`, nome, estilo: 'rock', marca: 'boss', equipamento: 'GT-1000', descricao: 'x', precoCentavos: 4990 })) }));
+    await page.route(`${API}/presets`, (rota) => rota.fulfill({ json: [] }));
+    await page.goto('packs.html');
+    await expect(page.locator('#contagem')).toHaveText('4 packs encontrados');
+    await page.getByLabel('Ordenar por').selectOption({ label: 'Nome (A-Z)' });
+    expect(await nomesVisiveis(page)).toEqual(ptBR);
   });
 
   test('"Mais antigos" ordena pela data do preset mais novo de cada pack, crescente', async ({ page }) => {

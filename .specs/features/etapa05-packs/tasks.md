@@ -10,7 +10,7 @@ Implement these tasks with the `tlc-spec-driven` skill: **activate it by name an
 
 **Spec**: `.specs/features/etapa05-packs/spec.md`
 **Design**: `.specs/features/etapa05-packs/design.md`
-**Status**: Done (pending Verifier)
+**Status**: Done (pending Verifier iteration 2)
 
 ### Files renamed, removed or rewritten
 
@@ -480,3 +480,20 @@ Ten tasks; the remaining three run inline. The Verifier runs automatically after
 | PAG-01, PAG-02, PAG-05, EDGE-01 (rev. 2) | T10 |
 
 **Coverage:** 40 requirements, 40 mapped to tasks, 0 unmapped.
+
+---
+
+## Verifier Fixes (iteration 1)
+
+The first Verifier run on revision 2 returned FAIL: 33 mutants, 29 killed, 2 equivalent survivors (M01 brand filter on preset brands, equivalent while PACK-04 holds; M03 search without `pack.equipamento`, equivalent on the sample data), 2 real survivors, and a stale README.
+
+| Gap | Fix | Kind |
+| --- | --- | ---- |
+| FIX-03: README still said "para qualquer equipamento" and cited `pack.html?id=rock` | README rewritten for style + model packs; tests require the new wording, forbid the old one, and request every `pack.html?id=` the README cites from the API | doc + test |
+| FIX-02 (M22): the disabled style was asserted on the login button only | Also asserted on "Cadastrando..." and on a disabled button created on `packs.html` | test |
+| LIST-08 (M24, lesson L-003): no pack names sort differently by code point | Test with route-fulfilled names whose pt-BR order differs from code-point order | test |
+| LIST-01: menu not asserted on `pack.html` | Added to the menu loop | test |
+| LIST-07: `equipamento` branch unobservable (M03) | Test with a route-fulfilled pack whose name omits the model | test |
+| noscript text said "para ver os presets" | Now "para ver os packs" | copy |
+
+Each real survivor and the old README were re-applied in the real files and fail the new tests (M22: 2 failures, M24: 1, old README: 2); the files were restored. Test count: 232 passing.

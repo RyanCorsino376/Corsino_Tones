@@ -1,8 +1,9 @@
 # CorsinoTones
 
 Loja de **packs de presets** de pedais e pedaleiras de guitarra. Um preset é um
-conjunto de ajustes salvo no equipamento; um pack reúne todos os presets de um
-estilo musical (Rock, Blues, Metal, Clean), para qualquer equipamento.
+conjunto de ajustes salvo no equipamento; um pack reúne os presets de **um estilo
+musical para um único modelo de pedaleira** (por exemplo, "Rock · Boss GT-1000"),
+então tudo o que se compra funciona no aparelho de quem comprou.
 
 A proposta inicial (problema, público e tecnologias previstas) está em
 [`docs/proposta.md`](docs/proposta.md). O plano da loja, com as decisões tomadas
@@ -18,8 +19,8 @@ da etapa, evidências e roteiro de teste: [`docs/etapa-05.md`](docs/etapa-05.md)
 | Tela | Arquivo | O que faz |
 | ---- | ------- | --------- |
 | Página inicial | `frontend/index.html` | Carrossel com os packs |
-| Packs | `frontend/packs.html` | Cards dos packs com filtros por marca e estilo, busca e ordenação |
-| Pack | `frontend/pack.html?id=rock` | Preço, descrição e presets incluídos |
+| Packs | `frontend/packs.html` | Cards dos packs com filtros por marca e estilo, busca (inclusive pelo modelo) e ordenação |
+| Pack | `frontend/pack.html?id=rock-boss-gt-1000` | Preço, descrição e presets incluídos |
 | Entrar / Criar conta | `frontend/login.html` | Login e cadastro pela API (cartão que gira) |
 | Biblioteca | `frontend/biblioteca.html` | Exige login; mostrará os packs comprados |
 
