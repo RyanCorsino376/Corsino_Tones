@@ -18,3 +18,10 @@ export const ROTULOS = {
         clean: 'Clean',
     },
 };
+
+const MOEDA = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' });
+
+/** 4990 -> "R$ 49,90". Prices travel as integer cents; reais exist only on screen. */
+export function formatarPreco(centavos) {
+    return MOEDA.format(centavos / 100);
+}

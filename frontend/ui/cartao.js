@@ -1,5 +1,5 @@
-// Shared card builder and default order, used by every page that lists presets.
-import { ROTULOS } from './formato.js';
+// Shared card builders and default order, used by every page that lists packs.
+import { formatarPreco, ROTULOS } from './formato.js';
 
 export function criarCartao(preset) {
     const cartao = document.createElement('a');
@@ -19,6 +19,36 @@ export function criarCartao(preset) {
     estilo.textContent = ROTULOS.estilo[preset.estilo];
 
     cartao.append(nome, equipamento, estilo);
+    return cartao;
+}
+
+/** Card of one pack view (servicos/catalogo.js): name, preset count, brands, price. */
+export function criarCartaoPack(pack) {
+    const cartao = document.createElement('a');
+    cartao.className = 'cartao';
+    cartao.href = `pack.html?id=${encodeURIComponent(pack.id)}`;
+
+    const nome = document.createElement('h2');
+    nome.className = 'cartao-nome';
+    nome.textContent = pack.nome;
+
+    const quantidade = document.createElement('p');
+    quantidade.className = 'cartao-quantidade';
+    quantidade.textContent = pack.presets.length === 1 ? '1 preset' : `${pack.presets.length} presets`;
+
+    // Brands explain why a brand filter matched this pack.
+    const marcas = document.createElement('p');
+    marcas.className = 'cartao-marcas';
+    marcas.textContent = pack.marcas
+        .map((marca) => ROTULOS.marca[marca])
+        .sort((a, b) => a.localeCompare(b, 'pt-BR'))
+        .join(', ');
+
+    const preco = document.createElement('p');
+    preco.className = 'cartao-preco';
+    preco.textContent = formatarPreco(pack.precoCentavos);
+
+    cartao.append(nome, quantidade, marcas, preco);
     return cartao;
 }
 

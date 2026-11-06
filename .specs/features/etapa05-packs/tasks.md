@@ -118,18 +118,22 @@ Test count: 189 (180 + 9). Run `npm run api:reset` once on an existing checkout:
 
 **Done when**:
 
-- [ ] `montarPacks` on the seed gives for `rock`: 3 presets, `marcas` = `['boss', 'zoom']` (any order), `data` = `'2026-09-10'`; for `metal`: 2 presets -> `tests/catalogo.spec.js`
-- [ ] A pack with no preset gets `presets: []`, `marcas: []`, `data: ''`
-- [ ] `carregarCatalogo` starts `GET /presets` before `GET /packs` answers (route on `/packs` held; `/presets` request observed while held)
-- [ ] `carregarCatalogo` rejects when `/presets` is aborted while `/packs` succeeds (EDGE-02)
-- [ ] `formatarPreco(4990)` equals `new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(49.9)` and contains "49,90"
-- [ ] `criarCartaoPack(rock view)` is an `<a>` to `pack.html?id=rock` showing "Pack Rock", "3 presets", "Boss, Zoom" and the formatted price; a 1-preset pack shows "1 preset"
-- [ ] The current pages keep working (T3 and T4 switch them); full gate passes
-- [ ] Test count: T1 total + new tests pass
+- [x] `montarPacks` on the seed gives for `rock`: 3 presets, `marcas` = `['boss', 'zoom']` (any order), `data` = `'2026-09-10'`; for `metal`: 2 presets -> `tests/catalogo.spec.js`
+- [x] A pack with no preset gets `presets: []`, `marcas: []`, `data: ''`
+- [x] `carregarCatalogo` starts `GET /presets` before `GET /packs` answers (route on `/packs` held; `/presets` request observed while held)
+- [x] `carregarCatalogo` rejects when `/presets` is aborted while `/packs` succeeds (EDGE-02)
+- [x] `formatarPreco(4990)` equals `new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(49.9)` and contains "49,90"
+- [x] `criarCartaoPack(rock view)` is an `<a>` to `pack.html?id=rock` showing "Pack Rock", "3 presets", "Boss, Zoom" and the formatted price; a 1-preset pack shows "1 preset"
+- [x] The current pages keep working (T3 and T4 switch them); full gate passes
+- [x] Test count: T1 total + new tests pass
 
 **Tests**: e2e (`tests/catalogo.spec.js`)
 **Gate**: full
 **Commit**: `feat(catalog): join packs with their presets and build pack cards`
+
+**Status**: Complete
+
+Test count: 195 (189 + 6). Deviation: the preset card `criarCartao` stays until T4, when the home carousel (its last user) switches to packs; removing it here would break the pages before T3/T4.
 
 ---
 
