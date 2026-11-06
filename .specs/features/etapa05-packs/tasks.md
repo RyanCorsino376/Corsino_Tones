@@ -231,19 +231,23 @@ Test count: 203 (201 + 2). The home loading/error tests now use the packs texts 
 
 **Done when**:
 
-- [ ] `pack.html?id=metal` requests `GET /packs/metal` and `GET /presets?estilo=metal`; shows `<h1>` "Pack Metal", its description, the formatted price, "2 presets", and a list with "Distorção Moderna" (NUX · MG-30) and "Djent Preciso" (HeadRush · MX5) with descriptions -> `tests/pack-pagina.spec.js`
-- [ ] Title "Pack Metal | CorsinoTones"
-- [ ] No download link on the page
-- [ ] No `id`, `Rock`, `rock1`, `../x`: "Pack não encontrado." + "Ver todos os packs" → `packs.html`, and no request to the API
-- [ ] `jazz` (404): same not-found message
-- [ ] Aborted route: error text + "Tentar novamente"; retry with a working route shows the pack
-- [ ] While held: "Carregando pack..." and the info block hidden; while not-found or error: info block hidden
-- [ ] Signed in: header shows "Olá, Ryan" on the pack page
-- [ ] Full gate passes; test count reported
+- [x] `pack.html?id=metal` requests `GET /packs/metal` and `GET /presets?estilo=metal`; shows `<h1>` "Pack Metal", its description, the formatted price, "2 presets", and a list with "Distorção Moderna" (NUX · MG-30) and "Djent Preciso" (HeadRush · MX5) with descriptions -> `tests/pack-pagina.spec.js`
+- [x] Title "Pack Metal | CorsinoTones"
+- [x] No download link on the page
+- [x] No `id`, `Rock`, `rock1`, `../x`: "Pack não encontrado." + "Ver todos os packs" → `packs.html`, and no request to the API
+- [x] `jazz` (404): same not-found message
+- [x] Aborted route: error text + "Tentar novamente"; retry with a working route shows the pack
+- [x] While held: "Carregando pack..." and the info block hidden; while not-found or error: info block hidden
+- [x] Signed in: header shows "Olá, Ryan" on the pack page
+- [x] Full gate passes; test count reported
 
 **Tests**: e2e (`tests/pack-pagina.spec.js`)
 **Gate**: full
 **Commit**: `feat(pack): add a page per pack with its price and presets`
+
+**Status**: Complete
+
+Test count: 217 (203 + 14). The info block and the preset list start `hidden`; `.preset-topo[hidden]` restores `display: none`, which the grid rule would otherwise override. Six malformed ids are tested, including a missing `id` parameter.
 
 ---
 

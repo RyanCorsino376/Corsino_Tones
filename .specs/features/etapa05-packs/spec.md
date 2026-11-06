@@ -225,15 +225,15 @@ This slice turns the "Presets" page into a **"Packs"** page that lists pack card
 | HOME-01 | P1: Packs on the home page | Tasks | Implementing |
 | HOME-02 | P1: Packs on the home page | Tasks | Implementing |
 | HOME-03 | P1: Packs on the home page | Tasks | Implementing |
-| PAG-01 | P1: Pack page | Specify | Pending |
-| PAG-02 | P1: Pack page | Specify | Pending |
-| PAG-03 | P1: Pack page | Specify | Pending |
-| PAG-04 | P1: Pack page | Specify | Pending |
-| PAG-05 | P1: Pack page | Specify | Pending |
-| PAG-06 | P1: Pack page | Specify | Pending |
-| PAG-07 | P1: Pack page | Specify | Pending |
-| PAG-08 | P1: Pack page | Specify | Pending |
-| PAG-09 | P1: Pack page | Specify | Pending |
+| PAG-01 | P1: Pack page | Tasks | Implementing |
+| PAG-02 | P1: Pack page | Tasks | Implementing |
+| PAG-03 | P1: Pack page | Tasks | Implementing |
+| PAG-04 | P1: Pack page | Tasks | Implementing |
+| PAG-05 | P1: Pack page | Tasks | Implementing |
+| PAG-06 | P1: Pack page | Tasks | Implementing |
+| PAG-07 | P1: Pack page | Tasks | Implementing |
+| PAG-08 | P1: Pack page | Tasks | Implementing |
+| PAG-09 | P1: Pack page | Tasks | Implementing |
 | REM-01 | P1: No single-preset pages | Specify | Pending |
 | REM-02 | P1: No single-preset pages | Specify | Pending |
 | FIX-01 | P2: Leftovers from slice 2 | Specify | Pending |
@@ -242,7 +242,7 @@ This slice turns the "Presets" page into a **"Packs"** page that lists pack card
 | FIX-04 | P2: Leftovers from slice 2 | Specify | Pending |
 | REG-01 | P1: Existing behaviour preserved | Specify | Pending |
 | REG-02 | P1: Existing behaviour preserved | Tasks | Implementing |
-| EDGE-01 | Edge cases | Specify | Pending |
+| EDGE-01 | Edge cases | Tasks | Implementing |
 | EDGE-02 | Edge cases | Tasks | Implementing |
 | EDGE-03 | Edge cases | Tasks | Implementing |
 

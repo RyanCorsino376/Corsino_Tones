@@ -370,6 +370,45 @@ input:focus-visible{
     align-items: start;
 }
 
+/* display: grid above would otherwise override the hidden attribute. */
+.preset-topo[hidden],
+.pack-conteudo[hidden]{
+    display: none;
+}
+
+.pack-quantidade,
+.pack-preset-equipamento{
+    color: var(--text-secondary);
+}
+
+.pack-preco{
+    color: var(--brand-accent);
+    font-size: x-large;
+    font-weight: bold;
+}
+
+.pack-conteudo{
+    margin-top: clamp(40px, 6vw, 80px);
+}
+
+.pack-presets{
+    display: grid;
+    gap: 16px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.pack-presets li{
+    padding: 16px 20px;
+    background-color: var(--bg-card);
+}
+
+.pack-presets h3,
+.pack-presets p{
+    margin: 0 0 4px;
+}
+
 .preset-capa{
     aspect-ratio: 1 / 1;
     background-color: var(--bg-card);

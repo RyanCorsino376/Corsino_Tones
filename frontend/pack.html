@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Página de um pack de presets por estilo: preço e presets incluídos.">
+    <link rel="stylesheet" href="style.css">
+    <title>Pack | CorsinoTones</title>
+</head>
+<body>
+    <header class="cabecalho">
+        <a href="index.html"><img src="../imagens/LogoSite.svg" alt="CorsinoTones" class="icone"></a>
+    </header>
+    <nav class="navegacao">
+        <div class="nav-links">
+            <a href="index.html" class="nav-txt">Página Inicial</a>
+            <a href="packs.html" class="nav-txt" aria-current="page">Packs</a>
+            <a href="biblioteca.html" class="nav-txt">Biblioteca</a>
+        </div>
+        <a href="login.html" class="entrar">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none"
+                stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <circle cx="12" cy="7" r="4"/>
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+            </svg>
+            <span>Entrar</span>
+        </a>
+    </nav>
+    <main class="conteudo">
+        <!-- Loading, error and not-found messages; empty once the pack is on screen. -->
+        <div class="estado-carga"></div>
+        <!-- Both blocks stay hidden until paginas/pack.js has the pack. -->
+        <section class="preset-topo" hidden>
+            <div class="preset-capa"></div>
+            <div class="preset-info">
+                <h1></h1>
+                <p class="pack-quantidade"></p>
+                <p class="pack-descricao"></p>
+                <p class="pack-preco"></p>
+            </div>
+        </section>
+        <section class="pack-conteudo" hidden>
+            <h2>Presets incluídos</h2>
+            <ul class="pack-presets"></ul>
+        </section>
+    </main>
+    <footer class="rodape">Copyright 2026 ®</footer>
+    <script type="module" src="paginas/pack.js"></script>
+</body>
+</html>
