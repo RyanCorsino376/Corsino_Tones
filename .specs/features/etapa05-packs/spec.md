@@ -216,7 +216,7 @@ This slice turns the "Presets" page into a **"Packs"** page that lists pack card
 | PACK-01 | P1: Packs in the mock API | Tasks | Implementing |
 | PACK-02 | P1: Packs in the mock API | Tasks | Implementing |
 | PACK-03 | P1: Packs in the mock API | Tasks | Implementing |
-| PACK-04 | P1: Packs in the mock API | Specify | Pending |
+| PACK-04 | P1: Packs in the mock API | Tasks | Implementing |
 | LIST-01 | P1: Packs page with filters, search and sort | Tasks | Implementing |
 | LIST-02 | P1: Packs page with filters, search and sort | Tasks | Implementing |
 | LIST-03 | P1: Packs page with filters, search and sort | Tasks | Implementing |
@@ -229,7 +229,7 @@ This slice turns the "Presets" page into a **"Packs"** page that lists pack card
 | LIST-10 | P1: Packs page with filters, search and sort | Tasks | Implementing |
 | LIST-11 | P1: Packs page with filters, search and sort | Tasks | Implementing |
 | LIST-12 | P1: Packs page with filters, search and sort | Tasks | Implementing |
-| LIST-13 | P1: Packs page with filters, search and sort | Specify | Pending |
+| LIST-13 | P1: Packs page with filters, search and sort | Tasks | Implementing |
 | HOME-01 | P1: Packs on the home page | Tasks | Implementing |
 | HOME-02 | P1: Packs on the home page | Tasks | Implementing |
 | HOME-03 | P1: Packs on the home page | Tasks | Implementing |

@@ -25,18 +25,20 @@ test.describe('etapa05-packs T2 - catalogue join, pack card and price', () => {
     await page.goto('login.html');
   });
 
-  // LIST-05 data: presets, brands and newest date per pack.
-  test('montarPacks junta a cada pack os presets do seu estilo, as marcas e a data mais recente', async ({ page }) => {
-    const porId = Object.fromEntries((await packsMontados(page)).map((p) => [p.id, p]));
+  // LIST-05 data (rev. 2): presets by packId and newest date per pack.
+  test('montarPacks junta a cada pack os presets com o seu packId e a data mais recente', async ({ page }) => {
+    const montados = await packsMontados(page);
+    const presets = await page.request.get(`${API}/presets`).then((r) => r.json());
 
-    expect(Object.keys(porId)).toEqual(['rock', 'blues', 'metal', 'clean']);
-    expect(porId.rock.presets.map((p) => p.nome).sort()).toEqual(['Crunch Clássico', 'Hard Rock Anos 80', 'Ápice do Solo'].sort());
-    expect([...porId.rock.marcas].sort()).toEqual(['boss', 'zoom']);
-    expect(porId.rock.data).toBe('2026-09-10');
-    expect(porId.metal.presets).toHaveLength(2);
-    expect([...porId.metal.marcas].sort()).toEqual(['headrush', 'nux']);
-    expect(porId.metal.data).toBe('2026-08-15');
-    expect(porId.rock).toMatchObject({ nome: 'Pack Rock', precoCentavos: 4990 });
+    expect(montados).toHaveLength(9);
+    for (const pack of montados) {
+      const doPack = presets.filter((p) => p.packId === pack.id);
+      expect(pack.presets.map((p) => p.id).sort((a, b) => a - b), pack.id).toEqual(doPack.map((p) => p.id).sort((a, b) => a - b));
+      expect(pack.data, pack.id).toBe(doPack.map((p) => p.data).sort().at(-1));
+    }
+    const rock = montados.find((p) => p.id === 'rock-boss-gt-1000');
+    expect(rock).toMatchObject({ nome: 'Rock · Boss GT-1000', precoCentavos: 4990, data: '2026-09-10' });
+    expect(rock.presets).toHaveLength(3);
   });
 
   // Edge: a pack with no preset of its style.
@@ -45,7 +47,7 @@ test.describe('etapa05-packs T2 - catalogue join, pack card and price', () => {
       const { montarPacks } = await import('/frontend/servicos/catalogo.js');
       return montarPacks([{ id: 'jazz', nome: 'Pack Jazz', descricao: 'x', precoCentavos: 4990 }], []);
     });
-    expect(resultado).toEqual([{ id: 'jazz', nome: 'Pack Jazz', descricao: 'x', precoCentavos: 4990, presets: [], marcas: [], data: '' }]);
+    expect(resultado).toEqual([{ id: 'jazz', nome: 'Pack Jazz', descricao: 'x', precoCentavos: 4990, presets: [], data: '' }]);
   });
 
   // LIST-02: GET /presets starts while GET /packs is still pending.
@@ -62,7 +64,7 @@ test.describe('etapa05-packs T2 - catalogue join, pack card and price', () => {
 
     await pedidoPresets; // arrives while /packs is held
     liberarPacks();
-    expect(await carregado).toBe(4);
+    expect(await carregado).toBe(9);
   });
 
   // EDGE-02: one read failing fails the whole catalogue.
@@ -84,7 +86,7 @@ test.describe('etapa05-packs T2 - catalogue join, pack card and price', () => {
   });
 
   // LIST-05 card.
-  test('criarCartaoPack mostra nome, quantidade, marcas e preço e leva ao pack', async ({ page }) => {
+  test('criarCartaoPack mostra nome, quantidade e preço e leva ao pack', async ({ page }) => {
     const cartoes = await page.evaluate(async () => {
       const { montarPacks } = await import('/frontend/servicos/catalogo.js');
       const { criarCartaoPack } = await import('/frontend/ui/cartao.js');
@@ -92,7 +94,7 @@ test.describe('etapa05-packs T2 - catalogue join, pack card and price', () => {
         fetch('http://127.0.0.1:3000/packs').then((r) => r.json()),
         fetch('http://127.0.0.1:3000/presets').then((r) => r.json()),
       ]);
-      const umPreset = { id: 'solo', nome: 'Pack Solo', descricao: 'x', precoCentavos: 4990, presets: [{}], marcas: ['nux'], data: '' };
+      const umPreset = { id: 'solo', nome: 'Pack Solo', descricao: 'x', precoCentavos: 4990, presets: [{}], data: '' };
       return [...montarPacks(packs, presets), umPreset].map((pack) => {
         const cartao = criarCartaoPack(pack);
         return {
@@ -100,15 +102,16 @@ test.describe('etapa05-packs T2 - catalogue join, pack card and price', () => {
           href: cartao.getAttribute('href'),
           nome: cartao.querySelector('.cartao-nome')?.textContent,
           quantidade: cartao.querySelector('.cartao-quantidade')?.textContent,
-          marcas: cartao.querySelector('.cartao-marcas')?.textContent,
+          marcas: cartao.querySelector('.cartao-marcas'),
           preco: cartao.querySelector('.cartao-preco')?.textContent,
         };
       });
     });
 
-    const rock = cartoes.find((c) => c.nome === 'Pack Rock');
-    expect(rock).toEqual({ tag: 'A', href: 'pack.html?id=rock', nome: 'Pack Rock', quantidade: '3 presets', marcas: 'Boss, Zoom', preco: formatoBRL(4990) });
-    expect(cartoes.find((c) => c.nome === 'Pack Metal').marcas).toBe('HeadRush, NUX');
+    const rock = cartoes.find((c) => c.nome === 'Rock · Boss GT-1000');
+    // rev. 2: no brands line; the name already says style and model.
+    expect(rock).toEqual({ tag: 'A', href: 'pack.html?id=rock-boss-gt-1000', nome: 'Rock · Boss GT-1000', quantidade: '3 presets', marcas: null, preco: formatoBRL(4990) });
+    expect(cartoes.find((c) => c.nome === 'Metal · Boss GT-1000').quantidade).toBe('2 presets');
     expect(cartoes.find((c) => c.nome === 'Pack Solo').quantidade).toBe('1 preset');
   });
 });

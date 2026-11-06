@@ -13,9 +13,9 @@ export async function listarPresets() {
     return dados;
 }
 
-/** GET /presets?estilo=. The presets of one pack. Rejects with ErroApi if the body is not a list. */
-export async function listarPresetsDoEstilo(estilo) {
-    const caminho = `/presets?estilo=${encodeURIComponent(estilo)}`;
+/** GET /presets?packId=. The presets of one pack. Rejects with ErroApi if the body is not a list. */
+export async function listarPresetsDoPack(packId) {
+    const caminho = `/presets?packId=${encodeURIComponent(packId)}`;
     const dados = await requisicao(caminho);
     if (!Array.isArray(dados)) {
         const erro = new ErroApi(200, 'A resposta de /presets não é uma lista.');

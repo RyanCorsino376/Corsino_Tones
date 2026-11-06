@@ -41,21 +41,21 @@ function lerCriterios() {
     };
 }
 
-// A pack matches the text through its own name and description, or through
-// any preset inside it, so typing a preset name finds the pack that sells it.
+// A pack matches the text through its own name, description or model, or
+// through any preset inside it, so typing "g6" or a preset name finds the pack.
 // includes() rather than a RegExp: typed characters such as "(" stay literal.
 function contemTexto(pack, texto) {
-    const campos = [pack.nome, pack.descricao,
-        ...pack.presets.flatMap((preset) => [preset.nome, preset.equipamento, preset.descricao])];
+    const campos = [pack.nome, pack.descricao, pack.equipamento,
+        ...pack.presets.flatMap((preset) => [preset.nome, preset.descricao])];
     return campos.some((campo) => normalizar(campo).includes(texto));
 }
 
-// Brand: the pack has a preset of a checked brand. Style: the pack id is a checked style.
+// A pack is one style for one model, so it has exactly one brand and one style.
 // OR inside a group, AND across groups; an empty group or empty search lets everything through.
 function filtrar(lista, criterios) {
     return lista.filter((pack) =>
-        (criterios.marcas.length === 0 || pack.marcas.some((marca) => criterios.marcas.includes(marca))) &&
-        (criterios.estilos.length === 0 || criterios.estilos.includes(pack.id)) &&
+        (criterios.marcas.length === 0 || criterios.marcas.includes(pack.marca)) &&
+        (criterios.estilos.length === 0 || criterios.estilos.includes(pack.estilo)) &&
         (criterios.texto === '' || contemTexto(pack, criterios.texto)));
 }
 

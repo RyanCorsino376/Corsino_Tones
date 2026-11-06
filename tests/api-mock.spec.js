@@ -12,36 +12,49 @@ const { test, expect } = require('@playwright/test');
 
 const API = 'http://127.0.0.1:3000';
 
-const CAMPOS = ['data', 'descricao', 'equipamento', 'estilo', 'id', 'marca', 'nome'];
+// Revision 2 of .specs/features/etapa05-packs/spec.md supersedes slice 1's
+// "same nine presets": the sample data is nine style + model packs over 21
+// presets. The expected packs are written out here because the spec lists them.
+const CAMPOS = ['data', 'descricao', 'equipamento', 'estilo', 'id', 'marca', 'nome', 'packId'];
 
-const ESPERADO = [
-  { id: 1, nome: 'Crunch Clássico', marca: 'boss', equipamento: 'GT-1000', estilo: 'rock', data: '2026-09-10' },
-  { id: 2, nome: 'Distorção Moderna', marca: 'nux', equipamento: 'MG-30', estilo: 'metal', data: '2026-08-15' },
-  { id: 3, nome: 'Blues de Sexta', marca: 'line6', equipamento: 'HX Stomp', estilo: 'blues', data: '2026-08-28' },
-  { id: 4, nome: 'Hard Rock Anos 80', marca: 'boss', equipamento: 'ME-90', estilo: 'rock', data: '2026-04-20' },
-  { id: 5, nome: 'Limpo Cristalino', marca: 'mooer', equipamento: 'GE300', estilo: 'clean', data: '2026-07-30' },
-  { id: 6, nome: 'Djent Preciso', marca: 'headrush', equipamento: 'MX5', estilo: 'metal', data: '2026-06-25' },
-  { id: 7, nome: 'Ápice do Solo', marca: 'zoom', equipamento: 'G6', estilo: 'rock', data: '2026-07-12' },
-  { id: 8, nome: 'Funk Limpo', marca: 'hotone', equipamento: 'Ampero II', estilo: 'clean', data: '2026-05-18' },
-  { id: 9, nome: 'Texas Blues', marca: 'valeton', equipamento: 'GP-200', estilo: 'blues', data: '2026-06-02' },
+const PACKS_ESPERADOS = [
+  { id: 'rock-boss-gt-1000', nome: 'Rock · Boss GT-1000', estilo: 'rock', marca: 'boss', equipamento: 'GT-1000', quantidade: 3 },
+  { id: 'metal-boss-gt-1000', nome: 'Metal · Boss GT-1000', estilo: 'metal', marca: 'boss', equipamento: 'GT-1000', quantidade: 2 },
+  { id: 'blues-boss-gt-1000', nome: 'Blues · Boss GT-1000', estilo: 'blues', marca: 'boss', equipamento: 'GT-1000', quantidade: 2 },
+  { id: 'rock-zoom-g6', nome: 'Rock · Zoom G6', estilo: 'rock', marca: 'zoom', equipamento: 'G6', quantidade: 3 },
+  { id: 'clean-zoom-g6', nome: 'Clean · Zoom G6', estilo: 'clean', marca: 'zoom', equipamento: 'G6', quantidade: 2 },
+  { id: 'metal-nux-mg-30', nome: 'Metal · NUX MG-30', estilo: 'metal', marca: 'nux', equipamento: 'MG-30', quantidade: 3 },
+  { id: 'clean-nux-mg-30', nome: 'Clean · NUX MG-30', estilo: 'clean', marca: 'nux', equipamento: 'MG-30', quantidade: 2 },
+  { id: 'blues-line6-hx-stomp', nome: 'Blues · Line 6 HX Stomp', estilo: 'blues', marca: 'line6', equipamento: 'HX Stomp', quantidade: 2 },
+  { id: 'rock-line6-hx-stomp', nome: 'Rock · Line 6 HX Stomp', estilo: 'rock', marca: 'line6', equipamento: 'HX Stomp', quantidade: 2 },
 ];
 
+/** Asserts the 21 presets of revision 2: fields, ids, pack sizes and consistency with the packs (PACK-03, PACK-04). */
+function conferirPresets(presets, packs) {
+  expect(presets).toHaveLength(21);
+  expect(presets.map((p) => p.id).sort((a, b) => a - b)).toEqual(Array.from({ length: 21 }, (_, i) => i + 1));
+  const porId = Object.fromEntries(packs.map((p) => [p.id, p]));
+  for (const preset of presets) {
+    expect(Object.keys(preset).sort(), preset.nome).toEqual(CAMPOS);
+    expect(preset.descricao.length).toBeGreaterThan(0);
+    expect(preset.data).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+    const pack = porId[preset.packId];
+    expect(pack, `${preset.nome} -> ${preset.packId}`).toBeTruthy();
+    expect([preset.estilo, preset.marca, preset.equipamento], preset.nome).toEqual([pack.estilo, pack.marca, pack.equipamento]);
+  }
+  for (const esperado of PACKS_ESPERADOS) {
+    expect(presets.filter((p) => p.packId === esperado.id), esperado.id).toHaveLength(esperado.quantidade);
+  }
+}
+
 test.describe('T1 - json-server mock', () => {
-  // API-01
-  test('GET /presets devolve os 9 presets com os sete campos', async ({ request }) => {
+  // API-01 (superseded by etapa05-packs PACK-03/04 rev. 2): the presets the mock serves.
+  test('GET /presets devolve os 21 presets, cada um ligado ao seu pack', async ({ request }) => {
     const resposta = await request.get(`${API}/presets`);
     expect(resposta.status()).toBe(200);
-
     const presets = await resposta.json();
-    expect(Array.isArray(presets)).toBe(true);
-    expect(presets).toHaveLength(9);
-    for (const preset of presets) {
-      expect(Object.keys(preset).sort()).toEqual(CAMPOS);
-      expect(typeof preset.descricao).toBe('string');
-      expect(preset.descricao.length).toBeGreaterThan(0);
-    }
-    const semDescricao = presets.map(({ descricao, ...resto }) => resto);
-    expect(semDescricao).toEqual(ESPERADO);
+    const packs = await (await request.get(`${API}/packs`)).json();
+    conferirPresets(presets, packs);
   });
 
   // API-01: pages are served from :8080, so the API must allow cross-origin reads.
@@ -69,9 +82,9 @@ const lerJson = (arquivo) => JSON.parse(fs.readFileSync(arquivo, 'utf8'));
 
 test.describe('etapa05-auth T1 - seed data and reset', () => {
   // DB-01
-  test('a semente guarda os 9 presets e o usuário de teste', () => {
+  test('a semente guarda os 9 packs, os 21 presets e o usuário de teste', () => {
     const semente = lerJson(path.join(RAIZ, 'mock', 'db.seed.json'));
-    expect(semente.presets.map(({ descricao, ...resto }) => resto)).toEqual(ESPERADO);
+    conferirPresets(semente.presets, semente.packs);
     expect(semente.usuarios).toEqual([USUARIO_SEMENTE]);
   });
 
@@ -119,19 +132,20 @@ test.describe('etapa05-auth T1 - seed data and reset', () => {
   });
 });
 
-const IDS_PACKS = ['rock', 'blues', 'metal', 'clean'];
+const IDS_PACKS = PACKS_ESPERADOS.map((p) => p.id);
 
 test.describe('etapa05-packs T1 - packs in the mock', () => {
   // PACK-01
-  test('GET /packs devolve os 4 packs por estilo, a R$ 49,90 cada', async ({ request }) => {
+  test('GET /packs devolve os 9 packs de estilo + modelo, a R$ 49,90 cada', async ({ request }) => {
     const resposta = await request.get(`${API}/packs`);
     expect(resposta.status()).toBe(200);
     const packs = await resposta.json();
     expect(packs.map((p) => p.id)).toEqual(IDS_PACKS);
-    for (const pack of packs) {
-      expect(Object.keys(pack).sort()).toEqual(['descricao', 'id', 'nome', 'precoCentavos']);
+    for (const [i, pack] of packs.entries()) {
+      expect(Object.keys(pack).sort()).toEqual(['descricao', 'equipamento', 'estilo', 'id', 'marca', 'nome', 'precoCentavos']);
+      const { quantidade, ...esperado } = PACKS_ESPERADOS[i];
+      expect(pack).toMatchObject(esperado);
       expect(pack.precoCentavos).toBe(4990);
-      expect(pack.nome).toMatch(/^Pack /);
       expect(pack.descricao.length).toBeGreaterThan(0);
     }
   });

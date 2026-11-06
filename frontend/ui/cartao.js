@@ -1,7 +1,7 @@
 // Shared card builders and default order, used by every page that lists packs.
-import { formatarPreco, ROTULOS } from './formato.js';
+import { formatarPreco } from './formato.js';
 
-/** Card of one pack view (servicos/catalogo.js): name, preset count, brands, price. */
+/** Card of one pack view (servicos/catalogo.js): name (style and model), preset count, price. */
 export function criarCartaoPack(pack) {
     const cartao = document.createElement('a');
     cartao.className = 'cartao';
@@ -15,19 +15,11 @@ export function criarCartaoPack(pack) {
     quantidade.className = 'cartao-quantidade';
     quantidade.textContent = pack.presets.length === 1 ? '1 preset' : `${pack.presets.length} presets`;
 
-    // Brands explain why a brand filter matched this pack.
-    const marcas = document.createElement('p');
-    marcas.className = 'cartao-marcas';
-    marcas.textContent = pack.marcas
-        .map((marca) => ROTULOS.marca[marca])
-        .sort((a, b) => a.localeCompare(b, 'pt-BR'))
-        .join(', ');
-
     const preco = document.createElement('p');
     preco.className = 'cartao-preco';
     preco.textContent = formatarPreco(pack.precoCentavos);
 
-    cartao.append(nome, quantidade, marcas, preco);
+    cartao.append(nome, quantidade, preco);
     return cartao;
 }
 

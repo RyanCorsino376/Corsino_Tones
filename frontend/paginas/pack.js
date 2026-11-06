@@ -1,14 +1,15 @@
-// Entry module for pack.html?id={estilo}: one pack, its price and the presets
-// it includes. Presets are listed, not shown as cards: they are not sold alone.
+// Entry module for pack.html?id={pack id}: one pack (one style for one
+// pedalboard model), its price and the presets it includes. Presets are
+// listed, not shown as cards: they are not sold alone.
 import { buscarPack } from '../api/packs.js';
-import { listarPresetsDoEstilo } from '../api/presets.js';
+import { listarPresetsDoPack } from '../api/presets.js';
 import { atualizarCabecalho } from '../ui/cabecalho.js';
 import { carregarComEstado } from '../ui/estado.js';
 import { formatarPreco, ROTULOS } from '../ui/formato.js';
 
-// Pack ids are style keys ("rock"): lowercase letters only. Anything else
-// cannot exist, so it is "not found" without asking the server.
-const ID_VALIDO = /^[a-z]+$/;
+// Pack ids are lowercase words joined by single dashes ("rock-boss-gt-1000").
+// Anything else cannot exist, so it is "not found" without asking the server.
+const ID_VALIDO = /^[a-z0-9]+(-[a-z0-9]+)*$/;
 
 const alvo = document.querySelector('.estado-carga');
 const topo = document.querySelector('.preset-topo');
@@ -56,7 +57,7 @@ if (id === null || !ID_VALIDO.test(id)) {
     carregarComEstado({
         alvo,
         // Both reads start at once; the pack page needs the two.
-        buscar: () => Promise.all([buscarPack(id), listarPresetsDoEstilo(id)]),
+        buscar: () => Promise.all([buscarPack(id), listarPresetsDoPack(id)]),
         aoCarregar([pack, presets]) {
             if (pack === null) mostrarNaoEncontrado();
             else mostrarPack(pack, presets);

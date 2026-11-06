@@ -6,7 +6,7 @@ const { test, expect } = require('@playwright/test');
 
 const CHAVE = 'corsino:sessao';
 const SESSAO_RYAN = { id: 1, nome: 'Ryan Corsino', email: 'ryan@exemplo.com' };
-const PAGINAS_COM_CABECALHO = ['index.html', 'packs.html', 'pack.html?id=rock'];
+const PAGINAS_COM_CABECALHO = ['index.html', 'packs.html', 'pack.html?id=rock-boss-gt-1000'];
 
 /** Opens a session in this tab, as a successful login would. */
 async function abrirSessao(page, sessao = SESSAO_RYAN) {

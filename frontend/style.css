@@ -491,8 +491,7 @@ input:focus-visible{
     color: var(--text-secondary);
 }
 
-.cartao-quantidade,
-.cartao-marcas{
+.cartao-quantidade{
     margin: 0;
     color: var(--text-secondary);
 }

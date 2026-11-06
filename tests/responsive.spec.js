@@ -154,7 +154,7 @@ test.describe('T7 - filter sidebar and preset grid per range', () => {
   });
 });
 
-const PAGINAS = ['index.html', 'packs.html', 'pack.html?id=rock', 'biblioteca.html', 'login.html'];
+const PAGINAS = ['index.html', 'packs.html', 'pack.html?id=rock-boss-gt-1000', 'biblioteca.html', 'login.html'];
 
 /** Column count read from the rendered X positions of the grid's direct children. */
 async function colunasPresetTopo(page) {
@@ -187,7 +187,7 @@ test.describe('T8 - preset detail, login card fit and no horizontal overflow', (
   test('below 768px the preset detail top section renders one column', async ({ page }) => {
     for (const width of [320, 375, 767]) {
       await page.setViewportSize({ width, height: 900 });
-      await page.goto('pack.html?id=rock');
+      await page.goto('pack.html?id=rock-boss-gt-1000');
 
       expect(await colunasPresetTopo(page), `at ${width}px`).toBe(1);
     }
@@ -197,7 +197,7 @@ test.describe('T8 - preset detail, login card fit and no horizontal overflow', (
   test('from 1024px the preset detail top section renders two columns', async ({ page }) => {
     for (const width of [1024, 1440]) {
       await page.setViewportSize({ width, height: 900 });
-      await page.goto('pack.html?id=rock');
+      await page.goto('pack.html?id=rock-boss-gt-1000');
 
       expect(await colunasPresetTopo(page), `at ${width}px`).toBe(2);
     }

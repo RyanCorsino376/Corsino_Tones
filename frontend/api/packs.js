@@ -1,5 +1,5 @@
-// Pack endpoints. A pack's presets are not stored here: they are the presets
-// whose estilo equals the pack id (see api/presets.js, listarPresetsDoEstilo).
+// Pack endpoints. A pack is one style for one pedalboard model; its presets
+// point to it through packId (see api/presets.js, listarPresetsDoPack).
 import { ErroApi, registrarErro, requisicao } from './cliente.js';
 
 /** GET /packs. Rejects with ErroApi if the body is not a list. */

@@ -41,16 +41,16 @@ test.describe('etapa05 T4 - loading state on packs.html', () => {
   });
 
   // LOAD-03 (success half)
-  test('quando a resposta chega, o aviso some e os 4 cards aparecem', async ({ page }) => {
+  test('quando a resposta chega, o aviso some e os 9 cards aparecem', async ({ page }) => {
     const liberar = await segurarCatalogo(page);
     await page.goto('packs.html');
     await expect(avisoCarregando(page)).toBeVisible();
 
     liberar();
 
-    await expect(page.locator('.grade-presets .cartao')).toHaveCount(4);
+    await expect(page.locator('.grade-presets .cartao')).toHaveCount(9);
     await expect(avisoCarregando(page)).toHaveCount(0);
-    await expect(page.locator('#contagem')).toHaveText('4 packs encontrados');
+    await expect(page.locator('#contagem')).toHaveText('9 packs encontrados');
   });
 
   // EDGE-01
@@ -62,9 +62,13 @@ test.describe('etapa05 T4 - loading state on packs.html', () => {
     await page.locator('#marca-boss').check();
     liberar();
 
-    // Only the Rock pack has Boss presets (etapa05-packs LIST-06).
-    await expect(page.locator('.grade-presets .cartao')).toHaveCount(1);
-    await expect(page.locator('.grade-presets .cartao-nome')).toHaveText(['Pack Rock']);
+    // The three Boss GT-1000 packs (etapa05-packs LIST-06, rev. 2).
+    const packs = await page.request.get('http://127.0.0.1:3000/packs').then((r) => r.json());
+    const daBoss = packs.filter((p) => p.marca === 'boss').map((p) => p.nome);
+    expect(daBoss).toHaveLength(3);
+    await expect(page.locator('.grade-presets .cartao')).toHaveCount(3);
+    const nomes = (await page.locator('.grade-presets .cartao-nome').allTextContents()).map((n) => n.trim());
+    expect(nomes.sort()).toEqual(daBoss.sort());
   });
 });
 
@@ -151,8 +155,8 @@ test.describe('etapa05 T5 - error state and retry on packs.html', () => {
     await expect.poll(() => tentativas).toBe(2);
 
     liberarSegunda();
-    await expect(page.locator('.grade-presets .cartao')).toHaveCount(4);
-    await expect(page.locator('#contagem')).toHaveText('4 packs encontrados');
+    await expect(page.locator('.grade-presets .cartao')).toHaveCount(9);
+    await expect(page.locator('#contagem')).toHaveText('9 packs encontrados');
     await expect(avisoCarregando(page)).toHaveCount(0);
   });
 
@@ -184,7 +188,7 @@ test.describe('etapa05 T6 - loading and error states on index.html', () => {
     await expect(page.locator('.carrossel .cartao')).toHaveCount(0);
 
     liberar();
-    await expect(page.locator('.carrossel .cartao')).toHaveCount(4);
+    await expect(page.locator('.carrossel .cartao')).toHaveCount(9);
     await expect(avisoCarregandoHome(page)).toHaveCount(0);
   });
 
@@ -204,7 +208,7 @@ test.describe('etapa05 T6 - loading and error states on index.html', () => {
 
     await alerta.getByRole('button', { name: 'Tentar novamente' }).click();
 
-    await expect(page.locator('.carrossel .cartao')).toHaveCount(4);
+    await expect(page.locator('.carrossel .cartao')).toHaveCount(9);
     await expect(page.getByRole('alert')).toHaveCount(0);
     expect(tentativas).toBe(2);
   });

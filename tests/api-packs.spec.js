@@ -25,10 +25,12 @@ test.describe('etapa05-packs T1 - packs API module', () => {
   });
 
   // PACK-01
-  test('listarPacks devolve os 4 packs', async ({ page }) => {
+  test('listarPacks devolve os 9 packs da API', async ({ page }) => {
+    const esperado = await page.request.get(`${API}/packs`).then((r) => r.json());
     const resultado = await chamar(page, '/frontend/api/packs.js', 'listarPacks');
     expect(resultado.ok).toBe(true);
-    expect(resultado.valor.map((p) => p.id)).toEqual(['rock', 'blues', 'metal', 'clean']);
+    expect(esperado).toHaveLength(9);
+    expect(resultado.valor).toEqual(esperado);
   });
 
   // PACK-01: a body that is not a list is a communication failure.
@@ -39,9 +41,9 @@ test.describe('etapa05-packs T1 - packs API module', () => {
 
   // PACK-02, PAG-01
   test('buscarPack devolve o pack pedido', async ({ page }) => {
-    const resultado = await chamar(page, '/frontend/api/packs.js', 'buscarPack', 'metal');
+    const resultado = await chamar(page, '/frontend/api/packs.js', 'buscarPack', 'metal-nux-mg-30');
     expect(resultado.ok).toBe(true);
-    expect(resultado.valor).toMatchObject({ id: 'metal', nome: 'Pack Metal', precoCentavos: 4990 });
+    expect(resultado.valor).toMatchObject({ id: 'metal-nux-mg-30', nome: 'Metal · NUX MG-30', precoCentavos: 4990 });
   });
 
   // PACK-02, PAG-06: 404 is "not found", not a failure.
@@ -51,16 +53,20 @@ test.describe('etapa05-packs T1 - packs API module', () => {
 
   // PAG-07 (API half): other failures are communication errors.
   test('buscarPack rejeita com ErroApi em falha de rede', async ({ page }) => {
-    await page.route(`${API}/packs/metal`, (rota) => rota.abort());
-    expect(await chamar(page, '/frontend/api/packs.js', 'buscarPack', 'metal')).toEqual({ ok: false, erroApi: true });
+    await page.route(`${API}/packs/metal-nux-mg-30`, (rota) => rota.abort());
+    expect(await chamar(page, '/frontend/api/packs.js', 'buscarPack', 'metal-nux-mg-30')).toEqual({ ok: false, erroApi: true });
   });
 
-  // PAG-01: the presets of one style come from GET /presets?estilo=.
-  test('listarPresetsDoEstilo pede GET /presets?estilo= e devolve só aquele estilo', async ({ page }) => {
+  // PAG-01 (rev. 2): the presets of one pack come from GET /presets?packId=.
+  test('listarPresetsDoPack pede GET /presets?packId= e devolve só os presets daquele pack', async ({ page }) => {
+    const todos = await page.request.get(`${API}/presets`).then((r) => r.json());
+    const esperado = todos.filter((p) => p.packId === 'rock-boss-gt-1000');
+    expect(esperado).toHaveLength(3);
+
     const pedido = page.waitForRequest((req) => req.url().startsWith(`${API}/presets?`));
-    const resultado = await chamar(page, '/frontend/api/presets.js', 'listarPresetsDoEstilo', 'rock');
-    expect(new URL((await pedido).url()).search).toBe('?estilo=rock');
+    const resultado = await chamar(page, '/frontend/api/presets.js', 'listarPresetsDoPack', 'rock-boss-gt-1000');
+    expect(new URL((await pedido).url()).search).toBe('?packId=rock-boss-gt-1000');
     expect(resultado.ok).toBe(true);
-    expect(resultado.valor.map((p) => p.nome).sort()).toEqual(['Crunch Clássico', 'Hard Rock Anos 80', 'Ápice do Solo'].sort());
+    expect(resultado.valor.map((p) => p.id).sort((a, b) => a - b)).toEqual(esperado.map((p) => p.id).sort((a, b) => a - b));
   });
 });

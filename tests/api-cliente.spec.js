@@ -37,12 +37,12 @@ test.describe('T2 - cliente da API', () => {
   });
 
   // API-02
-  test('listarPresets resolve com os 9 presets do mock, sem registrar erro', async ({ page }) => {
+  test('listarPresets resolve com os 21 presets do mock, sem registrar erro', async ({ page }) => {
     const erros = registrosDeErro(page);
     const resultado = await chamarListarPresets(page);
     expect(resultado.ok).toBe(true);
-    expect(resultado.dados).toHaveLength(9);
-    expect(resultado.dados.map((p) => p.id).sort((a, b) => a - b)).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9]);
+    expect(resultado.dados).toHaveLength(21);
+    expect(resultado.dados.map((p) => p.id).sort((a, b) => a - b)).toEqual(Array.from({ length: 21 }, (_, i) => i + 1));
     expect(erros).toHaveLength(0);
   });
 

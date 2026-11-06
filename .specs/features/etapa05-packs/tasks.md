@@ -10,7 +10,7 @@ Implement these tasks with the `tlc-spec-driven` skill: **activate it by name an
 
 **Spec**: `.specs/features/etapa05-packs/spec.md`
 **Design**: `.specs/features/etapa05-packs/design.md`
-**Status**: In Progress (revision 2: T8-T10)
+**Status**: Done (pending Verifier)
 
 ### Files renamed, removed or rewritten
 
@@ -329,15 +329,19 @@ Test count: 223 (219 + 4). "Um botão ativo continua opaco" passes before the fi
 
 **Done when**:
 
-- [ ] `GET /packs` returns the nine packs of the spec's sample-data row, each with the seven fields and `precoCentavos: 4990`; ids follow `{estilo}-{marca}-{equipamento}` -> `tests/api-mock.spec.js`
-- [ ] `GET /presets` returns 21 presets, each with a `packId` of an existing pack and the same `estilo`, `marca`, `equipamento` as that pack; pack sizes are 3, 2, 2, 3, 2, 3, 2, 2, 2 as listed
-- [ ] `listarPresetsDoPack('rock-boss-gt-1000')` sends `GET /presets?packId=rock-boss-gt-1000` and resolves its 3 presets -> `tests/api-packs.spec.js`
-- [ ] Slice 1 API-01 test (nine fixed presets) is rewritten to the new data (superseded, spec "Slice 1 tests" row)
-- [ ] Full gate passes; test count reported
+- [x] `GET /packs` returns the nine packs of the spec's sample-data row, each with the seven fields and `precoCentavos: 4990`; ids follow `{estilo}-{marca}-{equipamento}` -> `tests/api-mock.spec.js`
+- [x] `GET /presets` returns 21 presets, each with a `packId` of an existing pack and the same `estilo`, `marca`, `equipamento` as that pack; pack sizes are 3, 2, 2, 3, 2, 3, 2, 2, 2 as listed
+- [x] `listarPresetsDoPack('rock-boss-gt-1000')` sends `GET /presets?packId=rock-boss-gt-1000` and resolves its 3 presets -> `tests/api-packs.spec.js`
+- [x] Slice 1 API-01 test (nine fixed presets) is rewritten to the new data (superseded, spec "Slice 1 tests" row)
+- [x] Full gate passes; test count reported
 
 **Tests**: e2e
 **Gate**: full
 **Commit**: `feat(api): make each pack one style for one pedalboard model`
+
+**Status**: Complete
+
+Deviation: T8, T9 and T10 were done as one commit. Changing the data shape (pack ids, `packId`) breaks the join, the filters and the pack page at the same time, so no single task could end with a green suite; splitting them would have needed throw-away compatibility code. Test count after the three: 227 (223 + 4 net).
 
 ---
 
@@ -356,15 +360,19 @@ Test count: 223 (219 + 4). "Um botão ativo continua opaco" passes before the fi
 
 **Done when**:
 
-- [ ] Cards show name, "{N} presets" and price, no brands line -> `tests/catalogo.spec.js`, `tests/packs-lista.spec.js`
-- [ ] Brand filter offers exactly Boss, Line 6, NUX, Zoom; "Zoom" shows the two Zoom G6 packs; Zoom + Line 6 shows four; Zoom AND metal shows none
-- [ ] Search "g6" shows the two Zoom G6 packs; a preset name finds its pack
-- [ ] Every list, sort, count and home test passes on the nine packs, with expected values derived from the API
-- [ ] Full gate passes; test count reported
+- [x] Cards show name, "{N} presets" and price, no brands line -> `tests/catalogo.spec.js`, `tests/packs-lista.spec.js`
+- [x] Brand filter offers exactly Boss, Line 6, NUX, Zoom; "Zoom" shows the two Zoom G6 packs; Zoom + Line 6 shows four; Zoom AND metal shows none
+- [x] Search "g6" shows the two Zoom G6 packs; a preset name finds its pack
+- [x] Every list, sort, count and home test passes on the nine packs, with expected values derived from the API
+- [x] Full gate passes; test count reported
 
 **Tests**: e2e
 **Gate**: full
 **Commit**: `feat(packs): filter and show packs by style and model`
+
+**Status**: Complete
+
+Done in the T8 commit (see T8). The brands line and its `.cartao-marcas` style were removed. Search terms in the tests are derived from the API with the spec rule ("distorcao" matches three packs through preset names and descriptions).
 
 ---
 
@@ -383,14 +391,18 @@ Test count: 223 (219 + 4). "Um botão ativo continua opaco" passes before the fi
 
 **Done when**:
 
-- [ ] `pack.html?id=metal-nux-mg-30` requests `GET /packs/metal-nux-mg-30` and `GET /presets?packId=metal-nux-mg-30`, both started before either answers; shows "Metal · NUX MG-30", "3 presets", its presets -> `tests/pack-pagina.spec.js`
-- [ ] `Rock-boss`, `rock_boss`, `../x`, `-rock`, `rock--boss`, missing id: not found without any request
-- [ ] Responsive and header tests use `pack.html?id=rock-boss-gt-1000`
-- [ ] Full gate passes; test count reported
+- [x] `pack.html?id=metal-nux-mg-30` requests `GET /packs/metal-nux-mg-30` and `GET /presets?packId=metal-nux-mg-30`, both started before either answers; shows "Metal · NUX MG-30", "3 presets", its presets -> `tests/pack-pagina.spec.js`
+- [x] `Rock-boss`, `rock_boss`, `../x`, `-rock`, `rock--boss`, missing id: not found without any request
+- [x] Responsive and header tests use `pack.html?id=rock-boss-gt-1000`
+- [x] Full gate passes; test count reported
 
 **Tests**: e2e
 **Gate**: full
 **Commit**: `feat(pack): load style and model packs by id`
+
+**Status**: Complete
+
+Done in the T8 commit (see T8). A new test holds `/packs/{id}` and sees `/presets?packId=` start, proving the two reads run in parallel.
 
 ---
 

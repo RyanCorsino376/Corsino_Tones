@@ -26,14 +26,16 @@ async function esperarNaoEncontrado(page) {
 
 test.describe('etapa05-packs T5 - pack page', () => {
   // PAG-01, PAG-02
-  test('pack.html?id=metal mostra o pack e a lista dos presets incluídos', async ({ page }) => {
-    const pedidoPack = page.waitForRequest(`${API}/packs/metal`);
-    const pedidoPresets = page.waitForRequest(`${API}/presets?estilo=metal`);
-    await page.goto('pack.html?id=metal');
+  test('pack.html?id=metal-nux-mg-30 mostra o pack e a lista dos presets incluídos', async ({ page }) => {
+    const pedidoPack = page.waitForRequest(`${API}/packs/metal-nux-mg-30`);
+    const pedidoPresets = page.waitForRequest(`${API}/presets?packId=metal-nux-mg-30`);
+    await page.goto('pack.html?id=metal-nux-mg-30');
     await Promise.all([pedidoPack, pedidoPresets]);
 
-    const pack = await page.request.get(`${API}/packs/metal`).then((r) => r.json());
-    const presets = await page.request.get(`${API}/presets?estilo=metal`).then((r) => r.json());
+    const pack = await page.request.get(`${API}/packs/metal-nux-mg-30`).then((r) => r.json());
+    const presets = await page.request.get(`${API}/presets?packId=metal-nux-mg-30`).then((r) => r.json());
+    expect(pack.nome).toBe('Metal · NUX MG-30');
+    expect(presets).toHaveLength(3);
 
     await expect(page.locator('h1')).toHaveText(pack.nome);
     await expect(page.locator('.preset-info')).toContainText(pack.descricao);
@@ -52,22 +54,34 @@ test.describe('etapa05-packs T5 - pack page', () => {
     await expect(page.locator('.cartao')).toHaveCount(0);
   });
 
+  // PAG-01 (rev. 2): both reads start without waiting for each other.
+  test('a página pede os presets enquanto o pack ainda não respondeu', async ({ page }) => {
+    let liberar;
+    const liberado = new Promise((r) => { liberar = r; });
+    await page.route(`${API}/packs/clean-zoom-g6`, async (rota) => { await liberado; await rota.continue(); });
+    const pedidoPresets = page.waitForRequest(`${API}/presets?packId=clean-zoom-g6`);
+    await page.goto('pack.html?id=clean-zoom-g6');
+    await pedidoPresets; // arrives while the pack request is held
+    liberar();
+    await expect(page.locator('h1')).toHaveText('Clean · Zoom G6');
+  });
+
   // PAG-03
   test('o título da aba é "{nome} | CorsinoTones"', async ({ page }) => {
-    await page.goto('pack.html?id=metal');
-    await expect(page).toHaveTitle('Pack Metal | CorsinoTones');
+    await page.goto('pack.html?id=metal-nux-mg-30');
+    await expect(page).toHaveTitle('Metal · NUX MG-30 | CorsinoTones');
   });
 
   // PAG-04
   test('a página do pack não tem link de download', async ({ page }) => {
-    await page.goto('pack.html?id=rock');
-    await expect(page.locator('h1')).toHaveText('Pack Rock');
+    await page.goto('pack.html?id=rock-boss-gt-1000');
+    await expect(page.locator('h1')).toHaveText('Rock · Boss GT-1000');
     await expect(page.locator('a[download]')).toHaveCount(0);
     await expect(page.getByRole('link', { name: /download/i })).toHaveCount(0);
   });
 
   // PAG-05, EDGE-01: a malformed id is not found without any request.
-  for (const busca of ['', '?id=', '?id=Rock', '?id=rock1', '?id=..%2Fx', '?x=rock']) {
+  for (const busca of ['', '?id=', '?id=Rock-boss', '?id=rock_boss', '?id=..%2Fx', '?id=-rock', '?id=rock--boss', '?id=rock-', '?x=rock-boss-gt-1000']) {
     test(`pack.html${busca} mostra "Pack não encontrado." sem pedir nada à API`, async ({ page }) => {
       const pedidos = [];
       page.on('request', (req) => { if (req.url().startsWith(API)) pedidos.push(req.url()); });
@@ -88,18 +102,18 @@ test.describe('etapa05-packs T5 - pack page', () => {
   // PAG-07, PAG-09
   test('falha de rede mostra o erro e "Tentar novamente" carrega o pack', async ({ page }) => {
     let tentativas = 0;
-    await page.route(`${API}/packs/rock`, (rota) => {
+    await page.route(`${API}/packs/rock-boss-gt-1000`, (rota) => {
       tentativas += 1;
       return tentativas === 1 ? rota.abort() : rota.continue();
     });
-    await page.goto('pack.html?id=rock');
+    await page.goto('pack.html?id=rock-boss-gt-1000');
 
     const alerta = page.getByRole('alert');
     await expect(alerta.locator('p')).toHaveText(MENSAGEM_ERRO);
     await expect(blocoDoPack(page)).toBeHidden();
 
     await alerta.getByRole('button', { name: 'Tentar novamente' }).click();
-    await expect(page.locator('h1')).toHaveText('Pack Rock');
+    await expect(page.locator('h1')).toHaveText('Rock · Boss GT-1000');
     await expect(blocoDoPack(page)).toBeVisible();
     expect(tentativas).toBe(2);
   });
@@ -107,7 +121,7 @@ test.describe('etapa05-packs T5 - pack page', () => {
   // EDGE-02 on the pack page: the pack answers but its presets fail.
   test('se só a lista de presets falha, aparece o erro e não o pack', async ({ page }) => {
     await page.route(`${API}/presets?**`, (rota) => rota.abort());
-    await page.goto('pack.html?id=rock');
+    await page.goto('pack.html?id=rock-boss-gt-1000');
     await expect(page.getByRole('alert').locator('p')).toHaveText(MENSAGEM_ERRO);
     await expect(blocoDoPack(page)).toBeHidden();
   });
@@ -116,14 +130,14 @@ test.describe('etapa05-packs T5 - pack page', () => {
   test('enquanto carrega, mostra "Carregando pack..." e esconde o bloco do pack', async ({ page }) => {
     let liberar;
     const liberado = new Promise((r) => { liberar = r; });
-    await page.route(`${API}/packs/rock`, async (rota) => { await liberado; await rota.continue(); });
-    await page.goto('pack.html?id=rock');
+    await page.route(`${API}/packs/rock-boss-gt-1000`, async (rota) => { await liberado; await rota.continue(); });
+    await page.goto('pack.html?id=rock-boss-gt-1000');
 
     await expect(page.getByRole('status').filter({ hasText: CARREGANDO })).toHaveText(CARREGANDO);
     await expect(blocoDoPack(page)).toBeHidden();
 
     liberar();
-    await expect(page.locator('h1')).toHaveText('Pack Rock');
+    await expect(page.locator('h1')).toHaveText('Rock · Boss GT-1000');
     await expect(page.getByRole('status').filter({ hasText: CARREGANDO })).toHaveCount(0);
   });
 
@@ -131,7 +145,7 @@ test.describe('etapa05-packs T5 - pack page', () => {
   test('com sessão, a página do pack mostra "Olá, Ryan" no cabeçalho', async ({ page }) => {
     await page.goto('index.html');
     await page.evaluate(() => sessionStorage.setItem('corsino:sessao', '{"id":1,"nome":"Ryan Corsino","email":"ryan@exemplo.com"}'));
-    await page.goto('pack.html?id=rock');
+    await page.goto('pack.html?id=rock-boss-gt-1000');
     await expect(page.getByText('Olá, Ryan', { exact: true })).toBeVisible();
   });
 });
