@@ -234,8 +234,8 @@ This slice turns the "Presets" page into a **"Packs"** page that lists pack card
 | PAG-07 | P1: Pack page | Tasks | Implementing |
 | PAG-08 | P1: Pack page | Tasks | Implementing |
 | PAG-09 | P1: Pack page | Tasks | Implementing |
-| REM-01 | P1: No single-preset pages | Specify | Pending |
-| REM-02 | P1: No single-preset pages | Specify | Pending |
+| REM-01 | P1: No single-preset pages | Tasks | Implementing |
+| REM-02 | P1: No single-preset pages | Tasks | Implementing |
 | FIX-01 | P2: Leftovers from slice 2 | Specify | Pending |
 | FIX-02 | P2: Leftovers from slice 2 | Specify | Pending |
 | FIX-03 | P2: Leftovers from slice 2 | Specify | Pending |

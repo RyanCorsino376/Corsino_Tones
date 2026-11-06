@@ -154,10 +154,12 @@ test.describe('T7 - filter sidebar and preset grid per range', () => {
   });
 });
 
-const PAGINAS = ['index.html', 'packs.html', 'preset.html', 'biblioteca.html', 'login.html'];
+const PAGINAS = ['index.html', 'packs.html', 'pack.html?id=rock', 'biblioteca.html', 'login.html'];
 
 /** Column count read from the rendered X positions of the grid's direct children. */
 async function colunasPresetTopo(page) {
+  // The pack page shows this block only once the pack has loaded (etapa05-packs PAG-08).
+  await expect(page.locator('.preset-topo')).toBeVisible();
   return page.locator('.preset-topo > *').evaluateAll((filhos) =>
     new Set(filhos.map((f) => Math.round(f.getBoundingClientRect().x))).size);
 }
@@ -181,11 +183,11 @@ test.describe('T8 - preset detail, login card fit and no horizontal overflow', (
     ]);
   });
 
-  // RESP-06: below 768px the preset detail top section is one column.
+  // RESP-06: below 768px the detail top section (now on the pack page) is one column.
   test('below 768px the preset detail top section renders one column', async ({ page }) => {
     for (const width of [320, 375, 767]) {
       await page.setViewportSize({ width, height: 900 });
-      await page.goto('preset.html');
+      await page.goto('pack.html?id=rock');
 
       expect(await colunasPresetTopo(page), `at ${width}px`).toBe(1);
     }
@@ -195,7 +197,7 @@ test.describe('T8 - preset detail, login card fit and no horizontal overflow', (
   test('from 1024px the preset detail top section renders two columns', async ({ page }) => {
     for (const width of [1024, 1440]) {
       await page.setViewportSize({ width, height: 900 });
-      await page.goto('preset.html');
+      await page.goto('pack.html?id=rock');
 
       expect(await colunasPresetTopo(page), `at ${width}px`).toBe(2);
     }
@@ -240,7 +242,8 @@ test.describe('T8 - preset detail, login card fit and no horizontal overflow', (
           else sessionStorage.removeItem(chave);
         }, ['corsino:sessao', pagina === 'biblioteca.html']);
         await page.goto(pagina);
-        await expect(page, pagina).toHaveURL(new RegExp(`/frontend/${pagina.replace('.', '\\.')}$`));
+        const escapada = pagina.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        await expect(page, pagina).toHaveURL(new RegExp(`/frontend/${escapada}$`));
         const larguraRolavel = await page.evaluate(() => document.documentElement.scrollWidth);
         expect(larguraRolavel, pagina).toBeLessThanOrEqual(width);
       }

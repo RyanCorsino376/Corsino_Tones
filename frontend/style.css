@@ -423,37 +423,6 @@ input:focus-visible{
     color: var(--text-secondary);
 }
 
-.preset-download{
-    display: inline-block;
-    margin-top: 24px;
-    padding: 10px 24px;
-    background-color: var(--brand-accent);
-    color: var(--text-primary);
-    text-decoration: none;
-}
-
-.preset-download:hover{
-    filter: brightness(1.1);
-}
-
-.preset-video{
-    margin-top: clamp(40px, 6vw, 80px);
-}
-
-.grade-videos{
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-    gap: clamp(16px, 2vw, 24px);
-}
-
-/* Applies to the placeholder and to the iframe that will take its place. */
-.grade-videos > *{
-    aspect-ratio: 16 / 9;
-    width: 100%;
-    border: 0;
-    background-color: var(--bg-card);
-}
-
 /*------------- Biblioteca vazia --------------------------------------*/
 
 .biblioteca-vazia,
@@ -856,10 +825,6 @@ fieldset{
         grid-template-columns: 1fr;
     }
 
-    /* The base 320px track minimum is wider than a 320px screen once the page padding is added. */
-    .grade-videos{
-        grid-template-columns: 1fr;
-    }
 
     .tituloCarrossel{
         margin-left: 20px;

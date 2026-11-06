@@ -54,3 +54,22 @@ test.describe('etapa05 T3 - ES modules', () => {
     expect(culpados).toEqual([]);
   });
 });
+
+test.describe('etapa05-packs T6 - no single-preset page', () => {
+  // REM-01
+  test('preset.html, paginas/preset.js e presets.html não existem', () => {
+    for (const arquivo of ['preset.html', 'paginas/preset.js', 'presets.html']) {
+      expect(fs.existsSync(path.join(FRONTEND, arquivo)), arquivo).toBe(false);
+    }
+  });
+
+  // REM-02
+  test('nenhum arquivo de frontend/ aponta para preset.html ou presets.html', () => {
+    const todos = (pasta = FRONTEND) => fs.readdirSync(pasta, { withFileTypes: true }).flatMap((item) => {
+      const caminho = path.join(pasta, item.name);
+      return item.isDirectory() ? todos(caminho) : [caminho];
+    });
+    const culpados = todos().filter((arquivo) => /\bpresets?\.html\b/.test(fs.readFileSync(arquivo, 'utf8')));
+    expect(culpados.map((a) => path.relative(FRONTEND, a))).toEqual([]);
+  });
+});

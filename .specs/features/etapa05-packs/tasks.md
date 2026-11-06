@@ -266,14 +266,18 @@ Test count: 217 (203 + 14). The info block and the preset list start `hidden`; `
 
 **Done when**:
 
-- [ ] `frontend/preset.html`, `frontend/paginas/preset.js` and `frontend/presets.html` do not exist; no file under `frontend/` contains `preset.html` or `presets.html` -> `tests/modulos.spec.js` (Node `fs`)
-- [ ] Responsive top-block tests open `pack.html?id=rock` and wait for the pack before measuring; overflow test lists `packs.html` and `pack.html?id=rock`
-- [ ] Header tests list `packs.html` and `pack.html?id=rock`
-- [ ] Full gate passes; test count reported
+- [x] `frontend/preset.html`, `frontend/paginas/preset.js` and `frontend/presets.html` do not exist; no file under `frontend/` contains `preset.html` or `presets.html` -> `tests/modulos.spec.js` (Node `fs`)
+- [x] Responsive top-block tests open `pack.html?id=rock` and wait for the pack before measuring; overflow test lists `packs.html` and `pack.html?id=rock`
+- [x] Header tests list `packs.html` and `pack.html?id=rock`
+- [x] Full gate passes; test count reported
 
 **Tests**: e2e
 **Gate**: full
 **Commit**: `refactor(frontend): remove the single-preset page`
+
+**Status**: Complete
+
+Test count: 219 (217 + 2). Also removed the video styles (`.preset-video`, `.grade-videos`), orphaned by deleting the page. The overflow test's URL check now escapes every regex character (`?` in `pack.html?id=rock`), and the column helper waits for the pack block, which is hidden until load.
 
 ---
 
