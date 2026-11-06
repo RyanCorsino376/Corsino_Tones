@@ -72,7 +72,7 @@ Rejected: keeping classic scripts with `window.*` globals, which hide dependenci
 
 **Test suite**: 180 passing. `npx playwright test` from `Corsino_Tones/`. `npm run api:reset` restores `mock/db.json` from the seed (tests add accounts with unique e-mails).
 
-**Next step**: `docs/etapa-05.md` with screenshots in `docs/evidencias/etapa-05/` (query, submit, success, error, loading). Then slice 3 of the store plan (dynamic `preset.html?id=`, prices).
+**Next step**: stage 05 is complete and documented (`docs/etapa-05.md`, evidence in `docs/evidencias/etapa-05/`, commit `e1c05bd`). The user paused on 2026-11-05 and will push / open the PR later (not authorized yet). When resuming: slice 3 of the store plan (dynamic `preset.html?id=`, prices). Small pending fixes the user may ask for: a `:disabled` style for submit buttons, README still says "etapa 03", home text "download gratuito".
 
 **Blockers**: none.
 

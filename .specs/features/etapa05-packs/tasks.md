@@ -1,0 +1,348 @@
+# Style Packs Replace Preset Cards - Tasks
+
+## Execution Protocol (MANDATORY -- do not skip)
+
+Implement these tasks with the `tlc-spec-driven` skill: **activate it by name and follow its Execute flow and Critical Rules.** Do not search for skill files by filesystem path. The skill is the source of truth for the full flow (per-task cycle, sub-agent delegation, adequacy review, Verifier, discrimination sensor).
+
+**If the skill cannot be activated, STOP and tell the user - do not proceed without it.**
+
+---
+
+**Spec**: `.specs/features/etapa05-packs/spec.md`
+**Design**: `.specs/features/etapa05-packs/design.md`
+**Status**: Draft
+
+### Files renamed, removed or rewritten
+
+Approving these tasks approves all of them:
+
+- T3: `frontend/presets.html` → `frontend/packs.html`, `frontend/paginas/presets.js` → `frontend/paginas/packs.js`, `tests/presets-lista.spec.js` → `tests/packs-lista.spec.js` (all `git mv`, then edited). The preset card builder `criarCartao` is removed.
+- T6: `frontend/preset.html` and `frontend/paginas/preset.js` are deleted.
+- The list tests are **rewritten for packs** (T3). The table in T3 maps every old test to its replacement; none is dropped without one.
+
+### Verifier speed (from slice 2)
+
+The Verifier runs each mutant against the spec files that cover the mutated module only, then the full suite once at the end.
+
+---
+
+## Test Coverage Matrix
+
+> Generated from codebase and spec - confirm before Execute. Guidelines found: none; strong defaults applied. Style follows `tests/*.spec.js` (Playwright, Portuguese test names, requirement IDs in comments; module tests import the module inside a page).
+
+| Code Layer | Required Test Type | Coverage Expectation | Location Pattern | Run Command |
+| ---------- | ------------------ | -------------------- | ---------------- | ----------- |
+| Mock data (`mock/db.seed.json`) | e2e (API request) | PACK-01..03 each asserted | `tests/api-mock.spec.js` | `npx playwright test` |
+| API layer (`frontend/api/packs.js`, `presets.js`) | e2e (module in page) | Success, 404 → null, non-list, network error | `tests/api-packs.spec.js` | `npx playwright test` |
+| Services (`frontend/servicos/catalogo.js`) and formatting | e2e (module in page) | Join fields, empty pack, one read failing, price format | `tests/catalogo.spec.js` | `npx playwright test` |
+| Pages (`frontend/paginas/*.js`, HTML) | e2e | 1:1 to LIST, HOME, PAG, REM, FIX, EDGE criteria; happy + edge + error | `tests/packs-lista.spec.js`, `tests/carga-estado.spec.js`, `tests/pack-pagina.spec.js`, `tests/cabecalho.spec.js`, `tests/ajustes.spec.js` | `npx playwright test` |
+| Markup and styles | e2e | Through the behaviour above; `responsive.spec.js` guards layout | `tests/*.spec.js` | `npx playwright test` |
+
+## Gate Check Commands
+
+| Gate Level | When to Use | Command |
+| ---------- | ----------- | ------- |
+| Quick | While working on a task | `npx playwright test tests/<files of the task>` |
+| Full | Before every commit | `npx playwright test` |
+| Build | After the last task | `npx playwright test` |
+
+Baseline before T1: **180 passing**.
+
+---
+
+## Execution Plan
+
+### Phase 1: Data
+
+```
+T1 -> T2
+```
+
+### Phase 2: Pages
+
+```
+T3 -> T4 -> T5 -> T6 -> T7
+```
+
+---
+
+## Task Breakdown
+
+### T1: Packs in the mock API and API module
+
+**What**: Add the four packs to the seed and create `listarPacks`, `buscarPack` and `listarPresetsDoEstilo`.
+**Where**: `frontend/api/packs.js` (new); also `mock/db.seed.json`, `frontend/api/presets.js`
+**Depends on**: None
+**Reuses**: `requisicao`, `ErroApi`, `registrarErro`; pattern of `api/usuarios.js`
+**Requirement**: PACK-01, PACK-02, PACK-03
+
+**Tools**:
+
+- MCP: NONE
+- Skill: NONE
+
+**Done when**:
+
+- [ ] `GET /packs` returns ids `rock`, `blues`, `metal`, `clean`, each with `nome`, `descricao`, `precoCentavos: 4990` -> `tests/api-mock.spec.js`
+- [ ] `GET /packs/rock` returns the Rock pack; `GET /packs/jazz` returns 404
+- [ ] Presets keep exactly the seven fields of slice 1 (existing API-01 test unchanged)
+- [ ] `buscarPack('metal')` resolves with the pack; `buscarPack('jazz')` resolves `null`; an aborted route rejects with `ErroApi` -> `tests/api-packs.spec.js`
+- [ ] `listarPacks()` resolves the 4 packs; a non-list body rejects with `ErroApi`
+- [ ] `listarPresetsDoEstilo('rock')` sends `GET /presets?estilo=rock` and resolves the 3 rock presets
+- [ ] `npm run api:reset` is needed once for an existing `mock/db.json` to get the packs (noted in the task status)
+- [ ] Full gate passes: `npx playwright test`, exit 0
+- [ ] Test count: 180 + new tests pass
+
+**Tests**: e2e (`tests/api-mock.spec.js`, `tests/api-packs.spec.js`)
+**Gate**: full
+**Commit**: `feat(api): add style packs to the mock and the API layer`
+
+---
+
+### T2: Catalogue join, pack card and price format
+
+**What**: Create `montarPacks` / `carregarCatalogo`, `formatarPreco` and `criarCartaoPack`.
+**Where**: `frontend/servicos/catalogo.js` (new); also `frontend/ui/formato.js`, `frontend/ui/cartao.js`
+**Depends on**: T1
+**Reuses**: `listarPresets`, `listarPacks`; `ROTULOS`; `.cartao*` classes
+**Requirement**: LIST-05 (card content), LIST-02 (parallel reads), EDGE-02
+
+**Tools**:
+
+- MCP: NONE
+- Skill: NONE
+
+**Done when**:
+
+- [ ] `montarPacks` on the seed gives for `rock`: 3 presets, `marcas` = `['boss', 'zoom']` (any order), `data` = `'2026-09-10'`; for `metal`: 2 presets -> `tests/catalogo.spec.js`
+- [ ] A pack with no preset gets `presets: []`, `marcas: []`, `data: ''`
+- [ ] `carregarCatalogo` starts `GET /presets` before `GET /packs` answers (route on `/packs` held; `/presets` request observed while held)
+- [ ] `carregarCatalogo` rejects when `/presets` is aborted while `/packs` succeeds (EDGE-02)
+- [ ] `formatarPreco(4990)` equals `new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(49.9)` and contains "49,90"
+- [ ] `criarCartaoPack(rock view)` is an `<a>` to `pack.html?id=rock` showing "Pack Rock", "3 presets", "Boss, Zoom" and the formatted price; a 1-preset pack shows "1 preset"
+- [ ] The current pages keep working (T3 and T4 switch them); full gate passes
+- [ ] Test count: T1 total + new tests pass
+
+**Tests**: e2e (`tests/catalogo.spec.js`)
+**Gate**: full
+**Commit**: `feat(catalog): join packs with their presets and build pack cards`
+
+---
+
+### T3: Packs page with filters, search and sort
+
+**What**: Rename the presets page to `packs.html`, list pack cards from `carregarCatalogo`, apply the pack rules for brand, style, search and sort, update count and empty-state texts, change the menu on every page, and rewrite the list tests for packs.
+**Where**: `frontend/paginas/packs.js` (renamed from `presets.js`); also `frontend/packs.html` (renamed), the menu in `index.html`, `preset.html`, `biblioteca.html`, `login.html`, `tests/packs-lista.spec.js` (renamed, rewritten), `tests/carga-estado.spec.js`, `tests/modulos.spec.js`, `tests/responsive.spec.js`, `tests/cabecalho.spec.js` (page names)
+**Depends on**: T2
+**Reuses**: The whole pipeline of `paginas/presets.js`; `carregarComEstado`; `criarCartaoPack`
+**Requirement**: LIST-01 .. LIST-12, EDGE-03, REG-02 (list page half)
+
+**Tools**:
+
+- MCP: NONE
+- Skill: NONE
+
+**Old list test → replacement** (`presets-lista.spec.js` → `packs-lista.spec.js`):
+
+| Old (presets) | New (packs) |
+| ------------- | ----------- |
+| CAT-01 catalogue shape, brands/styles covered | API data covered by T1; new: every brand checkbox matches at least one pack, every style one pack |
+| CAT-02/03 one card per preset, content, link | LIST-05: one card per pack, newest first; content (name, count, brands, price) and link |
+| CAT-04 carousel | moves to T4 (HOME-01) |
+| CAT-05 noscript | kept on `packs.html` |
+| FILT-01..04 brand/style OR/AND | LIST-06 on packs (Boss → Rock only; NUX+Hotone → Metal+Clean; Boss AND metal → none) |
+| FILT-05/06 search, spaces | LIST-07 (pack name, pack description, preset name inside: "djent" → Metal; accent: "apice" → Rock) |
+| FILT-07 order | LIST-08 (three orders, each different on the seed) |
+| FILT-08/09 Aplicar, Limpar, Enter | LIST-09 |
+| EMPTY-01..03 count, empty, recover | LIST-10, LIST-11 |
+| EDGE-01 regex chars | LIST-07 literal text |
+| (slice 1) etapa05 T3 API-02/04/REG-02 | LIST-02, LIST-05; empty `/packs` → "0 packs encontrados" + empty state |
+
+**Done when**:
+
+- [ ] Every row of the table above has its replacement test in `tests/packs-lista.spec.js`, each asserting the spec value
+- [ ] Menu on every page is "Página Inicial · Packs · Biblioteca"; `aria-current` on Packs in `packs.html`
+- [ ] `tests/carga-estado.spec.js` list tests use `packs.html`, "Carregando packs...", the new error text and 4 cards; one-of-two-reads failing shows the error (EDGE-02 at page level)
+- [ ] No preset card exists on `packs.html` (LIST-12: no element shows a preset `equipamento` as a card)
+- [ ] `tests/modulos.spec.js`, `tests/responsive.spec.js`, `tests/cabecalho.spec.js` use `packs.html` instead of `presets.html`
+- [ ] Full gate passes: `npx playwright test`, exit 0
+- [ ] Test count reported (old 31 list tests replaced; net change explained in the status)
+
+**Tests**: e2e
+**Gate**: full
+**Commit**: `feat(packs): turn the presets page into a packs page with the same filters`
+
+---
+
+### T4: Packs on the home carousel
+
+**What**: Make the home carousel load the catalogue and show pack cards, titled "Packs", with the new loading and error texts.
+**Where**: `frontend/paginas/inicio.js`; also `frontend/index.html`, `tests/carga-estado.spec.js` (home tests), `tests/packs-lista.spec.js` (HOME block)
+**Depends on**: T3
+**Reuses**: `carregarCatalogo`, `criarCartaoPack`, `ordenarMaisRecentes`
+**Requirement**: HOME-01, HOME-02, HOME-03
+
+**Tools**:
+
+- MCP: NONE
+- Skill: NONE
+
+**Done when**:
+
+- [ ] Carousel titled "Packs" shows 4 pack cards, newest first, each linking to its pack -> `tests/packs-lista.spec.js`
+- [ ] No preset card on `index.html`
+- [ ] Home loading and error tests use "Carregando packs..." and the new error text -> `tests/carga-estado.spec.js`
+- [ ] Full gate passes; test count reported
+
+**Tests**: e2e
+**Gate**: full
+**Commit**: `feat(home): show the packs in the home carousel`
+
+---
+
+### T5: Pack page
+
+**What**: Create `pack.html` and `paginas/pack.js`: id validation, parallel reads, info block and preset list, title, not-found, loading and error.
+**Where**: `frontend/paginas/pack.js` (new); also `frontend/pack.html` (new, top block copied from `preset.html`), `frontend/style.css`, `tests/pack-pagina.spec.js` (new)
+**Depends on**: T4
+**Reuses**: `.preset-topo` layout, `carregarComEstado`, `atualizarCabecalho`, `formatarPreco`, `ROTULOS`
+**Requirement**: PAG-01 .. PAG-09, EDGE-01, EDGE-02 (pack page)
+
+**Tools**:
+
+- MCP: NONE
+- Skill: NONE
+
+**Done when**:
+
+- [ ] `pack.html?id=metal` requests `GET /packs/metal` and `GET /presets?estilo=metal`; shows `<h1>` "Pack Metal", its description, the formatted price, "2 presets", and a list with "Distorção Moderna" (NUX · MG-30) and "Djent Preciso" (HeadRush · MX5) with descriptions -> `tests/pack-pagina.spec.js`
+- [ ] Title "Pack Metal | CorsinoTones"
+- [ ] No download link on the page
+- [ ] No `id`, `Rock`, `rock1`, `../x`: "Pack não encontrado." + "Ver todos os packs" → `packs.html`, and no request to the API
+- [ ] `jazz` (404): same not-found message
+- [ ] Aborted route: error text + "Tentar novamente"; retry with a working route shows the pack
+- [ ] While held: "Carregando pack..." and the info block hidden; while not-found or error: info block hidden
+- [ ] Signed in: header shows "Olá, Ryan" on the pack page
+- [ ] Full gate passes; test count reported
+
+**Tests**: e2e (`tests/pack-pagina.spec.js`)
+**Gate**: full
+**Commit**: `feat(pack): add a page per pack with its price and presets`
+
+---
+
+### T6: Remove the single-preset page
+
+**What**: Delete `preset.html` and `paginas/preset.js`, remove `.preset-download` CSS, and point responsive and header tests to `pack.html?id=rock`.
+**Where**: `frontend/preset.html` (deleted); also `frontend/paginas/preset.js` (deleted), `frontend/style.css`, `tests/responsive.spec.js`, `tests/cabecalho.spec.js`, `tests/modulos.spec.js`
+**Depends on**: T5
+**Reuses**: -
+**Requirement**: REM-01, REM-02
+
+**Tools**:
+
+- MCP: NONE
+- Skill: NONE
+
+**Done when**:
+
+- [ ] `frontend/preset.html`, `frontend/paginas/preset.js` and `frontend/presets.html` do not exist; no file under `frontend/` contains `preset.html` or `presets.html` -> `tests/modulos.spec.js` (Node `fs`)
+- [ ] Responsive top-block tests open `pack.html?id=rock` and wait for the pack before measuring; overflow test lists `packs.html` and `pack.html?id=rock`
+- [ ] Header tests list `packs.html` and `pack.html?id=rock`
+- [ ] Full gate passes; test count reported
+
+**Tests**: e2e
+**Gate**: full
+**Commit**: `refactor(frontend): remove the single-preset page`
+
+---
+
+### T7: Home text, disabled buttons and README
+
+**What**: Replace the free-download text and meta description, style disabled buttons, rewrite the README for stage 05.
+**Where**: `README.md`; also `frontend/index.html`, `frontend/style.css`, `tests/ajustes.spec.js` (new)
+**Depends on**: T6
+**Reuses**: `.loginBt` button styles
+**Requirement**: FIX-01, FIX-02, FIX-03, FIX-04, REG-01
+
+**Tools**:
+
+- MCP: NONE
+- Skill: NONE
+
+**Done when**:
+
+- [ ] `index.html` shows the new sentence and neither its body nor its meta description contains "download gratuito" -> `tests/ajustes.spec.js`
+- [ ] While the login request is held, the "Entrando..." button has computed `opacity` < 1 and `cursor` `not-allowed`
+- [ ] README contains "etapa 05", "npm run api", "npm run api:lento", "npm run api:reset", "ryan@exemplo.com", "teste123", a link to `docs/etapa-05.md`, and none of `frontend/login.js`, `preset.html`, `presets.html` (Node `fs`)
+- [ ] All `etapa05-auth` tests pass (REG-01)
+- [ ] Full gate passes; test count reported
+
+**Tests**: e2e (`tests/ajustes.spec.js`)
+**Gate**: full
+**Commit**: `fix(site): update home text, disabled buttons and README`
+
+---
+
+## Phase Execution Map
+
+```
+Phase 1 -> Phase 2
+
+T1 -> T2 -> T3 -> T4 -> T5 -> T6 -> T7
+```
+
+Seven tasks fit one task-budgeted batch, so execution runs inline. The Verifier runs automatically after T7.
+
+---
+
+## Task Granularity Check
+
+| Task | Scope | Status |
+| ---- | ----- | ------ |
+| T1 | Seed data + one API module | Granular |
+| T2 | One service + two small UI functions | Granular (cohesive: the card shows what the join computes) |
+| T3 | Page rename + pack rules + test rewrite | ⚠️ Largest; the list cannot show packs with preset filters, and the old tests cannot pass on a packs page, so they move together |
+| T4 | One page module | Granular |
+| T5 | One new page | Granular |
+| T6 | Deletion + test page names | Granular |
+| T7 | Three small fixes | Granular (cohesive: leftovers listed together by the user) |
+
+## Diagram-Definition Cross-Check
+
+| Task | Depends On (task body) | Diagram Shows | Status |
+| ---- | ---------------------- | ------------- | ------ |
+| T1 | None | - | ✅ Match |
+| T2 | T1 | T1 -> T2 | ✅ Match |
+| T3 | T2 | T2 -> T3 (phase boundary) | ✅ Match |
+| T4 | T3 | T3 -> T4 | ✅ Match |
+| T5 | T4 | T4 -> T5 | ✅ Match |
+| T6 | T5 | T5 -> T6 | ✅ Match |
+| T7 | T6 | T6 -> T7 | ✅ Match |
+
+## Test Co-location Validation
+
+| Task | Code Layer Created/Modified | Matrix Requires | Task Says | Status |
+| ---- | --------------------------- | --------------- | --------- | ------ |
+| T1 | Mock data, API layer | e2e | e2e | ✅ OK |
+| T2 | Services, UI helpers | e2e | e2e | ✅ OK |
+| T3 | Pages, markup | e2e | e2e | ✅ OK |
+| T4 | Page module, markup | e2e | e2e | ✅ OK |
+| T5 | Page module, markup, styles | e2e | e2e | ✅ OK |
+| T6 | Markup removal, styles | e2e | e2e | ✅ OK |
+| T7 | Markup, styles, README | e2e | e2e | ✅ OK |
+
+## Requirement Coverage
+
+| Requirement | Task |
+| ----------- | ---- |
+| PACK-01, PACK-02, PACK-03 | T1 |
+| LIST-02, LIST-05, EDGE-02 | T2 (service), T3 (page) |
+| LIST-01, LIST-03, LIST-04, LIST-06 .. LIST-12, EDGE-03 | T3 |
+| HOME-01, HOME-02, HOME-03 | T4 |
+| PAG-01 .. PAG-09, EDGE-01 | T5 (EDGE-02 also on the pack page) |
+| REM-01, REM-02 | T6 |
+| FIX-01 .. FIX-04, REG-01 | T7 |
+| REG-02 | T3, T4 |
+
+**Coverage:** 38 requirements, 38 mapped to tasks, 0 unmapped.

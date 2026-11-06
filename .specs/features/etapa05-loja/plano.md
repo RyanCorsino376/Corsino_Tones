@@ -1,4 +1,10 @@
-# Plano — Loja de presets (carrinho, compra simulada, biblioteca)
+# Plano — Loja de packs de presets (carrinho, compra simulada, biblioteca)
+
+> **Revisão 2026-11-06:** a loja vende **packs por estilo** (Rock, Blues, Metal,
+> Clean), não presets avulsos. Cada pack traz todos os presets daquele estilo, de
+> qualquer equipamento, e todos custam o mesmo. A página de preset avulso
+> (`preset.html`) deixa de existir. As seções abaixo já estão corrigidas; o
+> resumo da mudança está na seção 10.
 
 > Rascunho de arquitetura. Ainda não é spec: serve para decidir o rumo antes de
 > rodar o fluxo Specify → Design → Tasks. Também cobre os requisitos da Etapa 05
@@ -7,18 +13,18 @@
 ## 1. Fluxo desejado
 
 ```
-login → navegar/filtrar (presets.html) → detalhe (preset.html?id=N)
+login → packs.html (filtros, busca, ordenação) → pack.html?id=rock
       → "Adicionar ao carrinho" → carrinho.html → checkout.html (pagamento simulado)
-      → pedido aprovado → biblioteca.html lista o preset com botão "Download"
+      → pedido aprovado → biblioteca.html lista o pack e o download de cada preset dele
 ```
 
 Regras de negócio:
 
 - R1. Visitante navega, vê preços e monta o carrinho; checkout e biblioteca exigem
   login (sem login → redireciona para `login.html?voltar=<página>`).
-- R2. Preset já comprado não pode ir ao carrinho de novo: o botão vira "Na biblioteca".
-- R3. O mesmo preset não entra duas vezes no carrinho (quantidade sempre 1 — é arquivo digital).
-- R4. O botão "Download" só existe na biblioteca, nunca no detalhe.
+- R2. Pack já comprado não pode ir ao carrinho de novo: o botão vira "Na biblioteca".
+- R3. O mesmo pack não entra duas vezes no carrinho (quantidade sempre 1 — são arquivos digitais).
+- R4. O "Download" só existe na biblioteca, nunca na página do pack.
 - R5. Pagamento recusado mantém o carrinho intacto e mostra o erro.
 
 ## 2. O que muda hoje no projeto
@@ -28,10 +34,10 @@ Regras de negócio:
 | `dados.js` com `window.PRESETS` fixo (AD-006) | Dados vêm de um **mock server** via `fetch` |
 | Scripts clássicos que se comunicam por `window.*` | **ES modules** (`<script type="module">`, `import`/`export`) |
 | `login.js` só valida o formulário | Login autentica de verdade no mock e guarda a sessão |
-| `preset.html` estático com link de download | Página dinâmica por `?id=`, com preço e botão de carrinho |
-| `biblioteca.html` sempre vazia | Lista os presets comprados, com download |
+| `presets.html` com um card por preset; `preset.html` estático com link de download | `presets.html` vira `packs.html` (cards de pack, com os mesmos filtros, busca e ordenação); `preset.html` é removida; cada pack tem `pack.html?id=` (preço, presets incluídos e botão de carrinho) |
+| `biblioteca.html` sempre vazia | Lista os packs comprados, com o download de cada preset |
 | — | Novas páginas `carrinho.html` e `checkout.html` |
-| Proposta: presets gratuitos + favoritos | Presets pagos; "Biblioteca" = presets comprados |
+| Proposta: presets gratuitos + favoritos | Packs pagos por estilo; "Biblioteca" = packs comprados |
 
 ## 3. Decisões de arquitetura (propostas)
 
@@ -59,7 +65,7 @@ checkout hospedado do gateway e o Spring Boot confirma o pagamento por webhook
 
 ### D4. Biblioteca é derivada dos pedidos pagos
 Não existe tabela "biblioteca": ela é `GET /pedidos?usuarioId=X&status=pago`
-→ junta os `presetIds` → busca esses presets. Evita duas fontes de verdade
+→ junta os `packIds` → busca esses packs e os presets de cada estilo. Evita duas fontes de verdade
 (pedido diz "comprou", biblioteca diz outra coisa).
 
 ### D5. Sessão no `sessionStorage`
@@ -82,13 +88,16 @@ O front só **esconde** botões; quem **garante** a regra é o servidor.
 ```json
 {
   "usuarios": [{ "id": 1, "nome": "Ryan", "email": "ryan@exemplo.com", "senha": "teste123" }],
+  "packs": [{
+    "id": "rock", "nome": "Pack Rock", "descricao": "...", "precoCentavos": 4990
+  }],
   "presets": [{
     "id": 1, "nome": "Crunch Clássico", "marca": "boss", "equipamento": "GT-1000",
     "estilo": "rock", "data": "2026-09-10", "descricao": "...",
-    "precoCentavos": 1990, "arquivo": "/arquivos/crunch-classico.tsl"
+    "arquivo": "/arquivos/crunch-classico.tsl"
   }],
   "pedidos": [{
-    "id": 1, "usuarioId": 1, "presetIds": [1, 3], "totalCentavos": 3980,
+    "id": 1, "usuarioId": 1, "packIds": ["rock", "metal"], "totalCentavos": 9980,
     "status": "pago", "criadoEm": "2026-11-05T14:00:00Z"
   }]
 }
@@ -100,8 +109,11 @@ O front só **esconde** botões; quem **garante** a regra é o servidor.
 - O pedido guarda `totalCentavos` calculado na hora da compra (se o preço mudar
   depois, o histórico não muda).
 - Senha em texto puro **só porque é mock**; o Spring Boot fará hash.
-- Proposta/BD real: novas entidades `Pedido` e `ItemPedido` (com preço pago);
-  `Favorito` sai ou vira recurso separado.
+- O pack não guarda a lista de presets: ela vem de `GET /presets?estilo={id}`.
+  Um preset novo de rock entra no Pack Rock sem segunda edição.
+- O preço fica no pack; o preset não tem preço.
+- Proposta/BD real: novas entidades `Pack`, `Pedido` e `ItemPedido` (com o preço
+  pago); `Favorito` sai ou vira recurso separado.
 
 ## 5. Estrutura de módulos
 
@@ -171,16 +183,18 @@ renderiza ou `mostrarErro()`, com o botão de "Tentar novamente".
    com loading/erro. *Prova:* desligar o json-server mostra o erro.
 2. **Login real + sessão** — `api/auth.js`, `sessao.js`, cabeçalho com "Sair",
    guarda de rotas protegidas e `?voltar=`.
-3. **Detalhe dinâmico** — `preset.html?id=N`, preço, cartões linkando com id,
-   remover o download dali.
-4. **Carrinho** — `servicos/carrinho.js`, botão no detalhe, contador no cabeçalho,
-   `carrinho.html` com remover e total.
+3. **Packs e preços** — packs no mock; `presets.html` vira `packs.html`, só com
+   cards de pack e os mesmos filtros, busca e ordenação; o carrossel da home
+   mostra packs; `pack.html?id=` com preço e presets incluídos; remover
+   `preset.html` e o download (spec: `.specs/features/etapa05-packs/`).
+4. **Carrinho** — `servicos/carrinho.js`, botão na página do pack, contador no
+   cabeçalho, `carrinho.html` com remover e total.
 5. **Checkout + pedido** — `checkout.html`, `pagamento.js`, `POST /pedidos`,
    tela de aprovado/recusado, limpar carrinho só se aprovado.
-6. **Biblioteca** — derivada dos pedidos, botão Download, "Na biblioteca" no
-   detalhe (R2).
+6. **Biblioteca** — derivada dos pedidos: packs comprados com o download de
+   cada preset, "Na biblioteca" na página do pack (R2).
 7. **Documentação** — nova AD substituindo AD-006, atualizar `proposta.md`
-   (presets pagos, Pedido/ItemPedido), `docs/etapa-05.md` e evidências.
+   (packs pagos, Pack/Pedido/ItemPedido), `docs/etapa-05.md` e evidências.
 
 Fatias 1 e 2 já cumprem a Etapa 05 sozinhas; 3–6 são a loja.
 
@@ -203,3 +217,20 @@ Fatias 1 e 2 já cumprem a Etapa 05 sozinhas; 3–6 são a loja.
 3. Pagamento: só cartão simulado (D3).
 4. Favoritos removidos por enquanto; "Biblioteca" = presets comprados.
 5. `json-server@0.17.4` instalado como devDependency.
+
+## 10. Revisão: venda por pack (2026-11-06)
+
+Decidido com o usuário ao revisar a spec da fatia 3:
+
+1. **Um pack por estilo** (Rock, Blues, Metal, Clean), com todos os presets daquele
+   estilo, de qualquer equipamento. Descartado: pack por estilo + equipamento, que
+   nos dados atuais daria vários packs de um preset só.
+2. **Preço único por pack** (proposta: R$ 49,90).
+3. **Sem página de preset avulso:** `preset.html` é removida.
+4. **Sem cards de preset:** a página Presets vira **Packs** (`packs.html`), com os
+   mesmos filtros, busca, ordenação, contagem e lista vazia aplicados aos packs;
+   o carrossel da home também mostra packs. Cada pack tem sua página
+   (`pack.html?id=rock`), que lista os presets incluídos (lista, não cards).
+
+Efeito nas fatias seguintes: o carrinho, o pedido (`packIds`) e a biblioteca
+tratam de packs; o download continua sendo por preset, dentro de cada pack comprado.
