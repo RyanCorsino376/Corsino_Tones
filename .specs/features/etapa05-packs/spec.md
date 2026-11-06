@@ -222,9 +222,9 @@ This slice turns the "Presets" page into a **"Packs"** page that lists pack card
 | LIST-10 | P1: Packs page with filters, search and sort | Tasks | Implementing |
 | LIST-11 | P1: Packs page with filters, search and sort | Tasks | Implementing |
 | LIST-12 | P1: Packs page with filters, search and sort | Tasks | Implementing |
-| HOME-01 | P1: Packs on the home page | Specify | Pending |
-| HOME-02 | P1: Packs on the home page | Specify | Pending |
-| HOME-03 | P1: Packs on the home page | Specify | Pending |
+| HOME-01 | P1: Packs on the home page | Tasks | Implementing |
+| HOME-02 | P1: Packs on the home page | Tasks | Implementing |
+| HOME-03 | P1: Packs on the home page | Tasks | Implementing |
 | PAG-01 | P1: Pack page | Specify | Pending |
 | PAG-02 | P1: Pack page | Specify | Pending |
 | PAG-03 | P1: Pack page | Specify | Pending |
@@ -241,7 +241,7 @@ This slice turns the "Presets" page into a **"Packs"** page that lists pack card
 | FIX-03 | P2: Leftovers from slice 2 | Specify | Pending |
 | FIX-04 | P2: Leftovers from slice 2 | Specify | Pending |
 | REG-01 | P1: Existing behaviour preserved | Specify | Pending |
-| REG-02 | P1: Existing behaviour preserved | Specify | Pending |
+| REG-02 | P1: Existing behaviour preserved | Tasks | Implementing |
 | EDGE-01 | Edge cases | Specify | Pending |
 | EDGE-02 | Edge cases | Tasks | Implementing |
 | EDGE-03 | Edge cases | Tasks | Implementing |

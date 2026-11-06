@@ -182,7 +182,7 @@ Test count: 195 (189 + 6). Deviation: the preset card `criarCartao` stays until 
 
 **Status**: Complete
 
-Test count: 201 (195 + 6 net). `presets-lista.spec.js` (35 tests: 31 etapa04 + 4 slice 1) became `packs-lista.spec.js` (37 tests) following the mapping table; the carousel test moved there unchanged until T4. One expectation was wrong in the first draft: "DISTORCAO" also matches the Rock pack (a rock preset description says "Distorção"); the test now derives the expected packs from the API with the spec rule. Loading/error tests keep holding or breaking `/presets`, which `packs.html` also reads, and gained a `/packs`-failure test (LIST-03 "either"). Card texts got their own styles after a screenshot showed default paragraph margins.
+Test count: 201 (195 + 6 net). `presets-lista.spec.js` (35 tests: 31 etapa04 + 4 slice 1) became `packs-lista.spec.js` (37 tests) following the mapping table; correction (written during T4): the carousel tests (etapa04 CAT-04, slice 1 API-03/05) were not carried into the new file, so between T3 and T4 the carousel was covered only by the loading/error tests in `carga-estado.spec.js`; T4 adds the HOME tests. One expectation was wrong in the first draft: "DISTORCAO" also matches the Rock pack (a rock preset description says "Distorção"); the test now derives the expected packs from the API with the spec rule. Loading/error tests keep holding or breaking `/presets`, which `packs.html` also reads, and gained a `/packs`-failure test (LIST-03 "either"). Card texts got their own styles after a screenshot showed default paragraph margins.
 
 ---
 
@@ -201,14 +201,18 @@ Test count: 201 (195 + 6 net). `presets-lista.spec.js` (35 tests: 31 etapa04 + 4
 
 **Done when**:
 
-- [ ] Carousel titled "Packs" shows 4 pack cards, newest first, each linking to its pack -> `tests/packs-lista.spec.js`
-- [ ] No preset card on `index.html`
-- [ ] Home loading and error tests use "Carregando packs..." and the new error text -> `tests/carga-estado.spec.js`
-- [ ] Full gate passes; test count reported
+- [x] Carousel titled "Packs" shows 4 pack cards, newest first, each linking to its pack -> `tests/packs-lista.spec.js`
+- [x] No preset card on `index.html`
+- [x] Home loading and error tests use "Carregando packs..." and the new error text -> `tests/carga-estado.spec.js`
+- [x] Full gate passes; test count reported
 
 **Tests**: e2e
 **Gate**: full
 **Commit**: `feat(home): show the packs in the home carousel`
+
+**Status**: Complete
+
+Test count: 203 (201 + 2). The home loading/error tests now use the packs texts and 4 cards. The preset card builder `criarCartao` is removed here, as planned in T2's note: the carousel was its last user.
 
 ---
 

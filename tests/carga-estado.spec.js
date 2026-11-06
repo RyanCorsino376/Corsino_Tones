@@ -11,8 +11,8 @@ const { test, expect } = require('@playwright/test');
 const URL_PRESETS = 'http://127.0.0.1:3000/presets';
 const URL_PACKS = 'http://127.0.0.1:3000/packs';
 const CARREGANDO = 'Carregando packs...';
-// The home carousel moves to packs in etapa05-packs T4; until then it keeps the preset texts.
-const CARREGANDO_HOME = 'Carregando presets...';
+// HOME-03: the home carousel uses the same texts as packs.html.
+const CARREGANDO_HOME = CARREGANDO;
 
 /** Holds every catalogue request until the returned function is called. */
 async function segurarCatalogo(page) {
@@ -69,7 +69,7 @@ test.describe('etapa05 T4 - loading state on packs.html', () => {
 });
 
 const MENSAGEM_ERRO = 'Não foi possível carregar os packs. Verifique sua conexão e tente novamente.';
-const MENSAGEM_ERRO_HOME = 'Não foi possível carregar os presets. Verifique sua conexão e tente novamente.';
+const MENSAGEM_ERRO_HOME = MENSAGEM_ERRO;
 
 /** Asserts the error state of packs.html: message, button, and nothing of the list. */
 async function esperarEstadoDeErro(page) {
@@ -176,7 +176,7 @@ test.describe('etapa05 T5 - error state and retry on packs.html', () => {
 
 test.describe('etapa05 T6 - loading and error states on index.html', () => {
   // LOAD-02
-  test('enquanto a requisição está pendente, a home mostra "Carregando presets..." sem cards', async ({ page }) => {
+  test('enquanto a requisição está pendente, a home mostra "Carregando packs..." sem cards', async ({ page }) => {
     const liberar = await segurarCatalogo(page);
     await page.goto('index.html');
 
@@ -184,7 +184,7 @@ test.describe('etapa05 T6 - loading and error states on index.html', () => {
     await expect(page.locator('.carrossel .cartao')).toHaveCount(0);
 
     liberar();
-    await expect(page.locator('.carrossel .cartao')).toHaveCount(9);
+    await expect(page.locator('.carrossel .cartao')).toHaveCount(4);
     await expect(avisoCarregandoHome(page)).toHaveCount(0);
   });
 
@@ -204,7 +204,7 @@ test.describe('etapa05 T6 - loading and error states on index.html', () => {
 
     await alerta.getByRole('button', { name: 'Tentar novamente' }).click();
 
-    await expect(page.locator('.carrossel .cartao')).toHaveCount(9);
+    await expect(page.locator('.carrossel .cartao')).toHaveCount(4);
     await expect(page.getByRole('alert')).toHaveCount(0);
     expect(tentativas).toBe(2);
   });

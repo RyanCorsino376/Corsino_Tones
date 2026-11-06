@@ -374,3 +374,35 @@ test.describe('etapa05-packs T3 - count and empty state (LIST-10, LIST-11)', () 
     await expect(page.locator('#contagem')).toHaveText('4 packs encontrados');
   });
 });
+
+test.describe('etapa05-packs T4 - packs on the home page', () => {
+  // HOME-01 (also slice 1 API-03/05): the carousel fetches the catalogue and shows packs, newest first.
+  test('o carrossel "Packs" mostra um card por pack, do mais recente ao mais antigo', async ({ page }) => {
+    const pedidoPacks = page.waitForRequest(`${API}/packs`);
+    const pedidoPresets = page.waitForRequest(`${API}/presets`);
+    await page.goto('index.html');
+    await Promise.all([pedidoPacks, pedidoPresets]);
+
+    await expect(page.locator('.tituloCarrossel h2')).toHaveText('Packs');
+    const esperado = [...await lerPacks(page)].sort(porData).reverse();
+    await expect(page.locator('.carrossel .cartao')).toHaveCount(esperado.length);
+    const nomes = (await page.locator('.carrossel .cartao-nome').allTextContents()).map((n) => n.trim());
+    expect(nomes).toEqual(esperado.map((p) => p.nome));
+    for (const [i, pack] of esperado.entries()) {
+      const cartao = page.locator('.carrossel .cartao').nth(i);
+      await expect(cartao).toHaveAttribute('href', `pack.html?id=${pack.id}`);
+      await expect(cartao.locator('.cartao-preco')).toHaveText(formatoBRL(pack.precoCentavos));
+    }
+  });
+
+  // HOME-02
+  test('a página inicial não mostra nenhum card de preset', async ({ page }) => {
+    await page.goto('index.html');
+    await expect(page.locator('.carrossel .cartao')).toHaveCount(4);
+    const presets = await page.request.get(`${API}/presets`).then((r) => r.json());
+    const textos = await page.locator('.cartao').allTextContents();
+    for (const preset of presets) {
+      expect(textos.some((t) => t.includes(preset.nome)), preset.nome).toBe(false);
+    }
+  });
+});
