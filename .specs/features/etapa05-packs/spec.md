@@ -207,9 +207,9 @@ This slice turns the "Presets" page into a **"Packs"** page that lists pack card
 
 | Requirement ID | Story | Phase | Status |
 | -------------- | ----- | ----- | ------ |
-| PACK-01 | P1: Packs in the mock API | Specify | Pending |
-| PACK-02 | P1: Packs in the mock API | Specify | Pending |
-| PACK-03 | P1: Packs in the mock API | Specify | Pending |
+| PACK-01 | P1: Packs in the mock API | Tasks | Implementing |
+| PACK-02 | P1: Packs in the mock API | Tasks | Implementing |
+| PACK-03 | P1: Packs in the mock API | Tasks | Implementing |
 | LIST-01 | P1: Packs page with filters, search and sort | Specify | Pending |
 | LIST-02 | P1: Packs page with filters, search and sort | Specify | Pending |
 | LIST-03 | P1: Packs page with filters, search and sort | Specify | Pending |

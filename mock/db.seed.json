@@ -1,4 +1,30 @@
 {
+  "packs": [
+    {
+      "id": "rock",
+      "nome": "Pack Rock",
+      "descricao": "Do crunch britânico ao lead de arena: timbres de rock para tocar de cara.",
+      "precoCentavos": 4990
+    },
+    {
+      "id": "blues",
+      "nome": "Pack Blues",
+      "descricao": "Overdrives que respondem à palheta e limpam no volume da guitarra.",
+      "precoCentavos": 4990
+    },
+    {
+      "id": "metal",
+      "nome": "Pack Metal",
+      "descricao": "Ganho alto, graves firmes e gate apertado para riffs pesados.",
+      "precoCentavos": 4990
+    },
+    {
+      "id": "clean",
+      "nome": "Pack Clean",
+      "descricao": "Limpos brilhantes e percussivos, com compressão e ambiência na medida.",
+      "precoCentavos": 4990
+    }
+  ],
   "presets": [
     {
       "id": 1,

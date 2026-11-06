@@ -118,3 +118,37 @@ test.describe('etapa05-auth T1 - seed data and reset', () => {
     expect(await resposta.json()).toEqual([USUARIO_SEMENTE]);
   });
 });
+
+const IDS_PACKS = ['rock', 'blues', 'metal', 'clean'];
+
+test.describe('etapa05-packs T1 - packs in the mock', () => {
+  // PACK-01
+  test('GET /packs devolve os 4 packs por estilo, a R$ 49,90 cada', async ({ request }) => {
+    const resposta = await request.get(`${API}/packs`);
+    expect(resposta.status()).toBe(200);
+    const packs = await resposta.json();
+    expect(packs.map((p) => p.id)).toEqual(IDS_PACKS);
+    for (const pack of packs) {
+      expect(Object.keys(pack).sort()).toEqual(['descricao', 'id', 'nome', 'precoCentavos']);
+      expect(pack.precoCentavos).toBe(4990);
+      expect(pack.nome).toMatch(/^Pack /);
+      expect(pack.descricao.length).toBeGreaterThan(0);
+    }
+  });
+
+  // PACK-02
+  test('GET /packs/{id} devolve cada pack e 404 para um id desconhecido', async ({ request }) => {
+    for (const id of IDS_PACKS) {
+      const resposta = await request.get(`${API}/packs/${id}`);
+      expect(resposta.status(), id).toBe(200);
+      expect((await resposta.json()).id).toBe(id);
+    }
+    expect((await request.get(`${API}/packs/jazz`)).status()).toBe(404);
+  });
+
+  // PACK-03: the existing API-01 test above still asserts the seven preset fields; the seed agrees.
+  test('os presets da semente continuam sem preço', () => {
+    const semente = lerJson(path.join(RAIZ, 'mock', 'db.seed.json'));
+    for (const preset of semente.presets) expect(preset).not.toHaveProperty('precoCentavos');
+  });
+});

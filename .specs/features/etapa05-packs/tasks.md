@@ -83,19 +83,23 @@ T3 -> T4 -> T5 -> T6 -> T7
 
 **Done when**:
 
-- [ ] `GET /packs` returns ids `rock`, `blues`, `metal`, `clean`, each with `nome`, `descricao`, `precoCentavos: 4990` -> `tests/api-mock.spec.js`
-- [ ] `GET /packs/rock` returns the Rock pack; `GET /packs/jazz` returns 404
-- [ ] Presets keep exactly the seven fields of slice 1 (existing API-01 test unchanged)
-- [ ] `buscarPack('metal')` resolves with the pack; `buscarPack('jazz')` resolves `null`; an aborted route rejects with `ErroApi` -> `tests/api-packs.spec.js`
-- [ ] `listarPacks()` resolves the 4 packs; a non-list body rejects with `ErroApi`
-- [ ] `listarPresetsDoEstilo('rock')` sends `GET /presets?estilo=rock` and resolves the 3 rock presets
-- [ ] `npm run api:reset` is needed once for an existing `mock/db.json` to get the packs (noted in the task status)
-- [ ] Full gate passes: `npx playwright test`, exit 0
-- [ ] Test count: 180 + new tests pass
+- [x] `GET /packs` returns ids `rock`, `blues`, `metal`, `clean`, each with `nome`, `descricao`, `precoCentavos: 4990` -> `tests/api-mock.spec.js`
+- [x] `GET /packs/rock` returns the Rock pack; `GET /packs/jazz` returns 404
+- [x] Presets keep exactly the seven fields of slice 1 (existing API-01 test unchanged)
+- [x] `buscarPack('metal')` resolves with the pack; `buscarPack('jazz')` resolves `null`; an aborted route rejects with `ErroApi` -> `tests/api-packs.spec.js`
+- [x] `listarPacks()` resolves the 4 packs; a non-list body rejects with `ErroApi`
+- [x] `listarPresetsDoEstilo('rock')` sends `GET /presets?estilo=rock` and resolves the 3 rock presets
+- [x] `npm run api:reset` is needed once for an existing `mock/db.json` to get the packs (noted in the task status)
+- [x] Full gate passes: `npx playwright test`, exit 0
+- [x] Test count: 180 + new tests pass
 
 **Tests**: e2e (`tests/api-mock.spec.js`, `tests/api-packs.spec.js`)
 **Gate**: full
 **Commit**: `feat(api): add style packs to the mock and the API layer`
+
+**Status**: Complete
+
+Test count: 189 (180 + 9). Run `npm run api:reset` once on an existing checkout: `mock/db.json` is created from the seed only when missing, so an old copy has no packs.
 
 ---
 
