@@ -234,3 +234,10 @@ Decidido com o usuário ao revisar a spec da fatia 3:
 
 Efeito nas fatias seguintes: o carrinho, o pedido (`packIds`) e a biblioteca
 tratam de packs; o download continua sendo por preset, dentro de cada pack comprado.
+
+### Revisão 2 (2026-11-06): pack = estilo + modelo de pedaleira
+
+O pack passa a ser **um estilo para um único modelo de pedaleira** ("Rock · Boss
+GT-1000"), para que tudo o que a pessoa compra funcione no aparelho dela. Os dados
+de exemplo crescem para 4 modelos, 9 packs e 21 presets (2 a 3 por pack); cada
+preset ganha `packId`. Spec: `.specs/features/etapa05-packs/spec.md` (revisão 2).

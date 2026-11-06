@@ -10,7 +10,7 @@ Implement these tasks with the `tlc-spec-driven` skill: **activate it by name an
 
 **Spec**: `.specs/features/etapa05-packs/spec.md`
 **Design**: `.specs/features/etapa05-packs/design.md`
-**Status**: Done (pending Verifier)
+**Status**: In Progress (revision 2: T8-T10)
 
 ### Files renamed, removed or rewritten
 
@@ -61,8 +61,10 @@ T1 -> T2
 ### Phase 2: Pages
 
 ```
-T3 -> T4 -> T5 -> T6 -> T7
+T3 -> T4 -> T5 -> T6 -> T7 -> T8 -> T9 -> T10
 ```
+
+T8-T10 implement revision 2 of the spec (a pack is one style for one pedalboard model), requested by the user after T7.
 
 ---
 
@@ -312,15 +314,95 @@ Test count: 223 (219 + 4). "Um botão ativo continua opaco" passes before the fi
 
 ---
 
+### T8: Style + model packs in the data and the API (revision 2)
+
+**What**: Replace the sample data with nine style + model packs (21 presets, each with `packId`) and replace `listarPresetsDoEstilo` with `listarPresetsDoPack`.
+**Where**: `mock/db.seed.json`; also `frontend/api/presets.js`, `tests/api-mock.spec.js`, `tests/api-packs.spec.js`
+**Depends on**: T7
+**Reuses**: The kept presets of Boss GT-1000, Zoom G6, NUX MG-30 and Line 6 HX Stomp
+**Requirement**: PACK-01, PACK-02, PACK-03, PACK-04 (rev. 2)
+
+**Tools**:
+
+- MCP: NONE
+- Skill: NONE
+
+**Done when**:
+
+- [ ] `GET /packs` returns the nine packs of the spec's sample-data row, each with the seven fields and `precoCentavos: 4990`; ids follow `{estilo}-{marca}-{equipamento}` -> `tests/api-mock.spec.js`
+- [ ] `GET /presets` returns 21 presets, each with a `packId` of an existing pack and the same `estilo`, `marca`, `equipamento` as that pack; pack sizes are 3, 2, 2, 3, 2, 3, 2, 2, 2 as listed
+- [ ] `listarPresetsDoPack('rock-boss-gt-1000')` sends `GET /presets?packId=rock-boss-gt-1000` and resolves its 3 presets -> `tests/api-packs.spec.js`
+- [ ] Slice 1 API-01 test (nine fixed presets) is rewritten to the new data (superseded, spec "Slice 1 tests" row)
+- [ ] Full gate passes; test count reported
+
+**Tests**: e2e
+**Gate**: full
+**Commit**: `feat(api): make each pack one style for one pedalboard model`
+
+---
+
+### T9: Packs page and cards for style + model packs (revision 2)
+
+**What**: Join packs and presets by `packId`, drop the brands line from the card, filter brand by `pack.marca` and style by `pack.estilo`, search also in `pack.equipamento`, and keep only the four brands in the filter.
+**Where**: `frontend/servicos/catalogo.js`; also `frontend/ui/cartao.js`, `frontend/paginas/packs.js`, `frontend/packs.html`, `tests/catalogo.spec.js`, `tests/packs-lista.spec.js`, `tests/carga-estado.spec.js`
+**Depends on**: T8
+**Reuses**: The T3 pipeline
+**Requirement**: LIST-05, LIST-06, LIST-07, LIST-13 (rev. 2); LIST-* and HOME-* re-checked on the new data
+
+**Tools**:
+
+- MCP: NONE
+- Skill: NONE
+
+**Done when**:
+
+- [ ] Cards show name, "{N} presets" and price, no brands line -> `tests/catalogo.spec.js`, `tests/packs-lista.spec.js`
+- [ ] Brand filter offers exactly Boss, Line 6, NUX, Zoom; "Zoom" shows the two Zoom G6 packs; Zoom + Line 6 shows four; Zoom AND metal shows none
+- [ ] Search "g6" shows the two Zoom G6 packs; a preset name finds its pack
+- [ ] Every list, sort, count and home test passes on the nine packs, with expected values derived from the API
+- [ ] Full gate passes; test count reported
+
+**Tests**: e2e
+**Gate**: full
+**Commit**: `feat(packs): filter and show packs by style and model`
+
+---
+
+### T10: Pack page for style + model packs (revision 2)
+
+**What**: Accept dashed ids, read the pack and `GET /presets?packId=` in parallel, and point the page tests to the new ids.
+**Where**: `frontend/paginas/pack.js`; also `tests/pack-pagina.spec.js`, `tests/responsive.spec.js`, `tests/cabecalho.spec.js`
+**Depends on**: T9
+**Reuses**: The T5 page
+**Requirement**: PAG-01, PAG-02, PAG-05, EDGE-01 (rev. 2)
+
+**Tools**:
+
+- MCP: NONE
+- Skill: NONE
+
+**Done when**:
+
+- [ ] `pack.html?id=metal-nux-mg-30` requests `GET /packs/metal-nux-mg-30` and `GET /presets?packId=metal-nux-mg-30`, both started before either answers; shows "Metal · NUX MG-30", "3 presets", its presets -> `tests/pack-pagina.spec.js`
+- [ ] `Rock-boss`, `rock_boss`, `../x`, `-rock`, `rock--boss`, missing id: not found without any request
+- [ ] Responsive and header tests use `pack.html?id=rock-boss-gt-1000`
+- [ ] Full gate passes; test count reported
+
+**Tests**: e2e
+**Gate**: full
+**Commit**: `feat(pack): load style and model packs by id`
+
+---
+
 ## Phase Execution Map
 
 ```
 Phase 1 -> Phase 2
 
-T1 -> T2 -> T3 -> T4 -> T5 -> T6 -> T7
+T1 -> T2 -> T3 -> T4 -> T5 -> T6 -> T7 -> T8 -> T9 -> T10
 ```
 
-Seven tasks fit one task-budgeted batch, so execution runs inline. The Verifier runs automatically after T7.
+Ten tasks; the remaining three run inline. The Verifier runs automatically after T10 (it was stopped during T7 when revision 2 arrived).
 
 ---
 
@@ -335,6 +417,9 @@ Seven tasks fit one task-budgeted batch, so execution runs inline. The Verifier 
 | T5 | One new page | Granular |
 | T6 | Deletion + test page names | Granular |
 | T7 | Three small fixes | Granular (cohesive: leftovers listed together by the user) |
+| T8 | Seed data + one API function | Granular |
+| T9 | Join + card + filter rules | Granular (one rule change across the list) |
+| T10 | One page module | Granular |
 
 ## Diagram-Definition Cross-Check
 
@@ -347,6 +432,9 @@ Seven tasks fit one task-budgeted batch, so execution runs inline. The Verifier 
 | T5 | T4 | T4 -> T5 | ✅ Match |
 | T6 | T5 | T5 -> T6 | ✅ Match |
 | T7 | T6 | T6 -> T7 | ✅ Match |
+| T8 | T7 | T7 -> T8 | ✅ Match |
+| T9 | T8 | T8 -> T9 | ✅ Match |
+| T10 | T9 | T9 -> T10 | ✅ Match |
 
 ## Test Co-location Validation
 
@@ -359,6 +447,9 @@ Seven tasks fit one task-budgeted batch, so execution runs inline. The Verifier 
 | T5 | Page module, markup, styles | e2e | e2e | ✅ OK |
 | T6 | Markup removal, styles | e2e | e2e | ✅ OK |
 | T7 | Markup, styles, README | e2e | e2e | ✅ OK |
+| T8 | Mock data, API layer | e2e | e2e | ✅ OK |
+| T9 | Services, UI, page, markup | e2e | e2e | ✅ OK |
+| T10 | Page module | e2e | e2e | ✅ OK |
 
 ## Requirement Coverage
 
@@ -372,5 +463,8 @@ Seven tasks fit one task-budgeted batch, so execution runs inline. The Verifier 
 | REM-01, REM-02 | T6 |
 | FIX-01 .. FIX-04, REG-01 | T7 |
 | REG-02 | T3, T4 |
+| PACK-04 | T8 (PACK-01..03 revised there too) |
+| LIST-13 | T9 (LIST-05..07 revised there too) |
+| PAG-01, PAG-02, PAG-05, EDGE-01 (rev. 2) | T10 |
 
-**Coverage:** 38 requirements, 38 mapped to tasks, 0 unmapped.
+**Coverage:** 40 requirements, 40 mapped to tasks, 0 unmapped.
