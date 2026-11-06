@@ -14,7 +14,7 @@ carregarComEstado({
     aoCarregar(catalogo) {
         carrossel.replaceChildren(...ordenarMaisRecentes(catalogo).map(criarCartao));
     },
-    // Same wording as presets.html (spec assumption table).
+    // Same wording as packs.html (spec assumption table).
     mensagens: {
         carregando: 'Carregando presets...',
         erro: 'Não foi possível carregar os presets. Verifique sua conexão e tente novamente.',

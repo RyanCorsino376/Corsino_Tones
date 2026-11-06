@@ -168,17 +168,21 @@ Test count: 195 (189 + 6). Deviation: the preset card `criarCartao` stays until 
 
 **Done when**:
 
-- [ ] Every row of the table above has its replacement test in `tests/packs-lista.spec.js`, each asserting the spec value
-- [ ] Menu on every page is "Página Inicial · Packs · Biblioteca"; `aria-current` on Packs in `packs.html`
-- [ ] `tests/carga-estado.spec.js` list tests use `packs.html`, "Carregando packs...", the new error text and 4 cards; one-of-two-reads failing shows the error (EDGE-02 at page level)
-- [ ] No preset card exists on `packs.html` (LIST-12: no element shows a preset `equipamento` as a card)
-- [ ] `tests/modulos.spec.js`, `tests/responsive.spec.js`, `tests/cabecalho.spec.js` use `packs.html` instead of `presets.html`
-- [ ] Full gate passes: `npx playwright test`, exit 0
-- [ ] Test count reported (old 31 list tests replaced; net change explained in the status)
+- [x] Every row of the table above has its replacement test in `tests/packs-lista.spec.js`, each asserting the spec value
+- [x] Menu on every page is "Página Inicial · Packs · Biblioteca"; `aria-current` on Packs in `packs.html`
+- [x] `tests/carga-estado.spec.js` list tests use `packs.html`, "Carregando packs...", the new error text and 4 cards; one-of-two-reads failing shows the error (EDGE-02 at page level)
+- [x] No preset card exists on `packs.html` (LIST-12: no element shows a preset `equipamento` as a card)
+- [x] `tests/modulos.spec.js`, `tests/responsive.spec.js`, `tests/cabecalho.spec.js` use `packs.html` instead of `presets.html`
+- [x] Full gate passes: `npx playwright test`, exit 0
+- [x] Test count reported (old 31 list tests replaced; net change explained in the status)
 
 **Tests**: e2e
 **Gate**: full
 **Commit**: `feat(packs): turn the presets page into a packs page with the same filters`
+
+**Status**: Complete
+
+Test count: 201 (195 + 6 net). `presets-lista.spec.js` (35 tests: 31 etapa04 + 4 slice 1) became `packs-lista.spec.js` (37 tests) following the mapping table; the carousel test moved there unchanged until T4. One expectation was wrong in the first draft: "DISTORCAO" also matches the Rock pack (a rock preset description says "Distorção"); the test now derives the expected packs from the API with the spec rule. Loading/error tests keep holding or breaking `/presets`, which `packs.html` also reads, and gained a `/packs`-failure test (LIST-03 "either"). Card texts got their own styles after a screenshot showed default paragraph margins.
 
 ---
 

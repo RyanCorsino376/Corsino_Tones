@@ -1,15 +1,15 @@
-// Entry module for presets.html. Loads the catalogue from the API, then
-// re-renders it whenever a filter changes. Every update runs the same pipeline:
-// read criteria -> filter -> sort -> draw.
-import { listarPresets } from '../api/presets.js';
-import { criarCartao, ordenarMaisRecentes } from '../ui/cartao.js';
+// Entry module for packs.html. Loads the packs (joined with their presets)
+// from the API, then re-renders them whenever a filter changes. Every update
+// runs the same pipeline: read criteria -> filter -> sort -> draw.
+import { carregarCatalogo } from '../servicos/catalogo.js';
+import { criarCartaoPack, ordenarMaisRecentes } from '../ui/cartao.js';
 import { atualizarCabecalho } from '../ui/cabecalho.js';
 import { carregarComEstado } from '../ui/estado.js';
 
 // Fixed wording from the spec's assumption table.
 const MENSAGENS = {
-    carregando: 'Carregando presets...',
-    erro: 'Não foi possível carregar os presets. Verifique sua conexão e tente novamente.',
+    carregando: 'Carregando packs...',
+    erro: 'Não foi possível carregar os packs. Verifique sua conexão e tente novamente.',
 };
 
 const grade = document.querySelector('.grade-presets');
@@ -41,21 +41,26 @@ function lerCriterios() {
     };
 }
 
+// A pack matches the text through its own name and description, or through
+// any preset inside it, so typing a preset name finds the pack that sells it.
 // includes() rather than a RegExp: typed characters such as "(" stay literal.
-function contemTexto(preset, texto) {
-    return [preset.nome, preset.equipamento, preset.descricao]
-        .some((campo) => normalizar(campo).includes(texto));
+function contemTexto(pack, texto) {
+    const campos = [pack.nome, pack.descricao,
+        ...pack.presets.flatMap((preset) => [preset.nome, preset.equipamento, preset.descricao])];
+    return campos.some((campo) => normalizar(campo).includes(texto));
 }
 
+// Brand: the pack has a preset of a checked brand. Style: the pack id is a checked style.
 // OR inside a group, AND across groups; an empty group or empty search lets everything through.
 function filtrar(lista, criterios) {
-    return lista.filter((preset) =>
-        (criterios.marcas.length === 0 || criterios.marcas.includes(preset.marca)) &&
-        (criterios.estilos.length === 0 || criterios.estilos.includes(preset.estilo)) &&
-        (criterios.texto === '' || contemTexto(preset, criterios.texto)));
+    return lista.filter((pack) =>
+        (criterios.marcas.length === 0 || pack.marcas.some((marca) => criterios.marcas.includes(marca))) &&
+        (criterios.estilos.length === 0 || criterios.estilos.includes(pack.id)) &&
+        (criterios.texto === '' || contemTexto(pack, criterios.texto)));
 }
 
 // Copies before sorting, like ordenarMaisRecentes: sort() mutates its array.
+// A pack's `data` is its newest preset date (servicos/catalogo.js).
 function ordenar(lista, modo) {
     if (modo === 'antigos') return [...lista].sort((a, b) => a.data.localeCompare(b.data));
     if (modo === 'nome') return [...lista].sort((a, b) => a.nome.localeCompare(b.nome, 'pt-BR'));
@@ -63,10 +68,10 @@ function ordenar(lista, modo) {
 }
 
 function renderizar(lista) {
-    grade.replaceChildren(...lista.map(criarCartao));
+    grade.replaceChildren(...lista.map(criarCartaoPack));
     contagem.textContent = lista.length === 1
-        ? '1 preset encontrado'
-        : `${lista.length} presets encontrados`;
+        ? '1 pack encontrado'
+        : `${lista.length} packs encontrados`;
     vazia.hidden = lista.length > 0;
 }
 
@@ -94,7 +99,7 @@ atualizarCabecalho();
 
 carregarComEstado({
     alvo: document.querySelector('.estado-carga'),
-    buscar: listarPresets,
+    buscar: carregarCatalogo,
     aoCarregar(dados) {
         catalogo = dados;
         atualizar();

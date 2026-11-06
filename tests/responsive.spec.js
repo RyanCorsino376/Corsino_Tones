@@ -80,7 +80,7 @@ test.describe('T6 - navigation across the three ranges', () => {
   });
 });
 
-/** Box of the filter sidebar and of the results column on presets.html. */
+/** Box of the filter sidebar and of the results column on packs.html. */
 async function caixasLayout(page) {
   return {
     filtros: await page.locator('.filtros').boundingBox(),
@@ -100,7 +100,7 @@ test.describe('T7 - filter sidebar and preset grid per range', () => {
   // RESP-02: below 768px the sidebar stacks above the results.
   test('at 375px the filter sidebar sits above the results', async ({ page }) => {
     await page.setViewportSize(MOBILE);
-    await page.goto('presets.html');
+    await page.goto('packs.html');
 
     const { filtros, resultados } = await caixasLayout(page);
     expect(filtros.y + filtros.height).toBeLessThanOrEqual(resultados.y);
@@ -109,7 +109,7 @@ test.describe('T7 - filter sidebar and preset grid per range', () => {
   // RESP-02: below 768px the preset grid renders one column.
   test('at 375px the preset grid renders one column', async ({ page }) => {
     await page.setViewportSize(MOBILE);
-    await page.goto('presets.html');
+    await page.goto('packs.html');
 
     expect(await colunasGrade(page)).toBe(1);
   });
@@ -117,7 +117,7 @@ test.describe('T7 - filter sidebar and preset grid per range', () => {
   // RESP-03: between 768px and 1023px the sidebar stacks above the results.
   test('at 820px the filter sidebar sits above the results', async ({ page }) => {
     await page.setViewportSize(TABLET);
-    await page.goto('presets.html');
+    await page.goto('packs.html');
 
     const { filtros, resultados } = await caixasLayout(page);
     expect(filtros.y + filtros.height).toBeLessThanOrEqual(resultados.y);
@@ -128,7 +128,7 @@ test.describe('T7 - filter sidebar and preset grid per range', () => {
   test('from 768px to 1023px the preset grid renders exactly two columns', async ({ page }) => {
     for (const width of [768, 820, 1023]) {
       await page.setViewportSize({ width, height: 1024 });
-      await page.goto('presets.html');
+      await page.goto('packs.html');
 
       expect(await colunasGrade(page), `at ${width}px`).toBe(2);
     }
@@ -137,7 +137,7 @@ test.describe('T7 - filter sidebar and preset grid per range', () => {
   // RESP-04: from 1024px up the sidebar sits beside the results.
   test('at 1440px the filter sidebar sits beside the results', async ({ page }) => {
     await page.setViewportSize(DESKTOP);
-    await page.goto('presets.html');
+    await page.goto('packs.html');
 
     const { filtros, resultados } = await caixasLayout(page);
     expect(filtros.x + filtros.width).toBeLessThanOrEqual(resultados.x);
@@ -147,14 +147,14 @@ test.describe('T7 - filter sidebar and preset grid per range', () => {
   // RESP-04: the sidebar column is sticky.
   test('at 1440px the filter sidebar is a sticky column', async ({ page }) => {
     await page.setViewportSize(DESKTOP);
-    await page.goto('presets.html');
+    await page.goto('packs.html');
 
     const posicao = await page.locator('.filtros-fixos').evaluate((el) => getComputedStyle(el).position);
     expect(posicao).toBe('sticky');
   });
 });
 
-const PAGINAS = ['index.html', 'presets.html', 'preset.html', 'biblioteca.html', 'login.html'];
+const PAGINAS = ['index.html', 'packs.html', 'preset.html', 'biblioteca.html', 'login.html'];
 
 /** Column count read from the rendered X positions of the grid's direct children. */
 async function colunasPresetTopo(page) {

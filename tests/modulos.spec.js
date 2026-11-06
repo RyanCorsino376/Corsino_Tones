@@ -18,7 +18,7 @@ function arquivosJs(pasta = FRONTEND) {
 }
 
 test.describe('etapa05 T3 - ES modules', () => {
-  for (const pagina of ['presets.html', 'index.html']) {
+  for (const pagina of ['packs.html', 'index.html']) {
     // MOD-01
     test(`${pagina} carrega todos os scripts como módulo`, async ({ page }) => {
       await page.goto(pagina);

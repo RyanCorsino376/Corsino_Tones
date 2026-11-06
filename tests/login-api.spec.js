@@ -137,11 +137,11 @@ test.describe('etapa05-auth T5 - login through the API', () => {
   });
 
   // PROT-04
-  test('abrir login.html?voltar=presets.html com sessão leva direto aos presets', async ({ page }) => {
+  test('abrir login.html?voltar=packs.html com sessão leva direto aos packs', async ({ page }) => {
     await page.goto('index.html');
     await page.evaluate((chave) => sessionStorage.setItem(chave, '{"id":1,"nome":"Ryan Corsino","email":"ryan@exemplo.com"}'), CHAVE);
-    await page.goto('login.html?voltar=presets.html');
-    await expect(page).toHaveURL(/\/frontend\/presets\.html$/);
+    await page.goto('login.html?voltar=packs.html');
+    await expect(page).toHaveURL(/\/frontend\/packs\.html$/);
   });
 
   // AD-009: login.html is a module page now and the classic script is gone.

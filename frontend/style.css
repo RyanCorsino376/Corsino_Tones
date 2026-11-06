@@ -483,6 +483,19 @@ input:focus-visible{
     color: var(--text-secondary);
 }
 
+.cartao-quantidade,
+.cartao-marcas{
+    margin: 0;
+    color: var(--text-secondary);
+}
+
+.cartao-preco{
+    margin: 4px 0 0;
+    color: var(--brand-accent);
+    font-size: large;
+    font-weight: bold;
+}
+
 .cartao-estilo{
     margin: 0;
     color: var(--brand-accent);

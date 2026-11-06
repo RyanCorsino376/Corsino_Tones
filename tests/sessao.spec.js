@@ -21,7 +21,7 @@ const gravarChave = (page, valor) => page.evaluate(([chave, v]) => sessionStorag
 
 test.describe('etapa05-auth T3 - session service', () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto('presets.html');
+    await page.goto('packs.html');
   });
 
   // SES-01

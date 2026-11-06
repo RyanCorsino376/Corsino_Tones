@@ -2,11 +2,17 @@
 const { test, expect } = require('@playwright/test');
 
 // Tests derive from .specs/features/etapa05-api-modulos/spec.md: LOAD-*, ERR-01..06,
-// ERR-08 and EDGE-01..02. page.route holds or breaks the catalogue request so
-// each state can be observed for as long as the test needs.
+// ERR-08 and EDGE-01..02, now on packs.html with the texts and counts of
+// .specs/features/etapa05-packs/spec.md (LIST-02..04, EDGE-02, EDGE-03).
+// page.route holds or breaks a catalogue request so each state can be
+// observed for as long as the test needs. packs.html reads /packs and
+// /presets; holding or breaking /presets is enough to hold or break the page.
 
 const URL_PRESETS = 'http://127.0.0.1:3000/presets';
-const CARREGANDO = 'Carregando presets...';
+const URL_PACKS = 'http://127.0.0.1:3000/packs';
+const CARREGANDO = 'Carregando packs...';
+// The home carousel moves to packs in etapa05-packs T4; until then it keeps the preset texts.
+const CARREGANDO_HOME = 'Carregando presets...';
 
 /** Holds every catalogue request until the returned function is called. */
 async function segurarCatalogo(page) {
@@ -19,19 +25,14 @@ async function segurarCatalogo(page) {
   return liberar;
 }
 
-/** Names of the catalogue entries accepted by `regra`, read from the API. */
-async function nomesOnde(page, regra) {
-  const resposta = await page.request.get(URL_PRESETS);
-  return (await resposta.json()).filter(regra).map((p) => p.nome);
-}
-
 const avisoCarregando = (page) => page.getByRole('status').filter({ hasText: CARREGANDO });
+const avisoCarregandoHome = (page) => page.getByRole('status').filter({ hasText: CARREGANDO_HOME });
 
-test.describe('etapa05 T4 - loading state on presets.html', () => {
+test.describe('etapa05 T4 - loading state on packs.html', () => {
   // LOAD-01, LOAD-04
-  test('enquanto a requisição está pendente, mostra "Carregando presets..." e nada da lista', async ({ page }) => {
+  test('enquanto a requisição está pendente, mostra "Carregando packs..." e nada da lista', async ({ page }) => {
     await segurarCatalogo(page);
-    await page.goto('presets.html');
+    await page.goto('packs.html');
 
     await expect(avisoCarregando(page)).toHaveText(CARREGANDO);
     await expect(page.locator('.grade-presets .cartao')).toHaveCount(0);
@@ -40,39 +41,37 @@ test.describe('etapa05 T4 - loading state on presets.html', () => {
   });
 
   // LOAD-03 (success half)
-  test('quando a resposta chega, o aviso some e os 9 cards aparecem', async ({ page }) => {
+  test('quando a resposta chega, o aviso some e os 4 cards aparecem', async ({ page }) => {
     const liberar = await segurarCatalogo(page);
-    await page.goto('presets.html');
+    await page.goto('packs.html');
     await expect(avisoCarregando(page)).toBeVisible();
 
     liberar();
 
-    await expect(page.locator('.grade-presets .cartao')).toHaveCount(9);
+    await expect(page.locator('.grade-presets .cartao')).toHaveCount(4);
     await expect(avisoCarregando(page)).toHaveCount(0);
-    await expect(page.locator('#contagem')).toHaveText('9 presets encontrados');
+    await expect(page.locator('#contagem')).toHaveText('4 packs encontrados');
   });
 
   // EDGE-01
   test('um filtro marcado durante o carregamento é aplicado quando os dados chegam', async ({ page }) => {
     const liberar = await segurarCatalogo(page);
-    await page.goto('presets.html');
+    await page.goto('packs.html');
     await expect(avisoCarregando(page)).toBeVisible();
 
     await page.locator('#marca-boss').check();
     liberar();
 
-    const esperado = await nomesOnde(page, (p) => p.marca === 'boss');
-    expect(esperado.length).toBeGreaterThan(0);
-    expect(esperado.length).toBeLessThan(9);
-    await expect(page.locator('.grade-presets .cartao')).toHaveCount(esperado.length);
-    const nomes = (await page.locator('.grade-presets .cartao-nome').allTextContents()).map((n) => n.trim());
-    expect(nomes.sort()).toEqual(esperado.sort());
+    // Only the Rock pack has Boss presets (etapa05-packs LIST-06).
+    await expect(page.locator('.grade-presets .cartao')).toHaveCount(1);
+    await expect(page.locator('.grade-presets .cartao-nome')).toHaveText(['Pack Rock']);
   });
 });
 
-const MENSAGEM_ERRO = 'Não foi possível carregar os presets. Verifique sua conexão e tente novamente.';
+const MENSAGEM_ERRO = 'Não foi possível carregar os packs. Verifique sua conexão e tente novamente.';
+const MENSAGEM_ERRO_HOME = 'Não foi possível carregar os presets. Verifique sua conexão e tente novamente.';
 
-/** Asserts the error state of presets.html: message, button, and nothing of the list. */
+/** Asserts the error state of packs.html: message, button, and nothing of the list. */
 async function esperarEstadoDeErro(page) {
   const alerta = page.getByRole('alert');
   await expect(alerta).toHaveCount(1);
@@ -84,25 +83,32 @@ async function esperarEstadoDeErro(page) {
   await expect(avisoCarregando(page)).toHaveCount(0);
 }
 
-test.describe('etapa05 T5 - error state and retry on presets.html', () => {
+test.describe('etapa05 T5 - error state and retry on packs.html', () => {
   // ERR-01, ERR-06, LOAD-03 (failure half)
   test('falha de rede mostra a mensagem de erro e "Tentar novamente"', async ({ page }) => {
     await page.route(URL_PRESETS, (rota) => rota.abort());
-    await page.goto('presets.html');
+    await page.goto('packs.html');
+    await esperarEstadoDeErro(page);
+  });
+
+  // LIST-03 (either read): /packs failing while /presets answers.
+  test('falha em /packs também mostra a mensagem de erro', async ({ page }) => {
+    await page.route(URL_PACKS, (rota) => rota.abort());
+    await page.goto('packs.html');
     await esperarEstadoDeErro(page);
   });
 
   // ERR-02, ERR-06
   test('resposta 500 mostra a mesma mensagem de erro', async ({ page }) => {
     await page.route(URL_PRESETS, (rota) => rota.fulfill({ status: 500, json: [] }));
-    await page.goto('presets.html');
+    await page.goto('packs.html');
     await esperarEstadoDeErro(page);
   });
 
   // ERR-04, ERR-06
   test('corpo que não é uma lista mostra a mesma mensagem de erro', async ({ page }) => {
     await page.route(URL_PRESETS, (rota) => rota.fulfill({ json: { presets: [] } }));
-    await page.goto('presets.html');
+    await page.goto('packs.html');
     await esperarEstadoDeErro(page);
   });
 
@@ -113,7 +119,7 @@ test.describe('etapa05 T5 - error state and retry on presets.html', () => {
     await page.clock.pauseAt(new Date('2026-11-05T10:00:01'));
     await page.route(URL_PRESETS, () => {});
     const pedido = page.waitForRequest(URL_PRESETS);
-    await page.goto('presets.html');
+    await page.goto('packs.html');
     await pedido;
 
     await page.clock.runFor(7999);
@@ -135,7 +141,7 @@ test.describe('etapa05 T5 - error state and retry on presets.html', () => {
       await segundaLiberada;
       return rota.continue();
     });
-    await page.goto('presets.html');
+    await page.goto('packs.html');
     await esperarEstadoDeErro(page);
 
     await page.getByRole('button', { name: 'Tentar novamente' }).click();
@@ -145,8 +151,8 @@ test.describe('etapa05 T5 - error state and retry on presets.html', () => {
     await expect.poll(() => tentativas).toBe(2);
 
     liberarSegunda();
-    await expect(page.locator('.grade-presets .cartao')).toHaveCount(9);
-    await expect(page.locator('#contagem')).toHaveText('9 presets encontrados');
+    await expect(page.locator('.grade-presets .cartao')).toHaveCount(4);
+    await expect(page.locator('#contagem')).toHaveText('4 packs encontrados');
     await expect(avisoCarregando(page)).toHaveCount(0);
   });
 
@@ -157,7 +163,7 @@ test.describe('etapa05 T5 - error state and retry on presets.html', () => {
       tentativas += 1;
       return rota.abort();
     });
-    await page.goto('presets.html');
+    await page.goto('packs.html');
     await esperarEstadoDeErro(page);
 
     await page.getByRole('button', { name: 'Tentar novamente' }).click();
@@ -174,12 +180,12 @@ test.describe('etapa05 T6 - loading and error states on index.html', () => {
     const liberar = await segurarCatalogo(page);
     await page.goto('index.html');
 
-    await expect(avisoCarregando(page)).toHaveText(CARREGANDO);
+    await expect(avisoCarregandoHome(page)).toHaveText(CARREGANDO_HOME);
     await expect(page.locator('.carrossel .cartao')).toHaveCount(0);
 
     liberar();
     await expect(page.locator('.carrossel .cartao')).toHaveCount(9);
-    await expect(avisoCarregando(page)).toHaveCount(0);
+    await expect(avisoCarregandoHome(page)).toHaveCount(0);
   });
 
   // ERR-08, ERR-05
@@ -193,7 +199,7 @@ test.describe('etapa05 T6 - loading and error states on index.html', () => {
 
     const alerta = page.getByRole('alert');
     await expect(alerta).toHaveCount(1);
-    await expect(alerta.locator('p')).toHaveText(MENSAGEM_ERRO);
+    await expect(alerta.locator('p')).toHaveText(MENSAGEM_ERRO_HOME);
     await expect(page.locator('.carrossel .cartao')).toHaveCount(0);
 
     await alerta.getByRole('button', { name: 'Tentar novamente' }).click();

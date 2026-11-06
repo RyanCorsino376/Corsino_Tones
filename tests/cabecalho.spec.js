@@ -6,7 +6,7 @@ const { test, expect } = require('@playwright/test');
 
 const CHAVE = 'corsino:sessao';
 const SESSAO_RYAN = { id: 1, nome: 'Ryan Corsino', email: 'ryan@exemplo.com' };
-const PAGINAS_COM_CABECALHO = ['index.html', 'presets.html', 'preset.html'];
+const PAGINAS_COM_CABECALHO = ['index.html', 'packs.html', 'preset.html'];
 
 /** Opens a session in this tab, as a successful login would. */
 async function abrirSessao(page, sessao = SESSAO_RYAN) {
@@ -42,7 +42,7 @@ test.describe('etapa05-auth T7 - header shows the signed-in user', () => {
   // SES-04
   test('"Sair" encerra a sessão e leva à página inicial com "Entrar"', async ({ page }) => {
     await abrirSessao(page);
-    await page.goto('presets.html');
+    await page.goto('packs.html');
 
     await botaoSair(page).click();
 
