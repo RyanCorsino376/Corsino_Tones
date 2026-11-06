@@ -64,20 +64,22 @@ Rejected: keeping classic scripts with `window.*` globals, which hide dependenci
 
 ## Handoff
 
-**Feature**: `etapa05-auth` (slice 2 of `.specs/features/etapa05-loja/plano.md`); slice 1 `etapa05-api-modulos` is done (Verifier PASS)
-**Branch**: `feat/etapa05-loja`, not pushed
-**Phase**: Execute complete, closed by user decision. Verifier: iteration 1 FAIL (M02, M13), iteration 2 FAIL (P07), iteration 3 FAIL (P07e, a meta refresh). Each gap was a test gap and is fixed; the last fix is author-checked only (no fourth run, user choice), so `validate_state.py etapa05-auth` still exits 1 by design.
+**Feature**: `etapa05-packs` (slice 3 of `.specs/features/etapa05-loja/plano.md`); slices 1 and 2 done
+**Branch**: `feat/etapa05-loja`, not pushed (push/PR not authorized yet)
+**Phase**: Execute complete; Verifier PASS on iteration 2 (iteration 1: 2 real survivors and a stale README, all fixed)
 
-**Completed**: T1 to T9 (T9 = user change request: pop-up on the library instead of a redirect) plus three rounds of test fixes. 31 of 32 requirements `Verified`; PROT-01 marked as author-checked.
+**What the store sells now**: packs of **one style for one pedalboard model** ("Rock · Boss GT-1000"), R$ 49,90 each. 4 models, 9 packs, 21 presets linked by `packId`. `presets.html` became `packs.html` (pack cards with filters, search, sort); `preset.html` was removed; `pack.html?id=` shows one pack.
 
-**Test suite**: 180 passing. `npx playwright test` from `Corsino_Tones/`. `npm run api:reset` restores `mock/db.json` from the seed (tests add accounts with unique e-mails).
+**Completed**: T1-T10 (T8-T10 = spec revision 2, committed together) plus one round of Verifier fixes. 40 of 40 requirements `Verified`; `validate_state.py etapa05-packs` exits 0.
 
-**Next step**: stage 05 is complete and documented (`docs/etapa-05.md`, evidence in `docs/evidencias/etapa-05/`, commit `e1c05bd`). The user paused on 2026-11-05 and will push / open the PR later (not authorized yet). When resuming: slice 3 of the store plan (dynamic `preset.html?id=`, prices). Small pending fixes the user may ask for: a `:disabled` style for submit buttons, README still says "etapa 03", home text "download gratuito".
+**Test suite**: 233 passing. `npx playwright test`. Run `npm run api:reset` on an old checkout so `mock/db.json` gets the new packs.
+
+**Next step**: slice 4 of the store plan, the cart (`servicos/carrinho.js`, "Adicionar ao carrinho" on the pack page, counter in the header, `carrinho.html`). `docs/etapa-05.md` still describes slices 1-2 only; update it if the stage report should mention packs.
 
 **Blockers**: none.
 
 **Watch out for**:
-- Speed: the Verifier ran the full 180-test suite per mutant (~45 s each), ~15-20 min per round. Next slices: run only the spec files that cover the mutated module.
-- Candidate lessons L-006 to L-010 (password case, `replace` vs `assign`, delayed and declarative redirects). Also learned in the final fix: `toHaveCount(0)` retries can outlast a real-time navigation and pass on the next page; use one non-retrying read when proving something never appears.
-- Playwright reuses servers already on :8080/:3000 outside CI; a Verifier or `npm run api` running at the same time makes the suite test that copy.
-- `index.html` still says "Todos disponíveis para o download gratuito".
+- Verifier speed: run each mutant only against the spec files that cover the mutated module (agreed with the user); a round took ~15 min this way.
+- Lesson L-003 (sample data must tell sort rules apart) is now confirmed; L-011 and L-012 are new candidates (an "any element" rule needs two instances; re-check documentation criteria after a spec revision).
+- Playwright reuses servers already on :8080/:3000 outside CI.
+- `docs/proposta.md` still describes free presets (recorded in the plan as a follow-up).

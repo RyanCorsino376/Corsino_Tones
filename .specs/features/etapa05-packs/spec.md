@@ -213,46 +213,46 @@ This slice turns the "Presets" page into a **"Packs"** page that lists pack card
 
 | Requirement ID | Story | Phase | Status |
 | -------------- | ----- | ----- | ------ |
-| PACK-01 | P1: Packs in the mock API | Tasks | Implementing |
-| PACK-02 | P1: Packs in the mock API | Tasks | Implementing |
-| PACK-03 | P1: Packs in the mock API | Tasks | Implementing |
-| PACK-04 | P1: Packs in the mock API | Tasks | Implementing |
-| LIST-01 | P1: Packs page with filters, search and sort | Tasks | Implementing |
-| LIST-02 | P1: Packs page with filters, search and sort | Tasks | Implementing |
-| LIST-03 | P1: Packs page with filters, search and sort | Tasks | Implementing |
-| LIST-04 | P1: Packs page with filters, search and sort | Tasks | Implementing |
-| LIST-05 | P1: Packs page with filters, search and sort | Tasks | Implementing |
-| LIST-06 | P1: Packs page with filters, search and sort | Tasks | Implementing |
-| LIST-07 | P1: Packs page with filters, search and sort | Tasks | Implementing |
-| LIST-08 | P1: Packs page with filters, search and sort | Tasks | Implementing |
-| LIST-09 | P1: Packs page with filters, search and sort | Tasks | Implementing |
-| LIST-10 | P1: Packs page with filters, search and sort | Tasks | Implementing |
-| LIST-11 | P1: Packs page with filters, search and sort | Tasks | Implementing |
-| LIST-12 | P1: Packs page with filters, search and sort | Tasks | Implementing |
-| LIST-13 | P1: Packs page with filters, search and sort | Tasks | Implementing |
-| HOME-01 | P1: Packs on the home page | Tasks | Implementing |
-| HOME-02 | P1: Packs on the home page | Tasks | Implementing |
-| HOME-03 | P1: Packs on the home page | Tasks | Implementing |
-| PAG-01 | P1: Pack page | Tasks | Implementing |
-| PAG-02 | P1: Pack page | Tasks | Implementing |
-| PAG-03 | P1: Pack page | Tasks | Implementing |
-| PAG-04 | P1: Pack page | Tasks | Implementing |
-| PAG-05 | P1: Pack page | Tasks | Implementing |
-| PAG-06 | P1: Pack page | Tasks | Implementing |
-| PAG-07 | P1: Pack page | Tasks | Implementing |
-| PAG-08 | P1: Pack page | Tasks | Implementing |
-| PAG-09 | P1: Pack page | Tasks | Implementing |
-| REM-01 | P1: No single-preset pages | Tasks | Implementing |
-| REM-02 | P1: No single-preset pages | Tasks | Implementing |
-| FIX-01 | P2: Leftovers from slice 2 | Tasks | Implementing |
-| FIX-02 | P2: Leftovers from slice 2 | Tasks | Implementing |
-| FIX-03 | P2: Leftovers from slice 2 | Tasks | Implementing |
-| FIX-04 | P2: Leftovers from slice 2 | Tasks | Implementing |
-| REG-01 | P1: Existing behaviour preserved | Tasks | Implementing |
-| REG-02 | P1: Existing behaviour preserved | Tasks | Implementing |
-| EDGE-01 | Edge cases | Tasks | Implementing |
-| EDGE-02 | Edge cases | Tasks | Implementing |
-| EDGE-03 | Edge cases | Tasks | Implementing |
+| PACK-01 | P1: Packs in the mock API | Tasks | Verified |
+| PACK-02 | P1: Packs in the mock API | Tasks | Verified |
+| PACK-03 | P1: Packs in the mock API | Tasks | Verified |
+| PACK-04 | P1: Packs in the mock API | Tasks | Verified |
+| LIST-01 | P1: Packs page with filters, search and sort | Tasks | Verified |
+| LIST-02 | P1: Packs page with filters, search and sort | Tasks | Verified |
+| LIST-03 | P1: Packs page with filters, search and sort | Tasks | Verified |
+| LIST-04 | P1: Packs page with filters, search and sort | Tasks | Verified |
+| LIST-05 | P1: Packs page with filters, search and sort | Tasks | Verified |
+| LIST-06 | P1: Packs page with filters, search and sort | Tasks | Verified |
+| LIST-07 | P1: Packs page with filters, search and sort | Tasks | Verified |
+| LIST-08 | P1: Packs page with filters, search and sort | Tasks | Verified |
+| LIST-09 | P1: Packs page with filters, search and sort | Tasks | Verified |
+| LIST-10 | P1: Packs page with filters, search and sort | Tasks | Verified |
+| LIST-11 | P1: Packs page with filters, search and sort | Tasks | Verified |
+| LIST-12 | P1: Packs page with filters, search and sort | Tasks | Verified |
+| LIST-13 | P1: Packs page with filters, search and sort | Tasks | Verified |
+| HOME-01 | P1: Packs on the home page | Tasks | Verified |
+| HOME-02 | P1: Packs on the home page | Tasks | Verified |
+| HOME-03 | P1: Packs on the home page | Tasks | Verified |
+| PAG-01 | P1: Pack page | Tasks | Verified |
+| PAG-02 | P1: Pack page | Tasks | Verified |
+| PAG-03 | P1: Pack page | Tasks | Verified |
+| PAG-04 | P1: Pack page | Tasks | Verified |
+| PAG-05 | P1: Pack page | Tasks | Verified |
+| PAG-06 | P1: Pack page | Tasks | Verified |
+| PAG-07 | P1: Pack page | Tasks | Verified |
+| PAG-08 | P1: Pack page | Tasks | Verified |
+| PAG-09 | P1: Pack page | Tasks | Verified |
+| REM-01 | P1: No single-preset pages | Tasks | Verified |
+| REM-02 | P1: No single-preset pages | Tasks | Verified |
+| FIX-01 | P2: Leftovers from slice 2 | Tasks | Verified |
+| FIX-02 | P2: Leftovers from slice 2 | Tasks | Verified |
+| FIX-03 | P2: Leftovers from slice 2 | Tasks | Verified |
+| FIX-04 | P2: Leftovers from slice 2 | Tasks | Verified |
+| REG-01 | P1: Existing behaviour preserved | Tasks | Verified |
+| REG-02 | P1: Existing behaviour preserved | Tasks | Verified |
+| EDGE-01 | Edge cases | Tasks | Verified |
+| EDGE-02 | Edge cases | Tasks | Verified |
+| EDGE-03 | Edge cases | Tasks | Verified |
 
 **ID format:** `[CATEGORY]-[NUMBER]`. `REG-*` and `EDGE-*` are scoped to this feature.
 

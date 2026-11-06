@@ -10,7 +10,7 @@ Implement these tasks with the `tlc-spec-driven` skill: **activate it by name an
 
 **Spec**: `.specs/features/etapa05-packs/spec.md`
 **Design**: `.specs/features/etapa05-packs/design.md`
-**Status**: Done (pending Verifier iteration 2)
+**Status**: Done (Verifier PASS, iteration 2)
 
 ### Files renamed, removed or rewritten
 
@@ -496,4 +496,4 @@ The first Verifier run on revision 2 returned FAIL: 33 mutants, 29 killed, 2 equ
 | LIST-07: `equipamento` branch unobservable (M03) | Test with a route-fulfilled pack whose name omits the model | test |
 | noscript text said "para ver os presets" | Now "para ver os packs" | copy |
 
-Each real survivor and the old README were re-applied in the real files and fail the new tests (M22: 2 failures, M24: 1, old README: 2); the files were restored. Test count: 232 passing.
+Each real survivor and the old README were re-applied in the real files and fail the new tests (M22: 2 failures, M24: 1, old README: 2); the files were restored. Test count: 233 passing (227 + 6).

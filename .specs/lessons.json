@@ -3,7 +3,7 @@
   "promote_threshold": 2,
   "window_days": 45,
   "quarantine_threshold": 2,
-  "next_id": 11,
+  "next_id": 13,
   "lessons": [
     {
       "id": "L-001",
@@ -48,17 +48,19 @@
       "text": "A locale-collation requirement needs sample data whose order differs between code-point and locale comparison.",
       "signal": "spec_precision_gap",
       "scope": "tests",
-      "status": "candidate",
+      "status": "confirmed",
       "features": [
-        "etapa04-interatividade"
+        "etapa04-interatividade",
+        "etapa05-packs"
       ],
-      "recurrence": 1,
+      "recurrence": 2,
       "harmful": 0,
       "evidence": [
-        "FILT-07 / M12 (tests)"
+        "FILT-07 / M12 (tests)",
+        "LIST-08 / M24 frontend/paginas/packs.js:66 (tests)"
       ],
       "created": "2026-09-27T15:34:56Z",
-      "last_seen": "2026-09-27T15:34:56Z"
+      "last_seen": "2026-11-06T19:23:49Z"
     },
     {
       "id": "L-004",
@@ -185,6 +187,42 @@
       ],
       "created": "2026-11-05T19:12:37Z",
       "last_seen": "2026-11-05T19:12:37Z"
+    },
+    {
+      "id": "L-011",
+      "key": "surviving_mutant::when a criterion says any element of a kind assert it on at least two instances in different containers",
+      "text": "When a criterion says any element of a kind, assert it on at least two instances in different containers.",
+      "signal": "surviving_mutant",
+      "scope": "tests",
+      "status": "candidate",
+      "features": [
+        "etapa05-packs"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "M22 frontend/style.css:536 (FIX-02) (tests)"
+      ],
+      "created": "2026-11-06T19:23:49Z",
+      "last_seen": "2026-11-06T19:23:49Z"
+    },
+    {
+      "id": "L-012",
+      "key": "spec_precision_gap::when a spec revision changes a domain definition re check documentation criteria against the new wording not only keyword presence",
+      "text": "When a spec revision changes a domain definition, re-check documentation criteria against the new wording, not only keyword presence.",
+      "signal": "spec_precision_gap",
+      "scope": "spec",
+      "status": "candidate",
+      "features": [
+        "etapa05-packs"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "FIX-03 README.md:4 (spec)"
+      ],
+      "created": "2026-11-06T19:23:49Z",
+      "last_seen": "2026-11-06T19:23:49Z"
     }
   ]
 }

@@ -8,7 +8,11 @@
 
 Corroborated across multiple features. Safe to apply as guidance.
 
-_none_
+### L-003 - A locale-collation requirement needs sample data whose order differs between code-point and locale comparison.
+- signal: `spec_precision_gap` · recurrence: 2 feature(s) · scope: `tests` · harmful: 0
+- features: etapa04-interatividade, etapa05-packs
+- evidence: FILT-07 / M12 (tests) (+1 more)
+- last seen: 2026-11-06T19:23:49Z
 
 ## Candidates (under observation - do NOT load as guidance yet)
 
@@ -25,12 +29,6 @@ Seen once or not yet corroborated. Tracked, not trusted.
 - features: etapa04-interatividade
 - evidence: V02 frontend/login.js:42 (tests) (+1 more)
 - last seen: 2026-09-27T16:00:23Z
-
-### L-003 - A locale-collation requirement needs sample data whose order differs between code-point and locale comparison.
-- signal: `spec_precision_gap` · recurrence: 1 feature(s) · scope: `tests` · harmful: 0
-- features: etapa04-interatividade
-- evidence: FILT-07 / M12 (tests)
-- last seen: 2026-09-27T15:34:56Z
 
 ### L-004 - If a requirement names the message language, either assert a language marker or drop the language from the AC.
 - signal: `spec_precision_gap` · recurrence: 1 feature(s) · scope: `spec` · harmful: 0
@@ -73,6 +71,18 @@ Seen once or not yet corroborated. Tracked, not trusted.
 - features: etapa05-auth
 - evidence: P07e frontend/paginas/biblioteca.js:10 (tests)
 - last seen: 2026-11-05T19:12:37Z
+
+### L-011 - When a criterion says any element of a kind, assert it on at least two instances in different containers.
+- signal: `surviving_mutant` · recurrence: 1 feature(s) · scope: `tests` · harmful: 0
+- features: etapa05-packs
+- evidence: M22 frontend/style.css:536 (FIX-02) (tests)
+- last seen: 2026-11-06T19:23:49Z
+
+### L-012 - When a spec revision changes a domain definition, re-check documentation criteria against the new wording, not only keyword presence.
+- signal: `spec_precision_gap` · recurrence: 1 feature(s) · scope: `spec` · harmful: 0
+- features: etapa05-packs
+- evidence: FIX-03 README.md:4 (spec)
+- last seen: 2026-11-06T19:23:49Z
 
 ## Quarantined (failed when applied - ignore)
 
