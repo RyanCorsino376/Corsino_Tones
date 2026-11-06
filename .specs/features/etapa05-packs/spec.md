@@ -236,11 +236,11 @@ This slice turns the "Presets" page into a **"Packs"** page that lists pack card
 | PAG-09 | P1: Pack page | Tasks | Implementing |
 | REM-01 | P1: No single-preset pages | Tasks | Implementing |
 | REM-02 | P1: No single-preset pages | Tasks | Implementing |
-| FIX-01 | P2: Leftovers from slice 2 | Specify | Pending |
-| FIX-02 | P2: Leftovers from slice 2 | Specify | Pending |
-| FIX-03 | P2: Leftovers from slice 2 | Specify | Pending |
-| FIX-04 | P2: Leftovers from slice 2 | Specify | Pending |
-| REG-01 | P1: Existing behaviour preserved | Specify | Pending |
+| FIX-01 | P2: Leftovers from slice 2 | Tasks | Implementing |
+| FIX-02 | P2: Leftovers from slice 2 | Tasks | Implementing |
+| FIX-03 | P2: Leftovers from slice 2 | Tasks | Implementing |
+| FIX-04 | P2: Leftovers from slice 2 | Tasks | Implementing |
+| REG-01 | P1: Existing behaviour preserved | Tasks | Implementing |
 | REG-02 | P1: Existing behaviour preserved | Tasks | Implementing |
 | EDGE-01 | Edge cases | Tasks | Implementing |
 | EDGE-02 | Edge cases | Tasks | Implementing |

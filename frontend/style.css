@@ -532,6 +532,13 @@ input:focus-visible{
     margin: 0;
 }
 
+/* Any button waiting for the server ("Entrando...", "Cadastrando...") looks
+   inactive, so the visitor sees why a click does nothing. */
+button:disabled{
+    opacity: .6;
+    cursor: not-allowed;
+}
+
 /*------------- Carregamento e erro de comunicação --------------------*/
 
 .estado-carga{

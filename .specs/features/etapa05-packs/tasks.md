@@ -10,7 +10,7 @@ Implement these tasks with the `tlc-spec-driven` skill: **activate it by name an
 
 **Spec**: `.specs/features/etapa05-packs/spec.md`
 **Design**: `.specs/features/etapa05-packs/design.md`
-**Status**: Draft
+**Status**: Done (pending Verifier)
 
 ### Files renamed, removed or rewritten
 
@@ -296,15 +296,19 @@ Test count: 219 (217 + 2). Also removed the video styles (`.preset-video`, `.gra
 
 **Done when**:
 
-- [ ] `index.html` shows the new sentence and neither its body nor its meta description contains "download gratuito" -> `tests/ajustes.spec.js`
-- [ ] While the login request is held, the "Entrando..." button has computed `opacity` < 1 and `cursor` `not-allowed`
-- [ ] README contains "etapa 05", "npm run api", "npm run api:lento", "npm run api:reset", "ryan@exemplo.com", "teste123", a link to `docs/etapa-05.md`, and none of `frontend/login.js`, `preset.html`, `presets.html` (Node `fs`)
-- [ ] All `etapa05-auth` tests pass (REG-01)
-- [ ] Full gate passes; test count reported
+- [x] `index.html` shows the new sentence and neither its body nor its meta description contains "download gratuito" -> `tests/ajustes.spec.js`
+- [x] While the login request is held, the "Entrando..." button has computed `opacity` < 1 and `cursor` `not-allowed`
+- [x] README contains "etapa 05", "npm run api", "npm run api:lento", "npm run api:reset", "ryan@exemplo.com", "teste123", a link to `docs/etapa-05.md`, and none of `frontend/login.js`, `preset.html`, `presets.html` (Node `fs`)
+- [x] All `etapa05-auth` tests pass (REG-01)
+- [x] Full gate passes; test count reported
 
 **Tests**: e2e (`tests/ajustes.spec.js`)
 **Gate**: full
 **Commit**: `fix(site): update home text, disabled buttons and README`
+
+**Status**: Complete
+
+Test count: 223 (219 + 4). "Um botão ativo continua opaco" passes before the fix by design: it guards against a rule that fades every button. The README keeps the React migration as a next step (decided earlier: after the store).
 
 ---
 
