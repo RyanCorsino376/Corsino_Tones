@@ -163,11 +163,11 @@ The store shows packs and prices (slice 3) but a visitor cannot pick anything to
 | CAR-02 | P1: Cart storage | Tasks | Implementing |
 | CAR-03 | P1: Cart storage | Tasks | Implementing |
 | CAR-04 | P1: Cart storage | Tasks | Implementing |
-| ADD-01 | P1: Add to cart on the pack page | Specify | Pending |
-| ADD-02 | P1: Add to cart on the pack page | Specify | Pending |
-| ADD-03 | P1: Add to cart on the pack page | Specify | Pending |
-| ADD-04 | P1: Add to cart on the pack page | Specify | Pending |
-| ADD-05 | P1: Add to cart on the pack page | Specify | Pending |
+| ADD-01 | P1: Add to cart on the pack page | Tasks | Implementing |
+| ADD-02 | P1: Add to cart on the pack page | Tasks | Implementing |
+| ADD-03 | P1: Add to cart on the pack page | Tasks | Implementing |
+| ADD-04 | P1: Add to cart on the pack page | Tasks | Implementing |
+| ADD-05 | P1: Add to cart on the pack page | Tasks | Implementing |
 | HDR-01 | P1: Cart link in the header | Specify | Pending |
 | HDR-02 | P1: Cart link in the header | Specify | Pending |
 | HDR-03 | P1: Cart link in the header | Tasks | Implementing |
@@ -183,7 +183,7 @@ The store shows packs and prices (slice 3) but a visitor cannot pick anything to
 | PAGC-08 | P1: Cart page | Specify | Pending |
 | REG-01 | P1: Existing behaviour preserved | Specify | Pending |
 | REG-02 | P1: Existing behaviour preserved | Tasks | Implementing |
-| EDGE-01 | Edge cases | Specify | Pending |
+| EDGE-01 | Edge cases | Tasks | Implementing |
 | EDGE-02 | Edge cases | Specify | Pending |
 | EDGE-03 | Edge cases | Tasks | Implementing |
 

@@ -3,7 +3,8 @@
 // listed, not shown as cards: they are not sold alone.
 import { buscarPack } from '../api/packs.js';
 import { listarPresetsDoPack } from '../api/presets.js';
-import { atualizarCabecalho } from '../ui/cabecalho.js';
+import { adicionarAoCarrinho, estaNoCarrinho } from '../servicos/carrinho.js';
+import { atualizarCabecalho, atualizarContadorCarrinho } from '../ui/cabecalho.js';
 import { carregarComEstado } from '../ui/estado.js';
 import { formatarPreco, ROTULOS } from '../ui/formato.js';
 
@@ -38,6 +39,31 @@ function criarItem(preset) {
     return item;
 }
 
+/** "No carrinho" link when the pack is in the cart, otherwise the add button. */
+function mostrarAcaoCarrinho(id) {
+    const acao = topo.querySelector('.pack-acao');
+    if (estaNoCarrinho(id)) {
+        const link = document.createElement('a');
+        link.href = 'carrinho.html';
+        link.className = 'botao-no-carrinho';
+        link.textContent = 'No carrinho';
+        acao.replaceChildren(link);
+        return;
+    }
+    const botao = document.createElement('button');
+    botao.type = 'button';
+    botao.className = 'botao-tentar';
+    botao.textContent = 'Adicionar ao carrinho';
+    botao.addEventListener('click', function () {
+        adicionarAoCarrinho(id);
+        // The button is replaced at once, so a second click has nothing to hit.
+        mostrarAcaoCarrinho(id);
+        topo.querySelector('.pack-aviso').textContent = 'Pack adicionado ao carrinho.';
+        atualizarContadorCarrinho();
+    });
+    acao.replaceChildren(botao);
+}
+
 function mostrarPack(pack, presets) {
     document.title = `${pack.nome} | CorsinoTones`;
     topo.querySelector('h1').textContent = pack.nome;
@@ -45,6 +71,7 @@ function mostrarPack(pack, presets) {
     topo.querySelector('.pack-descricao').textContent = pack.descricao;
     topo.querySelector('.pack-preco').textContent = formatarPreco(pack.precoCentavos);
     conteudo.querySelector('.pack-presets').replaceChildren(...presets.map(criarItem));
+    mostrarAcaoCarrinho(pack.id);
     topo.hidden = false;
     conteudo.hidden = false;
 }

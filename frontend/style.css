@@ -396,6 +396,36 @@ input:focus-visible{
     font-weight: bold;
 }
 
+.pack-acao{
+    margin-top: 24px;
+}
+
+.pack-acao .botao-tentar,
+.botao-no-carrinho{
+    display: inline-block;
+    min-height: 40px;
+    padding: 0 24px;
+    font-size: large;
+}
+
+/* Quiet look: the pack is already in the cart; the link only leads there. */
+.botao-no-carrinho{
+    line-height: 40px;
+    border: 1px solid var(--border-subtle);
+    color: var(--text-secondary);
+    text-decoration: none;
+}
+
+.botao-no-carrinho:hover{
+    color: var(--text-primary);
+    border-color: var(--text-secondary);
+}
+
+.pack-aviso{
+    min-height: 1.2em;
+    color: var(--text-secondary);
+}
+
 .pack-conteudo{
     margin-top: clamp(40px, 6vw, 80px);
 }
