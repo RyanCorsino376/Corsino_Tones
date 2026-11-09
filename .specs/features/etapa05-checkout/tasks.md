@@ -169,15 +169,19 @@ Test count: 293 (283 + 10). The signed-out test applies lessons L-009/L-010 from
 
 **Done when**:
 
-- [ ] The four labelled fields exist and the button reads "Pagar R$ 99,80" -> `tests/checkout.spec.js`
-- [ ] Submitting "4111", "R", "13/20", "12" shows the four spec messages, each linked by `aria-describedby`, `aria-invalid="true"`, focus on the number, and no payment started (button keeps its text)
-- [ ] Fixing the number removes only its message while typing
-- [ ] A second invalid submit does not duplicate messages
-- [ ] Full gate passes; test count reported
+- [x] The four labelled fields exist and the button reads "Pagar R$ 99,80" -> `tests/checkout.spec.js`
+- [x] Submitting "4111", "R", "13/20", "12" shows the four spec messages, each linked by `aria-describedby`, `aria-invalid="true"`, focus on the number, and no payment started (button keeps its text)
+- [x] Fixing the number removes only its message while typing
+- [x] A second invalid submit does not duplicate messages
+- [x] Full gate passes; test count reported
 
 **Tests**: e2e
 **Gate**: full
 **Commit**: `feat(checkout): validate the card form`
+
+**Status**: Complete
+
+Test count: 298 (293 + 5). The field-message helpers are copied from `paginas/login.js`, as the design accepts; a valid submit does nothing yet (T5 adds the payment). The FORM-01 test passed before the code because the markup landed in T3.
 
 ---
 

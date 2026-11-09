@@ -191,3 +191,89 @@ test.describe('etapa05-checkout T3 - order summary', () => {
     await expect(formulario(page)).toBeVisible();
   });
 });
+
+const CAMPOS = {
+  numero: { id: 'cartao-numero', rotulo: 'Número do cartão', msg: 'Informe os 16 dígitos do cartão.' },
+  nome: { id: 'cartao-nome', rotulo: 'Nome no cartão', msg: 'Informe o nome como está no cartão.' },
+  validade: { id: 'cartao-validade', rotulo: 'Validade (MM/AA)', msg: 'Informe uma validade futura no formato MM/AA.' },
+  cvv: { id: 'cartao-cvv', rotulo: 'CVV', msg: 'Informe os 3 dígitos do código de segurança.' },
+};
+
+/** Opens a signed-in checkout with one pack and waits for the form. */
+async function abrirCheckout(page, carrinho = ['rock-zoom-g6']) {
+  await preparar(page, { carrinho, sessao: true });
+  await page.goto('checkout.html');
+  await expect(formulario(page)).toBeVisible();
+}
+
+async function preencher(page, valores) {
+  for (const [campo, valor] of Object.entries(valores)) await page.locator(`#${CAMPOS[campo].id}`).fill(valor);
+}
+
+/** Text of the message linked to a field through aria-describedby, or null. */
+function mensagemDe(page, id) {
+  return page.locator(`#${id}`).evaluate((campo) => {
+    const alvo = campo.getAttribute('aria-describedby');
+    const el = alvo && document.getElementById(alvo);
+    return el ? el.textContent.trim() : null;
+  });
+}
+
+test.describe('etapa05-checkout T4 - card form validation', () => {
+  // FORM-01
+  test('o formulário tem os quatro campos com rótulo e o botão "Pagar {total}"', async ({ page }) => {
+    const porId = await packsPorId(page);
+    await abrirCheckout(page);
+    for (const { rotulo } of Object.values(CAMPOS)) await expect(page.getByLabel(rotulo, { exact: true })).toBeVisible();
+    await expect(formulario(page).locator('button[type="submit"]')).toHaveText(`Pagar ${formatoBRL(porId['rock-zoom-g6'].precoCentavos)}`);
+  });
+
+  // FORM-02..06
+  test('dados inválidos mostram as quatro mensagens, ligadas aos campos, com foco no número e sem pagamento', async ({ page }) => {
+    await abrirCheckout(page);
+    const botao = formulario(page).locator('button[type="submit"]');
+    const textoBotao = await botao.textContent();
+    await preencher(page, { numero: '4111', nome: 'R', validade: '13/20', cvv: '12' });
+    await botao.click();
+
+    for (const { id, msg } of Object.values(CAMPOS)) {
+      await expect(page.locator(`#${id}`), id).toHaveAttribute('aria-invalid', 'true');
+      expect(await mensagemDe(page, id), id).toBe(msg);
+    }
+    await expect(page.locator('#cartao-numero')).toBeFocused();
+    await expect(botao).toBeEnabled();
+    await expect(botao).toHaveText(textoBotao);
+  });
+
+  // FORM-06: focus goes to the first rejected field, not simply the first field.
+  test('o foco vai ao primeiro campo recusado', async ({ page }) => {
+    await abrirCheckout(page);
+    await preencher(page, { numero: '4111 1111 1111 1111', nome: 'Ryan', validade: '01/20', cvv: '123' });
+    await formulario(page).locator('button[type="submit"]').click();
+    await expect(page.locator('#cartao-validade')).toHaveAttribute('aria-invalid', 'true');
+    await expect(page.locator('#cartao-validade')).toBeFocused();
+    await expect(page.locator('#cartao-numero')).not.toHaveAttribute('aria-invalid', 'true');
+  });
+
+  // FORM-07
+  test('corrigir um campo tira só a mensagem dele, sem novo envio', async ({ page }) => {
+    await abrirCheckout(page);
+    await preencher(page, { numero: '4111', nome: 'R', validade: '13/20', cvv: '12' });
+    await formulario(page).locator('button[type="submit"]').click();
+
+    await page.locator('#cartao-numero').fill('4111 1111 1111 1111');
+
+    await expect(page.locator('#cartao-numero')).not.toHaveAttribute('aria-invalid', 'true');
+    expect(await mensagemDe(page, 'cartao-numero')).toBeNull();
+    await expect(page.locator('#cartao-nome')).toHaveAttribute('aria-invalid', 'true');
+  });
+
+  // FORM-06: a second invalid submit does not duplicate messages.
+  test('um segundo envio inválido não duplica as mensagens', async ({ page }) => {
+    await abrirCheckout(page);
+    await preencher(page, { numero: '4111', nome: 'R', validade: '13/20', cvv: '12' });
+    await formulario(page).locator('button[type="submit"]').click();
+    await formulario(page).locator('button[type="submit"]').click();
+    await expect(formulario(page).locator('.erro-campo')).toHaveCount(4);
+  });
+});

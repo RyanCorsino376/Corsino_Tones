@@ -220,13 +220,13 @@ A visitor can fill a cart (slice 4) but cannot buy it. The plan's flow continues
 | RES-03 | P1: Order summary | Tasks | Implementing |
 | RES-04 | P1: Order summary | Tasks | Implementing |
 | RES-05 | P1: Order summary | Tasks | Implementing |
-| FORM-01 | P1: Card form validation | Specify | Pending |
-| FORM-02 | P1: Card form validation | Specify | Pending |
-| FORM-03 | P1: Card form validation | Specify | Pending |
-| FORM-04 | P1: Card form validation | Specify | Pending |
-| FORM-05 | P1: Card form validation | Specify | Pending |
-| FORM-06 | P1: Card form validation | Specify | Pending |
-| FORM-07 | P1: Card form validation | Specify | Pending |
+| FORM-01 | P1: Card form validation | Tasks | Implementing |
+| FORM-02 | P1: Card form validation | Tasks | Implementing |
+| FORM-03 | P1: Card form validation | Tasks | Implementing |
+| FORM-04 | P1: Card form validation | Tasks | Implementing |
+| FORM-05 | P1: Card form validation | Tasks | Implementing |
+| FORM-06 | P1: Card form validation | Tasks | Implementing |
+| FORM-07 | P1: Card form validation | Tasks | Implementing |
 | PAY-01 | P1: Simulated payment | Specify | Pending |
 | PAY-02 | P1: Simulated payment | Specify | Pending |
 | PAY-03 | P1: Simulated payment | Specify | Pending |

@@ -2,6 +2,7 @@
 // with prices from the API, and takes a simulated card payment.
 import { listarPacks } from '../api/packs.js';
 import { itensDoCarrinho, removerDoCarrinho } from '../servicos/carrinho.js';
+import { validarCampoCartao } from '../servicos/pagamento.js';
 import { usuarioAtual } from '../servicos/sessao.js';
 import { pedirLogin } from '../ui/aviso-login.js';
 import { atualizarCabecalho, atualizarContadorCarrinho } from '../ui/cabecalho.js';
@@ -60,6 +61,68 @@ function aoCarregar(packs) {
     if (doCarrinho.length === 0) mostrarVazio();
     else mostrarResumo(doCarrinho);
 }
+
+// Field id -> rule name in servicos/pagamento.js.
+const CAMPOS = {
+    'cartao-numero': 'numero',
+    'cartao-nome': 'nome',
+    'cartao-validade': 'validade',
+    'cartao-cvv': 'cvv',
+};
+
+function validarCampo(campo) {
+    return validarCampoCartao(CAMPOS[campo.id], campo.value);
+}
+
+// Same field-message pattern as the login forms (etapa04): one message element
+// per field, reused by id so a second submit never duplicates it.
+function mostrarErro(campo, mensagem) {
+    const idMensagem = `${campo.id}-erro`;
+    let elemento = document.getElementById(idMensagem);
+    if (!elemento) {
+        elemento = document.createElement('p');
+        elemento.id = idMensagem;
+        elemento.className = 'erro-campo';
+        campo.after(elemento);
+    }
+    elemento.textContent = mensagem;
+    campo.setAttribute('aria-invalid', 'true');
+    campo.setAttribute('aria-describedby', idMensagem);
+}
+
+function limparErro(campo) {
+    const elemento = document.getElementById(`${campo.id}-erro`);
+    if (elemento) elemento.remove();
+    campo.removeAttribute('aria-invalid');
+    campo.removeAttribute('aria-describedby');
+}
+
+/** Checks every field; returns true when all are valid, otherwise focuses the first error. */
+function validarFormulario() {
+    const campos = Object.keys(CAMPOS).map((id) => document.getElementById(id));
+    for (const campo of campos) {
+        const mensagem = validarCampo(campo);
+        if (mensagem) mostrarErro(campo, mensagem);
+        else limparErro(campo);
+    }
+    const primeiroErro = campos.find((campo) => campo.hasAttribute('aria-invalid'));
+    if (primeiroErro) primeiroErro.focus();
+    return !primeiroErro;
+}
+
+form.addEventListener('submit', function (evento) {
+    evento.preventDefault();
+    if (!validarFormulario()) return;
+});
+
+// Only fields a submit already rejected are re-checked while typing.
+form.addEventListener('input', function (evento) {
+    const campo = evento.target;
+    if (!campo.hasAttribute('aria-invalid')) return;
+    const mensagem = validarCampo(campo);
+    if (mensagem) mostrarErro(campo, mensagem);
+    else limparErro(campo);
+});
 
 atualizarCabecalho();
 
