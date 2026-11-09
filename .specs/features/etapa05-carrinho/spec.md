@@ -159,10 +159,10 @@ The store shows packs and prices (slice 3) but a visitor cannot pick anything to
 
 | Requirement ID | Story | Phase | Status |
 | -------------- | ----- | ----- | ------ |
-| CAR-01 | P1: Cart storage | Specify | Pending |
-| CAR-02 | P1: Cart storage | Specify | Pending |
-| CAR-03 | P1: Cart storage | Specify | Pending |
-| CAR-04 | P1: Cart storage | Specify | Pending |
+| CAR-01 | P1: Cart storage | Tasks | Implementing |
+| CAR-02 | P1: Cart storage | Tasks | Implementing |
+| CAR-03 | P1: Cart storage | Tasks | Implementing |
+| CAR-04 | P1: Cart storage | Tasks | Implementing |
 | ADD-01 | P1: Add to cart on the pack page | Specify | Pending |
 | ADD-02 | P1: Add to cart on the pack page | Specify | Pending |
 | ADD-03 | P1: Add to cart on the pack page | Specify | Pending |
@@ -185,7 +185,7 @@ The store shows packs and prices (slice 3) but a visitor cannot pick anything to
 | REG-02 | P1: Existing behaviour preserved | Specify | Pending |
 | EDGE-01 | Edge cases | Specify | Pending |
 | EDGE-02 | Edge cases | Specify | Pending |
-| EDGE-03 | Edge cases | Specify | Pending |
+| EDGE-03 | Edge cases | Tasks | Implementing |
 
 **ID format:** `[CATEGORY]-[NUMBER]`. `REG-*` and `EDGE-*` are scoped to this feature.
 

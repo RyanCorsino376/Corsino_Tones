@@ -77,17 +77,21 @@ T3 -> T4
 
 **Done when**:
 
-- [ ] Adding `rock-boss-gt-1000` twice and `clean-zoom-g6` once stores exactly `["rock-boss-gt-1000","clean-zoom-g6"]` -> `tests/carrinho-servico.spec.js`
-- [ ] Removing the first of three ids keeps the other two in order
-- [ ] `estaNoCarrinho` is true for a stored id and false otherwise
-- [ ] A non-array value, an array with a number, and an array with `../x` each read as `[]` and remove the key
-- [ ] `["a-b","a-b","c"]` reads as `["a-b","c"]`
-- [ ] `esvaziarCarrinho` removes the key
-- [ ] Full gate passes; test count reported
+- [x] Adding `rock-boss-gt-1000` twice and `clean-zoom-g6` once stores exactly `["rock-boss-gt-1000","clean-zoom-g6"]` -> `tests/carrinho-servico.spec.js`
+- [x] Removing the first of three ids keeps the other two in order
+- [x] `estaNoCarrinho` is true for a stored id and false otherwise
+- [x] A non-array value, an array with a number, and an array with `../x` each read as `[]` and remove the key
+- [x] `["a-b","a-b","c"]` reads as `["a-b","c"]`
+- [x] `esvaziarCarrinho` removes the key
+- [x] Full gate passes; test count reported
 
 **Tests**: e2e (`tests/carrinho-servico.spec.js`)
 **Gate**: full
 **Commit**: `feat(cart): keep the cart in localStorage`
+
+**Status**: Complete
+
+Test count: 243 (233 + 10).
 
 ---
 
