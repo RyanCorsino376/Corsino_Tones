@@ -1,8 +1,9 @@
 // Entry module for checkout.html: requires a session, shows the order summary
 // with prices from the API, and takes a simulated card payment.
 import { listarPacks } from '../api/packs.js';
-import { itensDoCarrinho, removerDoCarrinho } from '../servicos/carrinho.js';
-import { validarCampoCartao } from '../servicos/pagamento.js';
+import { criarPedido } from '../api/pedidos.js';
+import { esvaziarCarrinho, itensDoCarrinho, removerDoCarrinho } from '../servicos/carrinho.js';
+import { PagamentoRecusado, processarPagamento, validarCampoCartao } from '../servicos/pagamento.js';
 import { usuarioAtual } from '../servicos/sessao.js';
 import { pedirLogin } from '../ui/aviso-login.js';
 import { atualizarCabecalho, atualizarContadorCarrinho } from '../ui/cabecalho.js';
@@ -16,6 +17,10 @@ const form = document.getElementById('form-pagamento');
 const botaoPagar = form.querySelector('button[type="submit"]');
 const vazio = document.querySelector('.carrinho-vazio');
 const aviso = document.querySelector('.carrinho-aviso');
+const confirmacao = document.querySelector('.checkout-confirmacao');
+
+const MSG_RECUSADO = 'Pagamento recusado. Verifique os dados do cartão ou use outro cartão.';
+const MSG_FALHOU = 'Não foi possível concluir a compra. Verifique sua conexão e tente novamente.';
 
 // What the visitor sees in the summary is exactly what the order will carry.
 const pedidoAtual = { packs: [], totalCentavos: 0 };
@@ -110,9 +115,83 @@ function validarFormulario() {
     return !primeiroErro;
 }
 
+// One alert per form, reused, so a second failure never stacks a second message.
+function mostrarAlerta(mensagem) {
+    let alerta = form.querySelector('.erro-formulario');
+    if (!alerta) {
+        alerta = document.createElement('p');
+        alerta.className = 'erro-formulario';
+        alerta.setAttribute('role', 'alert');
+        botaoPagar.before(alerta);
+    }
+    alerta.textContent = mensagem;
+}
+
+function limparAlerta() {
+    const alerta = form.querySelector('.erro-formulario');
+    if (alerta) alerta.remove();
+}
+
+function mostrarConfirmacao(pedido) {
+    const titulo = document.createElement('h2');
+    titulo.textContent = 'Compra aprovada!';
+    const numero = document.createElement('p');
+    numero.textContent = `Pedido nº ${pedido.id}`;
+    const lista = document.createElement('ul');
+    lista.className = 'itens-checkout';
+    lista.append(...pedidoAtual.packs.map(criarItemResumo));
+    const total = document.createElement('p');
+    total.className = 'total-carrinho';
+    total.textContent = `Total: ${formatarPreco(pedido.totalCentavos)}`;
+    const biblioteca = document.createElement('a');
+    biblioteca.href = 'biblioteca.html';
+    biblioteca.className = 'botao-tentar finalizar';
+    biblioteca.textContent = 'Ir para a biblioteca';
+
+    confirmacao.replaceChildren(titulo, numero, lista, total, biblioteca);
+    resumo.hidden = true;
+    form.hidden = true;
+    aviso.textContent = '';
+    confirmacao.hidden = false;
+}
+
+/**
+ * Payment first (local, no network), then the order. The cart is emptied only
+ * after the server has the order, so a failure loses nothing and a retry
+ * cannot create a second order for one click.
+ */
+async function pagar() {
+    const textoOriginal = botaoPagar.textContent;
+    limparAlerta();
+    botaoPagar.disabled = true;
+    botaoPagar.textContent = 'Processando pagamento...';
+    try {
+        await processarPagamento(document.getElementById('cartao-numero').value);
+        // Built from the session and the summary only: no card field ever goes out.
+        const pedido = await criarPedido({
+            usuarioId: usuarioAtual().id,
+            packIds: pedidoAtual.packs.map((pack) => pack.id),
+            totalCentavos: pedidoAtual.totalCentavos,
+            status: 'pago',
+            criadoEm: new Date().toISOString(),
+        });
+        esvaziarCarrinho();
+        atualizarContadorCarrinho();
+        mostrarConfirmacao(pedido);
+        return;
+    } catch (erro) {
+        mostrarAlerta(erro instanceof PagamentoRecusado ? MSG_RECUSADO : MSG_FALHOU);
+    }
+    botaoPagar.disabled = false;
+    botaoPagar.textContent = textoOriginal;
+}
+
 form.addEventListener('submit', function (evento) {
     evento.preventDefault();
+    // The button is disabled while paying; this also stops a submit by Enter.
+    if (botaoPagar.disabled) return;
     if (!validarFormulario()) return;
+    pagar();
 });
 
 // Only fields a submit already rejected are re-checked while typing.

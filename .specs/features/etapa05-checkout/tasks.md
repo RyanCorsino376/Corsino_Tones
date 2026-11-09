@@ -10,7 +10,7 @@ Implement these tasks with the `tlc-spec-driven` skill: **activate it by name an
 
 **Spec**: `.specs/features/etapa05-checkout/spec.md`
 **Design**: `.specs/features/etapa05-checkout/design.md`
-**Status**: Draft
+**Status**: Done (pending Verifier)
 
 ### Verifier speed and ports
 
@@ -200,17 +200,21 @@ Test count: 298 (293 + 5). The field-message helpers are copied from `paginas/lo
 
 **Done when**:
 
-- [ ] Valid card: button disabled with "Processando pagamento..."; then exactly one `POST /pedidos` whose body is exactly `{ usuarioId: 1, packIds: [...cart order], totalCentavos: <sum>, status: 'pago', criadoEm: <ISO> }`; confirmation "Compra aprovada!", "Pedido nº {id from the response}", the packs, the total, "Ir para a biblioteca" → `biblioteca.html`; header "Carrinho (0)"; `corsino:carrinho` empty -> `tests/checkout.spec.js`
-- [ ] No request during the purchase contains the card number, name, expiry or CVV; nothing card-related in `localStorage`/`sessionStorage`
-- [ ] Card ending in 0000: decline message in `role="alert"`, no request to the API after the summary, cart and values kept, button back to "Pagar ..."
-- [ ] `POST /pedidos` aborted: order-failure message, cart and values kept, button back; a retry with a working route creates one order
-- [ ] Double-click on "Pagar": one `POST /pedidos`
-- [ ] Reload after the confirmation: empty-cart state, no new order
-- [ ] Full gate passes; test count reported
+- [x] Valid card: button disabled with "Processando pagamento..."; then exactly one `POST /pedidos` whose body is exactly `{ usuarioId: 1, packIds: [...cart order], totalCentavos: <sum>, status: 'pago', criadoEm: <ISO> }`; confirmation "Compra aprovada!", "Pedido nº {id from the response}", the packs, the total, "Ir para a biblioteca" → `biblioteca.html`; header "Carrinho (0)"; `corsino:carrinho` empty -> `tests/checkout.spec.js`
+- [x] No request during the purchase contains the card number, name, expiry or CVV; nothing card-related in `localStorage`/`sessionStorage`
+- [x] Card ending in 0000: decline message in `role="alert"`, no request to the API after the summary, cart and values kept, button back to "Pagar ..."
+- [x] `POST /pedidos` aborted: order-failure message, cart and values kept, button back; a retry with a working route creates one order
+- [x] Double-click on "Pagar": one `POST /pedidos`
+- [x] Reload after the confirmation: empty-cart state, no new order
+- [x] Full gate passes; test count reported
 
 **Tests**: e2e
 **Gate**: full
 **Commit**: `feat(checkout): pay, record the order and confirm the purchase`
+
+**Status**: Complete
+
+Test count: 303 (298 + 5). Test fix during the task: the card holder name first matched the account name ("Ryan Corsino"), which is rightly in the session, so the no-card-data check failed; the test now uses a holder name that exists nowhere else. Card error messages use the field's width (the login forms cap them at 200 px), seen in a screenshot.
 
 ---
 

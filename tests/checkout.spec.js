@@ -277,3 +277,137 @@ test.describe('etapa05-checkout T4 - card form validation', () => {
     await expect(formulario(page).locator('.erro-campo')).toHaveCount(4);
   });
 });
+
+// The holder name differs from the account name, so finding it in storage would mean card data leaked.
+const CARTAO_OK = { numero: '4111 1111 1111 1111', nome: 'Titular Teste', validade: '12/39', cvv: '123' };
+const CARTAO_RECUSADO = { ...CARTAO_OK, numero: '4111 1111 1111 0000' };
+const RECUSADO = 'Pagamento recusado. Verifique os dados do cartão ou use outro cartão.';
+const FALHOU = 'Não foi possível concluir a compra. Verifique sua conexão e tente novamente.';
+
+const botaoPagar = (page) => formulario(page).locator('button[type="submit"]');
+
+/** Every request the page sends to the API, as { method, url, body }. */
+function gravarRequisicoes(page) {
+  const lista = [];
+  page.on('request', (req) => {
+    if (req.url().startsWith(API)) lista.push({ method: req.method(), url: req.url(), body: req.postData() ?? '' });
+  });
+  return lista;
+}
+
+test.describe('etapa05-checkout T5 - payment, order and confirmation', () => {
+  // PAY-01, PAY-02, PED-01, PED-02, OK-01..03, PAY-04
+  test('cartão válido: processa, grava um pedido exato e mostra a confirmação', async ({ page }) => {
+    const porId = await packsPorId(page);
+    const carrinho = ['clean-nux-mg-30', 'rock-zoom-g6'];
+    await abrirCheckout(page, carrinho);
+    const totalCentavos = carrinho.reduce((s, id) => s + porId[id].precoCentavos, 0);
+    const requisicoes = gravarRequisicoes(page);
+    const resposta = page.waitForResponse((r) => r.url() === `${API}/pedidos` && r.request().method() === 'POST');
+
+    await preencher(page, CARTAO_OK);
+    await botaoPagar(page).click();
+
+    // PAY-02
+    await expect(botaoPagar(page)).toBeDisabled();
+    await expect(botaoPagar(page)).toHaveText('Processando pagamento...');
+
+    const pedidoCriado = await (await resposta).json();
+    const posts = requisicoes.filter((r) => r.method === 'POST');
+    expect(posts).toHaveLength(1);
+    const corpo = JSON.parse(posts[0].body);
+    expect(Object.keys(corpo).sort()).toEqual(['criadoEm', 'packIds', 'status', 'totalCentavos', 'usuarioId']);
+    expect(corpo).toMatchObject({ usuarioId: 1, packIds: carrinho, totalCentavos, status: 'pago' });
+    expect(new Date(corpo.criadoEm).toISOString()).toBe(corpo.criadoEm);
+
+    // OK-01
+    const confirmacao = page.locator('.checkout-confirmacao');
+    await expect(confirmacao.getByRole('heading', { name: 'Compra aprovada!' })).toBeVisible();
+    await expect(confirmacao).toContainText(`Pedido nº ${pedidoCriado.id}`);
+    for (const id of carrinho) await expect(confirmacao).toContainText(porId[id].nome);
+    await expect(confirmacao).toContainText(`Total: ${formatoBRL(totalCentavos)}`);
+    await expect(confirmacao.getByRole('link', { name: 'Ir para a biblioteca' })).toHaveAttribute('href', 'biblioteca.html');
+    await expect(formulario(page)).toBeHidden();
+    await expect(page.locator('.checkout-resumo')).toBeHidden();
+    // OK-02, OK-03
+    await expect(page.locator('.acoes-cabecalho .carrinho-texto')).toHaveText('Carrinho (0)');
+    expect(await page.evaluate((c) => localStorage.getItem(c), CHAVE_CARRINHO)).toBeNull();
+
+    // PAY-04: no card data in any request or in browser storage.
+    const digitos = CARTAO_OK.numero.replace(/ /g, '');
+    for (const r of requisicoes) {
+      for (const dado of [digitos, CARTAO_OK.numero, CARTAO_OK.nome, CARTAO_OK.validade]) {
+        expect(r.url + r.body, `${r.method} ${r.url}`).not.toContain(dado);
+      }
+      expect(r.body).not.toMatch(/cvv|cartao|numero|validade/i);
+    }
+    const armazenado = await page.evaluate(() => JSON.stringify({ ...localStorage }) + JSON.stringify({ ...sessionStorage }));
+    for (const dado of [digitos, CARTAO_OK.nome, CARTAO_OK.validade]) expect(armazenado).not.toContain(dado);
+  });
+
+  // PAY-03
+  test('cartão terminado em 0000 é recusado: avisa, mantém carrinho e dados e não chama a API', async ({ page }) => {
+    await abrirCheckout(page);
+    const textoBotao = await botaoPagar(page).textContent();
+    const requisicoes = gravarRequisicoes(page);
+
+    await preencher(page, CARTAO_RECUSADO);
+    await botaoPagar(page).click();
+
+    await expect(formulario(page).getByRole('alert')).toHaveText(RECUSADO);
+    expect(requisicoes).toEqual([]);
+    expect(await page.evaluate((c) => localStorage.getItem(c), CHAVE_CARRINHO)).toBe('["rock-zoom-g6"]');
+    await expect(page.locator('#cartao-numero')).toHaveValue(CARTAO_RECUSADO.numero);
+    await expect(page.locator('#cartao-cvv')).toHaveValue(CARTAO_RECUSADO.cvv);
+    await expect(botaoPagar(page)).toBeEnabled();
+    await expect(botaoPagar(page)).toHaveText(textoBotao);
+  });
+
+  // PED-03, PED-02
+  test('se o pedido falha, avisa, mantém tudo, e tentar de novo cria um único pedido', async ({ page }) => {
+    await abrirCheckout(page);
+    const textoBotao = await botaoPagar(page).textContent();
+    let tentativas = 0;
+    await page.route(`${API}/pedidos`, (rota) => {
+      tentativas += 1;
+      return tentativas === 1 ? rota.abort() : rota.continue();
+    });
+
+    await preencher(page, CARTAO_OK);
+    await botaoPagar(page).click();
+
+    await expect(formulario(page).getByRole('alert')).toHaveText(FALHOU);
+    expect(await page.evaluate((c) => localStorage.getItem(c), CHAVE_CARRINHO)).toBe('["rock-zoom-g6"]');
+    await expect(page.locator('#cartao-nome')).toHaveValue(CARTAO_OK.nome);
+    await expect(botaoPagar(page)).toBeEnabled();
+    await expect(botaoPagar(page)).toHaveText(textoBotao);
+
+    await botaoPagar(page).click();
+    await expect(page.locator('.checkout-confirmacao').getByRole('heading', { name: 'Compra aprovada!' })).toBeVisible();
+    expect(tentativas).toBe(2);
+  });
+
+  // EDGE-01
+  test('clique duplo em "Pagar" faz um único pedido', async ({ page }) => {
+    await abrirCheckout(page);
+    const requisicoes = gravarRequisicoes(page);
+    await preencher(page, CARTAO_OK);
+    await botaoPagar(page).dblclick();
+    await expect(page.locator('.checkout-confirmacao').getByRole('heading', { name: 'Compra aprovada!' })).toBeVisible();
+    expect(requisicoes.filter((r) => r.method === 'POST')).toHaveLength(1);
+  });
+
+  // OK-04
+  test('recarregar depois da confirmação mostra o carrinho vazio e não cria outro pedido', async ({ page }) => {
+    await abrirCheckout(page);
+    await preencher(page, CARTAO_OK);
+    await botaoPagar(page).click();
+    await expect(page.locator('.checkout-confirmacao').getByRole('heading', { name: 'Compra aprovada!' })).toBeVisible();
+
+    const requisicoes = gravarRequisicoes(page);
+    await page.reload();
+    await expect(page.getByText('Seu carrinho está vazio.', { exact: true })).toBeVisible();
+    await page.waitForLoadState('networkidle');
+    expect(requisicoes.filter((r) => r.method === 'POST')).toEqual([]);
+  });
+});

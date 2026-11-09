@@ -269,6 +269,12 @@ input:focus-visible{
     color: var(--text-primary);
 }
 
+/* The login forms cap messages at 200px; here they can use the field's width. */
+.form-pagamento .erro-campo,
+.form-pagamento .erro-formulario{
+    width: auto;
+}
+
 .campos-lado-a-lado{
     display: grid;
     grid-template-columns: 1fr 1fr;

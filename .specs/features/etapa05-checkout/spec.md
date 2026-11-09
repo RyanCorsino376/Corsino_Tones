@@ -227,19 +227,19 @@ A visitor can fill a cart (slice 4) but cannot buy it. The plan's flow continues
 | FORM-05 | P1: Card form validation | Tasks | Implementing |
 | FORM-06 | P1: Card form validation | Tasks | Implementing |
 | FORM-07 | P1: Card form validation | Tasks | Implementing |
-| PAY-01 | P1: Simulated payment | Specify | Pending |
-| PAY-02 | P1: Simulated payment | Specify | Pending |
-| PAY-03 | P1: Simulated payment | Specify | Pending |
-| PAY-04 | P1: Simulated payment | Specify | Pending |
-| PED-01 | P1: Order recorded on the server | Specify | Pending |
-| PED-02 | P1: Order recorded on the server | Specify | Pending |
-| PED-03 | P1: Order recorded on the server | Specify | Pending |
-| OK-01 | P1: Purchase confirmation | Specify | Pending |
-| OK-02 | P1: Purchase confirmation | Specify | Pending |
-| OK-03 | P1: Purchase confirmation | Specify | Pending |
-| OK-04 | P1: Purchase confirmation | Specify | Pending |
+| PAY-01 | P1: Simulated payment | Tasks | Implementing |
+| PAY-02 | P1: Simulated payment | Tasks | Implementing |
+| PAY-03 | P1: Simulated payment | Tasks | Implementing |
+| PAY-04 | P1: Simulated payment | Tasks | Implementing |
+| PED-01 | P1: Order recorded on the server | Tasks | Implementing |
+| PED-02 | P1: Order recorded on the server | Tasks | Implementing |
+| PED-03 | P1: Order recorded on the server | Tasks | Implementing |
+| OK-01 | P1: Purchase confirmation | Tasks | Implementing |
+| OK-02 | P1: Purchase confirmation | Tasks | Implementing |
+| OK-03 | P1: Purchase confirmation | Tasks | Implementing |
+| OK-04 | P1: Purchase confirmation | Tasks | Implementing |
 | REG-01 | P1: Existing behaviour preserved | Tasks | Implementing |
-| EDGE-01 | Edge cases | Specify | Pending |
+| EDGE-01 | Edge cases | Tasks | Implementing |
 | EDGE-02 | Edge cases | Tasks | Implementing |
 | EDGE-03 | Edge cases | Tasks | Implementing |
 
