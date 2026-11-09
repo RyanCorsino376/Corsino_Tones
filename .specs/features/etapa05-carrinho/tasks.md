@@ -10,7 +10,7 @@ Implement these tasks with the `tlc-spec-driven` skill: **activate it by name an
 
 **Spec**: `.specs/features/etapa05-carrinho/spec.md`
 **Design**: `.specs/features/etapa05-carrinho/design.md`
-**Status**: Draft
+**Status**: Done (pending Verifier)
 
 ### Existing tests changed
 
@@ -174,19 +174,23 @@ Test count: 259 (251 + 8). Found while testing: the second click of a double cli
 
 **Done when**:
 
-- [ ] With `clean-zoom-g6` then `rock-boss-gt-1000` stored, the page requests `GET /packs` and lists the two in that order, each linking to its pack page, with its formatted price and a "Remover" button -> `tests/carrinho-pagina.spec.js`
-- [ ] Count "2 packs no carrinho" and total equal to the formatted sum of the two prices from the API
-- [ ] "Remover" on the first: one item left, "1 pack no carrinho", new total, header "Carrinho (1)", storage updated, no reload, no new request
-- [ ] Removing the last item shows "Seu carrinho está vazio." and "Ver os packs" → `packs.html`, no total
-- [ ] Empty cart on load: empty state and no request to the API
-- [ ] A stored unknown id (`jazz-boss-x`) is removed from storage, not listed, not summed, and the notice shows
-- [ ] Held request: "Carregando carrinho..." and no items; aborted request: error text + "Tentar novamente", storage unchanged; retry loads the list
-- [ ] `carrinho.html` header shows the cart link and "Entrar"/"Olá"
-- [ ] Full gate passes; test count reported
+- [x] With `clean-zoom-g6` then `rock-boss-gt-1000` stored, the page requests `GET /packs` and lists the two in that order, each linking to its pack page, with its formatted price and a "Remover" button -> `tests/carrinho-pagina.spec.js`
+- [x] Count "2 packs no carrinho" and total equal to the formatted sum of the two prices from the API
+- [x] "Remover" on the first: one item left, "1 pack no carrinho", new total, header "Carrinho (1)", storage updated, no reload, no new request
+- [x] Removing the last item shows "Seu carrinho está vazio." and "Ver os packs" → `packs.html`, no total
+- [x] Empty cart on load: empty state and no request to the API
+- [x] A stored unknown id (`jazz-boss-x`) is removed from storage, not listed, not summed, and the notice shows
+- [x] Held request: "Carregando carrinho..." and no items; aborted request: error text + "Tentar novamente", storage unchanged; retry loads the list
+- [x] `carrinho.html` header shows the cart link and "Entrar"/"Olá"
+- [x] Full gate passes; test count reported
 
 **Tests**: e2e
 **Gate**: full
 **Commit**: `feat(cart): add the cart page with removal and total`
+
+**Status**: Complete
+
+Test count: 268 (259 + 9). Found by the tests: removing the last item hid the list but left the item in the page; `mostrarVazio` now clears it. Test fix: routes on `/packs` are armed after `gravarCarrinho`, because `index.html` (used to store the cart) also requests `/packs`. `carrinho.html` joined the no-horizontal-overflow test; checked in screenshots at 1280 and 375 px.
 
 ---
 

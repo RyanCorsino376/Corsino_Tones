@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Carrinho de compras: packs escolhidos, preços e total.">
+    <link rel="stylesheet" href="style.css">
+    <title>Carrinho | CorsinoTones</title>
+</head>
+<body>
+    <header class="cabecalho">
+        <a href="index.html"><img src="../imagens/LogoSite.svg" alt="CorsinoTones" class="icone"></a>
+    </header>
+    <nav class="navegacao">
+        <div class="nav-links">
+            <a href="index.html" class="nav-txt">Página Inicial</a>
+            <a href="packs.html" class="nav-txt">Packs</a>
+            <a href="biblioteca.html" class="nav-txt">Biblioteca</a>
+        </div>
+        <!-- Right-hand group: positioned as one block at every breakpoint. -->
+        <div class="acoes-cabecalho">
+            <!-- Cart icon: Lucide "shopping-cart" (ISC license), same style as the user icon. -->
+            <a href="carrinho.html" class="carrinho" aria-current="page">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="none"
+                    stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <circle cx="8" cy="21" r="1"/>
+                    <circle cx="19" cy="21" r="1"/>
+                    <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/>
+                </svg>
+                <span class="carrinho-texto">Carrinho (0)</span>
+            </a>
+            <a href="login.html" class="entrar">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="none"
+                    stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <circle cx="12" cy="7" r="4"/>
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                </svg>
+                <span>Entrar</span>
+            </a>
+        </div>
+    </nav>
+    <main class="conteudo pagina-carrinho">
+        <h1>Carrinho</h1>
+        <!-- Loading and error messages; empty once the list is on screen. -->
+        <div class="estado-carga"></div>
+        <p class="carrinho-aviso" role="status"></p>
+        <section class="carrinho-lista" hidden>
+            <p id="contagem-carrinho"></p>
+            <ul class="itens-carrinho"></ul>
+            <p class="total-carrinho"></p>
+        </section>
+        <div class="carrinho-vazio" hidden>
+            <p>Seu carrinho está vazio.</p>
+            <a href="packs.html">Ver os packs</a>
+        </div>
+    </main>
+    <footer class="rodape">Copyright 2026 ®</footer>
+    <script type="module" src="paginas/carrinho.js"></script>
+</body>
+</html>

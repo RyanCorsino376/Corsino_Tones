@@ -168,23 +168,23 @@ The store shows packs and prices (slice 3) but a visitor cannot pick anything to
 | ADD-03 | P1: Add to cart on the pack page | Tasks | Implementing |
 | ADD-04 | P1: Add to cart on the pack page | Tasks | Implementing |
 | ADD-05 | P1: Add to cart on the pack page | Tasks | Implementing |
-| HDR-01 | P1: Cart link in the header | Specify | Pending |
-| HDR-02 | P1: Cart link in the header | Specify | Pending |
+| HDR-01 | P1: Cart link in the header | Tasks | Implementing |
+| HDR-02 | P1: Cart link in the header | Tasks | Implementing |
 | HDR-03 | P1: Cart link in the header | Tasks | Implementing |
 | HDR-04 | P1: Cart link in the header | Tasks | Implementing |
 | HDR-05 | P1: Cart link in the header | Tasks | Implementing |
-| PAGC-01 | P1: Cart page | Specify | Pending |
-| PAGC-02 | P1: Cart page | Specify | Pending |
-| PAGC-03 | P1: Cart page | Specify | Pending |
-| PAGC-04 | P1: Cart page | Specify | Pending |
-| PAGC-05 | P1: Cart page | Specify | Pending |
-| PAGC-06 | P1: Cart page | Specify | Pending |
-| PAGC-07 | P1: Cart page | Specify | Pending |
-| PAGC-08 | P1: Cart page | Specify | Pending |
-| REG-01 | P1: Existing behaviour preserved | Specify | Pending |
+| PAGC-01 | P1: Cart page | Tasks | Implementing |
+| PAGC-02 | P1: Cart page | Tasks | Implementing |
+| PAGC-03 | P1: Cart page | Tasks | Implementing |
+| PAGC-04 | P1: Cart page | Tasks | Implementing |
+| PAGC-05 | P1: Cart page | Tasks | Implementing |
+| PAGC-06 | P1: Cart page | Tasks | Implementing |
+| PAGC-07 | P1: Cart page | Tasks | Implementing |
+| PAGC-08 | P1: Cart page | Tasks | Implementing |
+| REG-01 | P1: Existing behaviour preserved | Tasks | Implementing |
 | REG-02 | P1: Existing behaviour preserved | Tasks | Implementing |
 | EDGE-01 | Edge cases | Tasks | Implementing |
-| EDGE-02 | Edge cases | Specify | Pending |
+| EDGE-02 | Edge cases | Tasks | Implementing |
 | EDGE-03 | Edge cases | Tasks | Implementing |
 
 **ID format:** `[CATEGORY]-[NUMBER]`. `REG-*` and `EDGE-*` are scoped to this feature.

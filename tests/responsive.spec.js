@@ -156,7 +156,7 @@ test.describe('T7 - filter sidebar and preset grid per range', () => {
   });
 });
 
-const PAGINAS = ['index.html', 'packs.html', 'pack.html?id=rock-boss-gt-1000', 'biblioteca.html', 'login.html'];
+const PAGINAS = ['index.html', 'packs.html', 'pack.html?id=rock-boss-gt-1000', 'biblioteca.html', 'login.html', 'carrinho.html'];
 
 /** Column count read from the rendered X positions of the grid's direct children. */
 async function colunasPresetTopo(page) {

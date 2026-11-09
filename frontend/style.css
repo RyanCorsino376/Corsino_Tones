@@ -134,6 +134,82 @@ input:focus-visible{
     border-color: var(--text-secondary);
 }
 
+/*------------- Carrinho ----------------------------------------------*/
+
+.carrinho[aria-current="page"]{
+    color: var(--text-primary);
+}
+
+.itens-carrinho{
+    display: grid;
+    gap: 12px;
+    margin: 16px 0;
+    padding: 0;
+    list-style: none;
+}
+
+/* Name on the left, price and "Remover" on the right; wraps on narrow screens. */
+.itens-carrinho li{
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px 24px;
+    padding: 16px 20px;
+    background-color: var(--bg-card);
+}
+
+.itens-carrinho a{
+    flex: 1 1 200px;
+    color: var(--text-primary);
+    font-size: large;
+    text-decoration: none;
+}
+
+.itens-carrinho a:hover{
+    text-decoration: underline;
+}
+
+.item-preco{
+    color: var(--brand-accent);
+    font-weight: bold;
+}
+
+.itens-carrinho .botao-sair{
+    min-height: 32px;
+}
+
+#contagem-carrinho,
+.carrinho-aviso{
+    color: var(--text-secondary);
+}
+
+.total-carrinho{
+    font-size: x-large;
+    font-weight: bold;
+    text-align: right;
+}
+
+.carrinho-lista[hidden],
+.carrinho-vazio[hidden]{
+    display: none;
+}
+
+.carrinho-vazio{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    padding: 48px 0;
+    color: var(--text-secondary);
+}
+
+.carrinho-vazio a{
+    color: var(--text-primary);
+    border: 1px solid var(--border-subtle);
+    padding: 8px 16px;
+    text-decoration: none;
+}
+
 /*------------- Pop-up de login ---------------------------------------*/
 
 .aviso-login{
