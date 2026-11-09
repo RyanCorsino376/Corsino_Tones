@@ -1,8 +1,19 @@
-// Header state: the "Entrar" link for visitors, or the user's first name and a
-// "Sair" button while a session exists. Every page module calls this once.
+// Header state: the cart counter, and the "Entrar" link for visitors or the
+// user's first name and a "Sair" button while a session exists. Every page
+// module calls atualizarCabecalho once.
+import { esvaziarCarrinho, itensDoCarrinho } from '../servicos/carrinho.js';
 import { encerrarSessao, usuarioAtual } from '../servicos/sessao.js';
 
+/** Writes "Carrinho (N)" into the header; pages call it again after changing the cart. */
+export function atualizarContadorCarrinho() {
+    const total = itensDoCarrinho().length;
+    for (const texto of document.querySelectorAll('.carrinho-texto')) {
+        texto.textContent = `Carrinho (${total})`;
+    }
+}
+
 export function atualizarCabecalho() {
+    atualizarContadorCarrinho();
     const usuario = usuarioAtual();
     const linkEntrar = document.querySelector('a.entrar');
     if (!usuario || !linkEntrar) return;
@@ -21,6 +32,8 @@ export function atualizarCabecalho() {
     sair.textContent = 'Sair';
     sair.addEventListener('click', function () {
         encerrarSessao();
+        // One cart per browser: the next person on this computer starts empty.
+        esvaziarCarrinho();
         location.assign('index.html');
     });
 

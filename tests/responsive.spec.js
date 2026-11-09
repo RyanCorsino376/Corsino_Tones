@@ -17,6 +17,8 @@ function mesmaLinha(a, b) {
 
 test.describe('T6 - navigation across the three ranges', () => {
   // RESP-05: below 768px the nav links wrap and "Entrar" leaves absolute flow.
+  // Since etapa05-carrinho the positioning belongs to the group holding the cart
+  // link and "Entrar" (.acoes-cabecalho); geometry is still measured on .entrar.
   test('below 768px the "Entrar" link drops below the navigation links', async ({ page }) => {
     await page.setViewportSize(MOBILE);
     await page.goto('index.html');
@@ -32,7 +34,7 @@ test.describe('T6 - navigation across the three ranges', () => {
     await page.setViewportSize(MOBILE);
     await page.goto('index.html');
 
-    const posicao = await page.locator('.entrar').evaluate((el) => getComputedStyle(el).position);
+    const posicao = await page.locator('.acoes-cabecalho').evaluate((el) => getComputedStyle(el).position);
     expect(posicao).toBe('static');
   });
 
@@ -41,7 +43,7 @@ test.describe('T6 - navigation across the three ranges', () => {
     await page.setViewportSize(MOBILE_LIMITE);
     await page.goto('index.html');
 
-    const posicao = await page.locator('.entrar').evaluate((el) => getComputedStyle(el).position);
+    const posicao = await page.locator('.acoes-cabecalho').evaluate((el) => getComputedStyle(el).position);
     expect(posicao).toBe('static');
   });
 
@@ -54,7 +56,7 @@ test.describe('T6 - navigation across the three ranges', () => {
     const entrar = await page.locator('.entrar').boundingBox();
 
     expect(mesmaLinha(links, entrar)).toBe(true);
-    expect(await page.locator('.entrar').evaluate((el) => getComputedStyle(el).position)).toBe('absolute');
+    expect(await page.locator('.acoes-cabecalho').evaluate((el) => getComputedStyle(el).position)).toBe('absolute');
   });
 
   test('at 820px the "Entrar" link does not overlap the navigation links', async ({ page }) => {
@@ -76,7 +78,7 @@ test.describe('T6 - navigation across the three ranges', () => {
     const entrar = await page.locator('.entrar').boundingBox();
 
     expect(mesmaLinha(links, entrar)).toBe(true);
-    expect(await page.locator('.entrar').evaluate((el) => getComputedStyle(el).position)).toBe('absolute');
+    expect(await page.locator('.acoes-cabecalho').evaluate((el) => getComputedStyle(el).position)).toBe('absolute');
   });
 });
 

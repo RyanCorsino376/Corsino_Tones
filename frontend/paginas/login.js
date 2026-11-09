@@ -2,11 +2,15 @@
 // forms to the users API (etapa05-auth).
 import { cadastrar, CredenciaisInvalidas, EmailEmUso, entrar } from '../servicos/auth.js';
 import { abrirSessao, destinoSeguro, usuarioAtual } from '../servicos/sessao.js';
+import { atualizarContadorCarrinho } from '../ui/cabecalho.js';
 
 const voltar = new URLSearchParams(location.search).get('voltar');
 
 // Already signed in: the forms have nothing to do, so go where the visitor was heading.
 if (usuarioAtual()) location.replace(destinoSeguro(voltar));
+
+// The login page has no "Entrar" link to replace; only the cart counter needs updating.
+atualizarContadorCarrinho();
 
 // Progressive enhancement: the flip styling is scoped to .js-flip, added below.
 // If this script never runs, both faces stay stacked and usable.

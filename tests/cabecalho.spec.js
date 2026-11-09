@@ -144,3 +144,67 @@ test.describe('etapa05-auth T8/T9 - library requires a session', () => {
     await expect(page.locator('dialog')).toHaveCount(0);
   });
 });
+
+const CHAVE_CARRINHO = 'corsino:carrinho';
+const linkCarrinho = (page) => page.locator('.acoes-cabecalho a.carrinho[href="carrinho.html"]');
+
+/** Stores cart ids in this tab's origin, as the cart service would. */
+async function gravarCarrinho(page, ids) {
+  await page.goto('index.html');
+  await page.evaluate(([chave, valor]) => localStorage.setItem(chave, valor), [CHAVE_CARRINHO, JSON.stringify(ids)]);
+}
+
+test.describe('etapa05-carrinho T2 - cart link in the header', () => {
+  for (const pagina of ['index.html', 'packs.html', 'pack.html?id=rock-boss-gt-1000', 'biblioteca.html', 'login.html']) {
+    // HDR-01
+    test(`${pagina} mostra "Carrinho (0)" com o carrinho vazio e "Carrinho (2)" com dois packs`, async ({ page }) => {
+      await page.goto(pagina);
+      await expect(linkCarrinho(page)).toHaveText('Carrinho (0)');
+      await expect(linkCarrinho(page).locator('svg')).toHaveCount(1);
+
+      await gravarCarrinho(page, ['rock-boss-gt-1000', 'clean-zoom-g6']);
+      await page.goto(pagina);
+      await expect(linkCarrinho(page)).toHaveText('Carrinho (2)');
+    });
+  }
+
+  // HDR-03: next to "Entrar" signed out, next to "Olá"/"Sair" signed in.
+  test('o link do carrinho fica junto de "Entrar" e, com sessão, junto de "Olá" e "Sair"', async ({ page }) => {
+    await page.goto('packs.html');
+    await expect(page.locator('.acoes-cabecalho a.entrar')).toBeVisible();
+    await expect(linkCarrinho(page)).toBeVisible();
+
+    await abrirSessao(page);
+    await page.goto('packs.html');
+    await expect(page.locator('.acoes-cabecalho').getByText('Olá, Ryan', { exact: true })).toBeVisible();
+    await expect(page.locator('.acoes-cabecalho').getByRole('button', { name: 'Sair' })).toBeVisible();
+    await expect(linkCarrinho(page)).toBeVisible();
+  });
+
+  // HDR-04
+  test('"Sair" esvazia o carrinho', async ({ page }) => {
+    await gravarCarrinho(page, ['rock-boss-gt-1000']);
+    await abrirSessao(page);
+    await page.goto('packs.html');
+    await expect(linkCarrinho(page)).toHaveText('Carrinho (1)');
+
+    await botaoSair(page).click();
+
+    await expect(page).toHaveURL(/\/frontend\/index\.html$/);
+    expect(await page.evaluate((chave) => localStorage.getItem(chave), CHAVE_CARRINHO)).toBeNull();
+    await expect(linkCarrinho(page)).toHaveText('Carrinho (0)');
+  });
+
+  // HDR-05
+  test('o carrinho montado sem login continua depois de entrar', async ({ page }) => {
+    await gravarCarrinho(page, ['metal-nux-mg-30']);
+    await page.goto('login.html');
+    await page.locator('#email').fill('ryan@exemplo.com');
+    await page.locator('#senha').fill('teste123');
+    await page.locator('#form-login button[type="submit"]').click();
+
+    await expect(page).toHaveURL(/\/frontend\/index\.html$/);
+    await expect(linkCarrinho(page)).toHaveText('Carrinho (1)');
+    expect(await page.evaluate((chave) => localStorage.getItem(chave), CHAVE_CARRINHO)).toBe('["metal-nux-mg-30"]');
+  });
+});

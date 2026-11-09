@@ -110,16 +110,20 @@ Test count: 243 (233 + 10).
 
 **Done when**:
 
-- [ ] Each of the five pages shows a link to `carrinho.html` reading "Carrinho (0)" with an empty cart and "Carrinho (2)" with two ids stored -> `tests/cabecalho.spec.js`
-- [ ] Signed in, the link sits next to "Olá, Ryan" / "Sair"; signed out, next to "Entrar"
-- [ ] "Sair" leaves `corsino:carrinho` absent and `index.html` shows "Carrinho (0)"
-- [ ] A cart filled before signing in is still there after signing in through `login.html`
-- [ ] `tests/responsive.spec.js` passes with only its `position` reads moved to `.acoes-cabecalho`; no overflow at 320-1440 px
-- [ ] Full gate passes; test count reported
+- [x] Each of the five pages shows a link to `carrinho.html` reading "Carrinho (0)" with an empty cart and "Carrinho (2)" with two ids stored -> `tests/cabecalho.spec.js`
+- [x] Signed in, the link sits next to "Olá, Ryan" / "Sair"; signed out, next to "Entrar"
+- [x] "Sair" leaves `corsino:carrinho` absent and `index.html` shows "Carrinho (0)"
+- [x] A cart filled before signing in is still there after signing in through `login.html`
+- [x] `tests/responsive.spec.js` passes with only its `position` reads moved to `.acoes-cabecalho`; no overflow at 320-1440 px
+- [x] Full gate passes; test count reported
 
 **Tests**: e2e
 **Gate**: full
 **Commit**: `feat(header): show the cart link with a pack counter`
+
+**Status**: Complete
+
+Test count: 251 (243 + 8). The four `position` reads in `responsive.spec.js` now read `.acoes-cabecalho`; the geometry checks on `.entrar` are unchanged and pass. Header checked in screenshots at 1280 px and 375 px.
 
 ---
 
