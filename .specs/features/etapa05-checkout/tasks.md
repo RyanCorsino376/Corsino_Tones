@@ -74,18 +74,22 @@ T3 -> T4 -> T5
 
 **Done when**:
 
-- [ ] `criarPedido({...})` sends `POST /pedidos` as JSON and resolves with the record plus a numeric `id`; `GET /pedidos?usuarioId=1` returns it -> `tests/pagamento.spec.js`
-- [ ] Number: accepts `4111111111111111` and `4111 1111 1111 1111`; rejects 15 and 17 digits and letters, with the spec message
-- [ ] Name: rejects `''`, `'  '`, `'R'`; accepts `'Ry'`
-- [ ] Expiry (with a fixed `hoje` of 2026-11-15): accepts `11/26` and `01/27`; rejects `10/26`, `13/27`, `00/27`, `1/27`, `11-26`
-- [ ] CVV: accepts `123`; rejects `12`, `1234`, `12a`
-- [ ] `processarPagamento` resolves for `...1111` and rejects with `PagamentoRecusado` for `...0000`, both after 1500 ms and not at 1499 ms (`page.clock`)
-- [ ] `npm run api:reset` restores an empty `pedidos`
-- [ ] Full gate passes; test count reported
+- [x] `criarPedido({...})` sends `POST /pedidos` as JSON and resolves with the record plus a numeric `id`; `GET /pedidos?usuarioId=1` returns it -> `tests/pagamento.spec.js`
+- [x] Number: accepts `4111111111111111` and `4111 1111 1111 1111`; rejects 15 and 17 digits and letters, with the spec message
+- [x] Name: rejects `''`, `'  '`, `'R'`; accepts `'Ry'`
+- [x] Expiry (with a fixed `hoje` of 2026-11-15): accepts `11/26` and `01/27`; rejects `10/26`, `13/27`, `00/27`, `1/27`, `11-26`
+- [x] CVV: accepts `123`; rejects `12`, `1234`, `12a`
+- [x] `processarPagamento` resolves for `...1111` and rejects with `PagamentoRecusado` for `...0000`, both after 1500 ms and not at 1499 ms (`page.clock`)
+- [x] `npm run api:reset` restores an empty `pedidos`
+- [x] Full gate passes; test count reported
 
 **Tests**: e2e (`tests/pagamento.spec.js`)
 **Gate**: full
 **Commit**: `feat(payment): add the orders API and a simulated card payment`
+
+**Status**: Complete
+
+Test count: 281 (272 + 9). The running dev json-server reloaded the reset `db.json` with the empty `pedidos` collection (it watches the file).
 
 ---
 

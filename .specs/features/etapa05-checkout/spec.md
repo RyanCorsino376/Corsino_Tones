@@ -240,8 +240,8 @@ A visitor can fill a cart (slice 4) but cannot buy it. The plan's flow continues
 | OK-04 | P1: Purchase confirmation | Specify | Pending |
 | REG-01 | P1: Existing behaviour preserved | Specify | Pending |
 | EDGE-01 | Edge cases | Specify | Pending |
-| EDGE-02 | Edge cases | Specify | Pending |
-| EDGE-03 | Edge cases | Specify | Pending |
+| EDGE-02 | Edge cases | Tasks | Implementing |
+| EDGE-03 | Edge cases | Tasks | Implementing |
 
 **ID format:** `[CATEGORY]-[NUMBER]`. `REG-*` and `EDGE-*` are scoped to this feature.
 
