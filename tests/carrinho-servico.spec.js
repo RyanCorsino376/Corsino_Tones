@@ -27,6 +27,8 @@ test.describe('etapa05-carrinho T1 - cart service', () => {
   test('adicionar guarda os ids na ordem e não repete um pack', async ({ page }) => {
     await chamar(page, 'adicionarAoCarrinho', 'rock-boss-gt-1000');
     await chamar(page, 'adicionarAoCarrinho', 'rock-boss-gt-1000');
+    // Checked before the next write, which could otherwise hide a stored duplicate (Verifier gap M01).
+    expect(await lerChave(page)).toBe('["rock-boss-gt-1000"]');
     await chamar(page, 'adicionarAoCarrinho', 'clean-zoom-g6');
     expect(await lerChave(page)).toBe('["rock-boss-gt-1000","clean-zoom-g6"]');
     expect(await chamar(page, 'itensDoCarrinho')).toEqual(['rock-boss-gt-1000', 'clean-zoom-g6']);
@@ -56,6 +58,9 @@ test.describe('etapa05-carrinho T1 - cart service', () => {
     ['objeto em vez de lista', '{"itens":["a"]}'],
     ['lista com número', '["rock-boss-gt-1000",3]'],
     ['id mal formado', '["rock-boss-gt-1000","../x"]'],
+    // A valid prefix followed by junk catches a regex without its `$` anchor (Verifier gap M05).
+    ['id terminado em hífen', '["rock-"]'],
+    ['id com maiúsculas no fim', '["rock-boss-GT"]'],
   ]) {
     test(`${caso} conta como carrinho vazio e é apagado`, async ({ page }) => {
       await gravarChave(page, valor);

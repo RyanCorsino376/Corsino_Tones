@@ -146,6 +146,7 @@ test.describe('etapa05-carrinho T4 - cart page', () => {
   // PAGC-02: the total is the sum of the API prices, in cents (prices that differ prove it).
   test('o total soma os preços que a API devolve, em centavos', async ({ page }) => {
     await gravarCarrinho(page, ['a-1', 'b-2', 'c-3']);
+    // Distinct prices, so each line must show its own (Verifier gap M29).
     await page.route(`${API}/packs`, (rota) => rota.fulfill({ json: [
       { id: 'a-1', nome: 'Pack A', estilo: 'rock', marca: 'boss', equipamento: 'X', descricao: 'x', precoCentavos: 1010 },
       { id: 'b-2', nome: 'Pack B', estilo: 'rock', marca: 'boss', equipamento: 'Y', descricao: 'y', precoCentavos: 2020 },
@@ -154,6 +155,7 @@ test.describe('etapa05-carrinho T4 - cart page', () => {
     await page.goto('carrinho.html');
     await expect(page.locator('.total-carrinho')).toHaveText(`Total: ${formatoBRL(3100)}`);
     await expect(page.locator('#contagem-carrinho')).toHaveText('3 packs no carrinho');
+    await expect(page.locator('.itens-carrinho .item-preco')).toHaveText([formatoBRL(1010), formatoBRL(2020), formatoBRL(70)]);
   });
 
   // PAGC-03, HDR-02 (remove), EDGE-02

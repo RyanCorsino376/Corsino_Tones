@@ -155,18 +155,28 @@ async function gravarCarrinho(page, ids) {
 }
 
 test.describe('etapa05-carrinho T2 - cart link in the header', () => {
-  for (const pagina of ['index.html', 'packs.html', 'pack.html?id=rock-boss-gt-1000', 'biblioteca.html', 'login.html']) {
-    // HDR-01
+  for (const pagina of ['index.html', 'packs.html', 'pack.html?id=rock-boss-gt-1000', 'biblioteca.html', 'login.html', 'carrinho.html']) {
+    // HDR-01: a visible link to carrinho.html on every page (Verifier gaps M23b, M24).
     test(`${pagina} mostra "Carrinho (0)" com o carrinho vazio e "Carrinho (2)" com dois packs`, async ({ page }) => {
       await page.goto(pagina);
+      await expect(linkCarrinho(page)).toBeVisible();
       await expect(linkCarrinho(page)).toHaveText('Carrinho (0)');
       await expect(linkCarrinho(page).locator('svg')).toHaveCount(1);
 
       await gravarCarrinho(page, ['rock-boss-gt-1000', 'clean-zoom-g6']);
       await page.goto(pagina);
+      await expect(linkCarrinho(page)).toBeVisible();
       await expect(linkCarrinho(page)).toHaveText('Carrinho (2)');
     });
   }
+
+  // EDGE-03 where the visitor sees it (Verifier gap M30): a hand-edited duplicate counts once.
+  test('um id repetido à mão no armazenamento conta uma vez no cabeçalho', async ({ page }) => {
+    await page.goto('index.html');
+    await page.evaluate((chave) => localStorage.setItem(chave, '["clean-zoom-g6","clean-zoom-g6"]'), CHAVE_CARRINHO);
+    await page.goto('packs.html');
+    await expect(linkCarrinho(page)).toHaveText('Carrinho (1)');
+  });
 
   // HDR-03: next to "Entrar" signed out, next to "Olá"/"Sair" signed in.
   test('o link do carrinho fica junto de "Entrar" e, com sessão, junto de "Olá" e "Sair"', async ({ page }) => {

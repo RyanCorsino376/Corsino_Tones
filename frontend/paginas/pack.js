@@ -56,7 +56,8 @@ function mostrarAcaoCarrinho(id) {
     botao.textContent = 'Adicionar ao carrinho';
     botao.addEventListener('click', function () {
         adicionarAoCarrinho(id);
-        // The button is replaced at once, so a second click has nothing to hit.
+        // The button is replaced at once by the "No carrinho" link, so the pack
+        // is stored once. A second click of a double click follows that link.
         mostrarAcaoCarrinho(id);
         topo.querySelector('.pack-aviso').textContent = 'Pack adicionado ao carrinho.';
         atualizarContadorCarrinho();
