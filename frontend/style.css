@@ -189,6 +189,16 @@ input:focus-visible{
     text-align: right;
 }
 
+/* "Finalizar compra": the primary action, under the total on the right. */
+.finalizar{
+    display: block;
+    width: fit-content;
+    margin-left: auto;
+    padding: 10px 24px;
+    font-size: large;
+    text-decoration: none;
+}
+
 .carrinho-lista[hidden],
 .carrinho-vazio[hidden]{
     display: none;

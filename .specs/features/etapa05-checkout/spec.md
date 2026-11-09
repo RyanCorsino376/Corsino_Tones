@@ -209,8 +209,8 @@ A visitor can fill a cart (slice 4) but cannot buy it. The plan's flow continues
 
 | Requirement ID | Story | Phase | Status |
 | -------------- | ----- | ----- | ------ |
-| CK-01 | P1: From the cart to the checkout | Specify | Pending |
-| CK-02 | P1: From the cart to the checkout | Specify | Pending |
+| CK-01 | P1: From the cart to the checkout | Tasks | Implementing |
+| CK-02 | P1: From the cart to the checkout | Tasks | Implementing |
 | ACC-01 | P1: Checkout requires a session | Specify | Pending |
 | ACC-02 | P1: Checkout requires a session | Specify | Pending |
 | ACC-03 | P1: Checkout requires a session | Specify | Pending |

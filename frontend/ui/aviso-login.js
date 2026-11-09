@@ -4,10 +4,10 @@
 
 /**
  * Opens the pop-up. "Fazer login" goes to the login and comes back to
- * `pagina` afterwards; "Voltar" (or Esc) goes to the home page, so a
- * signed-out visitor never stays on the protected page.
+ * `pagina` afterwards; "Voltar" (or Esc) goes to `voltarPara` (the home page
+ * by default), so a signed-out visitor never stays on the protected page.
  */
-export function pedirLogin({ mensagem, pagina }) {
+export function pedirLogin({ mensagem, pagina, voltarPara = 'index.html' }) {
     const dialogo = document.createElement('dialog');
     dialogo.className = 'aviso-login';
     dialogo.setAttribute('aria-labelledby', 'aviso-login-texto');
@@ -31,20 +31,16 @@ export function pedirLogin({ mensagem, pagina }) {
     voltar.type = 'button';
     voltar.className = 'botao-sair';
     voltar.textContent = 'Voltar';
-    voltar.addEventListener('click', irParaInicio);
+    voltar.addEventListener('click', () => location.assign(voltarPara));
 
     // Esc fires "cancel"; it leaves the page like "Voltar" instead of only closing.
     dialogo.addEventListener('cancel', function (evento) {
         evento.preventDefault();
-        irParaInicio();
+        location.assign(voltarPara);
     });
 
     acoes.append(entrar, voltar);
     dialogo.append(texto, acoes);
     document.body.append(dialogo);
     dialogo.showModal();
-}
-
-function irParaInicio() {
-    location.assign('index.html');
 }

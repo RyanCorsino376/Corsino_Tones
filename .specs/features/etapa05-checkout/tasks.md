@@ -108,13 +108,17 @@ Test count: 281 (272 + 9). The running dev json-server reloaded the reset `db.js
 
 **Done when**:
 
-- [ ] With packs, the cart page shows "Finalizar compra" → `checkout.html`; after removing the last pack it is gone; in the loading and error states it is not shown -> `tests/checkout.spec.js`
-- [ ] The library pop-up "Voltar" still goes to `index.html` (existing `tests/cabecalho.spec.js` passes unchanged)
-- [ ] Full gate passes; test count reported
+- [x] With packs, the cart page shows "Finalizar compra" → `checkout.html`; after removing the last pack it is gone; in the loading and error states it is not shown -> `tests/checkout.spec.js`
+- [x] The library pop-up "Voltar" still goes to `index.html` (existing `tests/cabecalho.spec.js` passes unchanged)
+- [x] Full gate passes; test count reported
 
 **Tests**: e2e
 **Gate**: full
 **Commit**: `feat(cart): add the Finalizar compra link`
+
+**Status**: Complete
+
+Test count: 283 (281 + 2). The absence test first passed before the code (lesson L-001); it now also requires the hidden link to exist. A first full run had two timeouts in `sessao.spec.js` (untouched by this task) under load average 6.9; both passed in isolation twice and the full rerun passed.
 
 ---
 
