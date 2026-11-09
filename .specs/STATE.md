@@ -64,22 +64,23 @@ Rejected: keeping classic scripts with `window.*` globals, which hide dependenci
 
 ## Handoff
 
-**Feature**: `etapa05-packs` (slice 3 of `.specs/features/etapa05-loja/plano.md`); slices 1 and 2 done
+**Feature**: `etapa05-carrinho` (slice 4 of `.specs/features/etapa05-loja/plano.md`); slices 1-3 done
 **Branch**: `feat/etapa05-loja`, not pushed (push/PR not authorized yet)
-**Phase**: Execute complete; Verifier PASS on iteration 2 (iteration 1: 2 real survivors and a stale README, all fixed)
+**Phase**: Execute complete; Verifier PASS on iteration 2 (iteration 1: six weak tests, no code defect, all fixed)
 
-**What the store sells now**: packs of **one style for one pedalboard model** ("Rock · Boss GT-1000"), R$ 49,90 each. 4 models, 9 packs, 21 presets linked by `packId`. `presets.html` became `packs.html` (pack cards with filters, search, sort); `preset.html` was removed; `pack.html?id=` shows one pack.
+**What exists now**: packs of one style for one pedalboard model (slice 3) and a cart kept in `localStorage` (`corsino:carrinho`): "Adicionar ao carrinho" on the pack page, "Carrinho (N)" in every header, `carrinho.html` with removal and total. One cart per browser; "Sair" empties it.
 
-**Completed**: T1-T10 (T8-T10 = spec revision 2, committed together) plus one round of Verifier fixes. 40 of 40 requirements `Verified`; `validate_state.py etapa05-packs` exits 0.
+**Completed**: T1-T4 plus one round of test fixes. 27 of 27 requirements `Verified`; `validate_state.py etapa05-carrinho` exits 0.
 
-**Test suite**: 233 passing. `npx playwright test`. Run `npm run api:reset` on an old checkout so `mock/db.json` gets the new packs.
+**Test suite**: 272 passing. `npx playwright test`. The machine was slower on 2026-11-09 (full suite 1.5-2.5 min).
 
-**Next step**: slice 4 of the store plan, the cart (`servicos/carrinho.js`, "Adicionar ao carrinho" on the pack page, counter in the header, `carrinho.html`). `docs/etapa-05.md` still describes slices 1-2 only; update it if the stage report should mention packs.
+**Next step**: slice 5, checkout and order ("Finalizar compra" on the cart page, login required, simulated card payment, `POST /pedidos` with `packIds`, approved/declined screen, cart emptied only when approved). Then slice 6 (library with downloads) and slice 7 (documentation).
 
 **Blockers**: none.
 
 **Watch out for**:
-- Verifier speed: run each mutant only against the spec files that cover the mutated module (agreed with the user); a round took ~15 min this way.
-- Lesson L-003 (sample data must tell sort rules apart) is now confirmed; L-011 and L-012 are new candidates (an "any element" rule needs two instances; re-check documentation criteria after a spec revision).
-- Playwright reuses servers already on :8080/:3000 outside CI.
-- `docs/proposta.md` still describes free presets (recorded in the plan as a follow-up).
+- Open UX choice for the user: a double click on "Adicionar ao carrinho" stores the pack once, but the second click follows the "No carrinho" link to the cart page.
+- The cart icon is the Lucide "shopping-cart" placeholder; the user may bring their own SVG (same `viewBox 0 0 24 24`, `currentColor`, stroke 2), in the six HTML files.
+- Dev servers (`npm run api`, `python3 -m http.server 8080`) occupy ports 3000/8080; stop them before a Verifier run (its scratch tree starts its own servers with `CI=1`).
+- Lessons: L-002 and L-003 confirmed; candidates L-011 to L-018 (see `.specs/LESSONS.md`).
+- `docs/proposta.md` still describes free presets; `docs/etapa-05.md` covers slices 1-2 only.

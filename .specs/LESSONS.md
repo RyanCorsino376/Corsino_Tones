@@ -8,6 +8,12 @@
 
 Corroborated across multiple features. Safe to apply as guidance.
 
+### L-002 - When a spec fixes an anchored regex, include a rejection sample that embeds a valid match inside invalid text.
+- signal: `surviving_mutant` · recurrence: 2 feature(s) · scope: `tests` · harmful: 0
+- features: etapa04-interatividade, etapa05-carrinho
+- evidence: V02 frontend/login.js:42 (tests) (+2 more)
+- last seen: 2026-11-09T17:35:07Z
+
 ### L-003 - A locale-collation requirement needs sample data whose order differs between code-point and locale comparison.
 - signal: `spec_precision_gap` · recurrence: 2 feature(s) · scope: `tests` · harmful: 0
 - features: etapa04-interatividade, etapa05-packs
@@ -23,12 +29,6 @@ Seen once or not yet corroborated. Tracked, not trusted.
 - features: etapa04-interatividade
 - evidence: M14 frontend/presets.js:54 (tests)
 - last seen: 2026-09-27T15:34:56Z
-
-### L-002 - When a spec fixes an anchored regex, include a rejection sample that embeds a valid match inside invalid text.
-- signal: `surviving_mutant` · recurrence: 1 feature(s) · scope: `tests` · harmful: 0
-- features: etapa04-interatividade
-- evidence: V02 frontend/login.js:42 (tests) (+1 more)
-- last seen: 2026-09-27T16:00:23Z
 
 ### L-004 - If a requirement names the message language, either assert a language marker or drop the language from the AC.
 - signal: `spec_precision_gap` · recurrence: 1 feature(s) · scope: `spec` · harmful: 0
@@ -83,6 +83,42 @@ Seen once or not yet corroborated. Tracked, not trusted.
 - features: etapa05-packs
 - evidence: FIX-03 README.md:4 (spec)
 - last seen: 2026-11-06T19:23:49Z
+
+### L-013 - For a criterion that says a page shows an element, assert toBeVisible on every page in the list; toHaveText also passes on display:none.
+- signal: `surviving_mutant` · recurrence: 1 feature(s) · scope: `tests` · harmful: 0
+- features: etapa05-carrinho
+- evidence: M23b frontend/login.html:23 (HDR-01) (tests)
+- last seen: 2026-11-09T17:35:07Z
+
+### L-014 - Assert per-item values with fixture data whose values differ per item; uniform seed values hide which item a value came from.
+- signal: `surviving_mutant` · recurrence: 1 feature(s) · scope: `tests` · harmful: 0
+- features: etapa05-carrinho
+- evidence: M29 frontend/paginas/carrinho.js:36 (PAGC-01) (tests)
+- last seen: 2026-11-09T17:35:07Z
+
+### L-015 - Assert stored state right after the operation under test, before a later write can normalize it.
+- signal: `surviving_mutant` · recurrence: 1 feature(s) · scope: `tests` · harmful: 0
+- features: etapa05-carrinho
+- evidence: M01 frontend/servicos/carrinho.js:38 (CAR-02) (tests)
+- last seen: 2026-11-09T17:35:07Z
+
+### L-016 - Test a data-normalization edge case at the user-visible surface too, not only in the service that normalizes.
+- signal: `surviving_mutant` · recurrence: 1 feature(s) · scope: `tests` · harmful: 0
+- features: etapa05-carrinho
+- evidence: M30 frontend/ui/cabecalho.js:9 (EDGE-03) (tests)
+- last seen: 2026-11-09T17:35:07Z
+
+### L-017 - When a new page joins a cross-page criterion, add it to the same parametrized test instead of a weaker separate check.
+- signal: `surviving_mutant` · recurrence: 1 feature(s) · scope: `tests` · harmful: 0
+- features: etapa05-carrinho
+- evidence: M24 frontend/carrinho.html:23 (HDR-01) (tests)
+- last seen: 2026-11-09T17:35:07Z
+
+### L-018 - Keep implementation-only constraints the UI cannot observe (such as integer-cent arithmetic) in design, not in acceptance criteria.
+- signal: `spec_precision_gap` · recurrence: 1 feature(s) · scope: `spec` · harmful: 0
+- features: etapa05-carrinho
+- evidence: PAGC-02 / M15 frontend/paginas/carrinho.js:63 (spec)
+- last seen: 2026-11-09T17:35:07Z
 
 ## Quarantined (failed when applied - ignore)
 

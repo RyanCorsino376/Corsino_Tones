@@ -10,7 +10,7 @@ Implement these tasks with the `tlc-spec-driven` skill: **activate it by name an
 
 **Spec**: `.specs/features/etapa05-carrinho/spec.md`
 **Design**: `.specs/features/etapa05-carrinho/design.md`
-**Status**: Done (pending Verifier iteration 2)
+**Status**: Done (Verifier PASS, iteration 2)
 
 ### Existing tests changed
 
@@ -260,4 +260,4 @@ The first Verifier run returned FAIL with no production defect: 31 mutants, 23 k
 | EDGE-03: header counting raw ids passed | M30 | A hand-edited duplicate must read "Carrinho (1)" in the header |
 | Comment in `paginas/pack.js` said a second click "has nothing to hit" | - | Comment corrected: the second click follows the "No carrinho" link |
 
-PAGC-02's "computed in integer cents" is not observable in the UI (Verifier note; lesson L-018 candidate) and is left to the design. Each survivor was re-applied in the real files and now fails its test (M05: 2 failures, the others 1 each); the files were restored. Test count: 273 passing.
+PAGC-02's "computed in integer cents" is not observable in the UI (Verifier note; lesson L-018 candidate) and is left to the design. Each survivor was re-applied in the real files and now fails its test (M05: 2 failures, the others 1 each); the files were restored. Test count: 272 passing (268 + 4).

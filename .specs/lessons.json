@@ -3,7 +3,7 @@
   "promote_threshold": 2,
   "window_days": 45,
   "quarantine_threshold": 2,
-  "next_id": 13,
+  "next_id": 19,
   "lessons": [
     {
       "id": "L-001",
@@ -29,18 +29,20 @@
       "text": "When a spec fixes an anchored regex, include a rejection sample that embeds a valid match inside invalid text.",
       "signal": "surviving_mutant",
       "scope": "tests",
-      "status": "candidate",
+      "status": "confirmed",
       "features": [
-        "etapa04-interatividade"
+        "etapa04-interatividade",
+        "etapa05-carrinho"
       ],
-      "recurrence": 1,
+      "recurrence": 2,
       "harmful": 0,
       "evidence": [
         "V02 frontend/login.js:42 (tests)",
-        "V02b frontend/login.js:42 (tests) (tests)"
+        "V02b frontend/login.js:42 (tests) (tests)",
+        "M05 frontend/servicos/carrinho.js:8 (CAR-03) (tests)"
       ],
       "created": "2026-09-27T15:34:56Z",
-      "last_seen": "2026-09-27T16:00:23Z"
+      "last_seen": "2026-11-09T17:35:07Z"
     },
     {
       "id": "L-003",
@@ -223,6 +225,114 @@
       ],
       "created": "2026-11-06T19:23:49Z",
       "last_seen": "2026-11-06T19:23:49Z"
+    },
+    {
+      "id": "L-013",
+      "key": "surviving_mutant::for a criterion that says a page shows an element assert tobevisible on every page in the list tohavetext also passes on display none",
+      "text": "For a criterion that says a page shows an element, assert toBeVisible on every page in the list; toHaveText also passes on display:none.",
+      "signal": "surviving_mutant",
+      "scope": "tests",
+      "status": "candidate",
+      "features": [
+        "etapa05-carrinho"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "M23b frontend/login.html:23 (HDR-01) (tests)"
+      ],
+      "created": "2026-11-09T17:35:07Z",
+      "last_seen": "2026-11-09T17:35:07Z"
+    },
+    {
+      "id": "L-014",
+      "key": "surviving_mutant::assert per item values with fixture data whose values differ per item uniform seed values hide which item a value came from",
+      "text": "Assert per-item values with fixture data whose values differ per item; uniform seed values hide which item a value came from.",
+      "signal": "surviving_mutant",
+      "scope": "tests",
+      "status": "candidate",
+      "features": [
+        "etapa05-carrinho"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "M29 frontend/paginas/carrinho.js:36 (PAGC-01) (tests)"
+      ],
+      "created": "2026-11-09T17:35:07Z",
+      "last_seen": "2026-11-09T17:35:07Z"
+    },
+    {
+      "id": "L-015",
+      "key": "surviving_mutant::assert stored state right after the operation under test before a later write can normalize it",
+      "text": "Assert stored state right after the operation under test, before a later write can normalize it.",
+      "signal": "surviving_mutant",
+      "scope": "tests",
+      "status": "candidate",
+      "features": [
+        "etapa05-carrinho"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "M01 frontend/servicos/carrinho.js:38 (CAR-02) (tests)"
+      ],
+      "created": "2026-11-09T17:35:07Z",
+      "last_seen": "2026-11-09T17:35:07Z"
+    },
+    {
+      "id": "L-016",
+      "key": "surviving_mutant::test a data normalization edge case at the user visible surface too not only in the service that normalizes",
+      "text": "Test a data-normalization edge case at the user-visible surface too, not only in the service that normalizes.",
+      "signal": "surviving_mutant",
+      "scope": "tests",
+      "status": "candidate",
+      "features": [
+        "etapa05-carrinho"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "M30 frontend/ui/cabecalho.js:9 (EDGE-03) (tests)"
+      ],
+      "created": "2026-11-09T17:35:07Z",
+      "last_seen": "2026-11-09T17:35:07Z"
+    },
+    {
+      "id": "L-017",
+      "key": "surviving_mutant::when a new page joins a cross page criterion add it to the same parametrized test instead of a weaker separate check",
+      "text": "When a new page joins a cross-page criterion, add it to the same parametrized test instead of a weaker separate check.",
+      "signal": "surviving_mutant",
+      "scope": "tests",
+      "status": "candidate",
+      "features": [
+        "etapa05-carrinho"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "M24 frontend/carrinho.html:23 (HDR-01) (tests)"
+      ],
+      "created": "2026-11-09T17:35:07Z",
+      "last_seen": "2026-11-09T17:35:07Z"
+    },
+    {
+      "id": "L-018",
+      "key": "spec_precision_gap::keep implementation only constraints the ui cannot observe such as integer cent arithmetic in design not in acceptance criteria",
+      "text": "Keep implementation-only constraints the UI cannot observe (such as integer-cent arithmetic) in design, not in acceptance criteria.",
+      "signal": "spec_precision_gap",
+      "scope": "spec",
+      "status": "candidate",
+      "features": [
+        "etapa05-carrinho"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "PAGC-02 / M15 frontend/paginas/carrinho.js:63 (spec)"
+      ],
+      "created": "2026-11-09T17:35:07Z",
+      "last_seen": "2026-11-09T17:35:07Z"
     }
   ]
 }

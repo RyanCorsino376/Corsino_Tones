@@ -159,39 +159,39 @@ The store shows packs and prices (slice 3) but a visitor cannot pick anything to
 
 | Requirement ID | Story | Phase | Status |
 | -------------- | ----- | ----- | ------ |
-| CAR-01 | P1: Cart storage | Tasks | Implementing |
-| CAR-02 | P1: Cart storage | Tasks | Implementing |
-| CAR-03 | P1: Cart storage | Tasks | Implementing |
-| CAR-04 | P1: Cart storage | Tasks | Implementing |
-| ADD-01 | P1: Add to cart on the pack page | Tasks | Implementing |
-| ADD-02 | P1: Add to cart on the pack page | Tasks | Implementing |
-| ADD-03 | P1: Add to cart on the pack page | Tasks | Implementing |
-| ADD-04 | P1: Add to cart on the pack page | Tasks | Implementing |
-| ADD-05 | P1: Add to cart on the pack page | Tasks | Implementing |
-| HDR-01 | P1: Cart link in the header | Tasks | Implementing |
-| HDR-02 | P1: Cart link in the header | Tasks | Implementing |
-| HDR-03 | P1: Cart link in the header | Tasks | Implementing |
-| HDR-04 | P1: Cart link in the header | Tasks | Implementing |
-| HDR-05 | P1: Cart link in the header | Tasks | Implementing |
-| PAGC-01 | P1: Cart page | Tasks | Implementing |
-| PAGC-02 | P1: Cart page | Tasks | Implementing |
-| PAGC-03 | P1: Cart page | Tasks | Implementing |
-| PAGC-04 | P1: Cart page | Tasks | Implementing |
-| PAGC-05 | P1: Cart page | Tasks | Implementing |
-| PAGC-06 | P1: Cart page | Tasks | Implementing |
-| PAGC-07 | P1: Cart page | Tasks | Implementing |
-| PAGC-08 | P1: Cart page | Tasks | Implementing |
-| REG-01 | P1: Existing behaviour preserved | Tasks | Implementing |
-| REG-02 | P1: Existing behaviour preserved | Tasks | Implementing |
-| EDGE-01 | Edge cases | Tasks | Implementing |
-| EDGE-02 | Edge cases | Tasks | Implementing |
-| EDGE-03 | Edge cases | Tasks | Implementing |
+| CAR-01 | P1: Cart storage | Tasks | Verified |
+| CAR-02 | P1: Cart storage | Tasks | Verified |
+| CAR-03 | P1: Cart storage | Tasks | Verified |
+| CAR-04 | P1: Cart storage | Tasks | Verified |
+| ADD-01 | P1: Add to cart on the pack page | Tasks | Verified |
+| ADD-02 | P1: Add to cart on the pack page | Tasks | Verified |
+| ADD-03 | P1: Add to cart on the pack page | Tasks | Verified |
+| ADD-04 | P1: Add to cart on the pack page | Tasks | Verified |
+| ADD-05 | P1: Add to cart on the pack page | Tasks | Verified |
+| HDR-01 | P1: Cart link in the header | Tasks | Verified |
+| HDR-02 | P1: Cart link in the header | Tasks | Verified |
+| HDR-03 | P1: Cart link in the header | Tasks | Verified |
+| HDR-04 | P1: Cart link in the header | Tasks | Verified |
+| HDR-05 | P1: Cart link in the header | Tasks | Verified |
+| PAGC-01 | P1: Cart page | Tasks | Verified |
+| PAGC-02 | P1: Cart page | Tasks | Verified |
+| PAGC-03 | P1: Cart page | Tasks | Verified |
+| PAGC-04 | P1: Cart page | Tasks | Verified |
+| PAGC-05 | P1: Cart page | Tasks | Verified |
+| PAGC-06 | P1: Cart page | Tasks | Verified |
+| PAGC-07 | P1: Cart page | Tasks | Verified |
+| PAGC-08 | P1: Cart page | Tasks | Verified |
+| REG-01 | P1: Existing behaviour preserved | Tasks | Verified |
+| REG-02 | P1: Existing behaviour preserved | Tasks | Verified |
+| EDGE-01 | Edge cases | Tasks | Verified |
+| EDGE-02 | Edge cases | Tasks | Verified |
+| EDGE-03 | Edge cases | Tasks | Verified |
 
 **ID format:** `[CATEGORY]-[NUMBER]`. `REG-*` and `EDGE-*` are scoped to this feature.
 
 **Status values:** Pending -> In Design -> In Tasks -> Implementing -> Verified
 
-**Coverage:** 27 total, 0 mapped to tasks, 27 unmapped (tasks not written yet)
+**Coverage:** 27 total, 27 mapped to tasks (see `tasks.md`), 0 unmapped
 
 ---
 
