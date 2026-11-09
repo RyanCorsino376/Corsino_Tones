@@ -137,16 +137,20 @@ Test count: 283 (281 + 2). The absence test first passed before the code (lesson
 
 **Done when**:
 
-- [ ] Signed out: pop-up "Faça login para finalizar a compra", no form, no request, URL unchanged after 60 s of fake clock and no `meta refresh` (lessons L-009/L-010); "Fazer login" → `login.html?voltar=checkout.html`; "Voltar" and Esc → `carrinho.html`; signing in lands on `checkout.html` with the cart intact -> `tests/checkout.spec.js`
-- [ ] Signed in, two packs: `GET /packs`, both listed in cart order with prices, "Total: R$ 99,80"; the form is visible with "Pagar R$ 99,80"
-- [ ] Empty cart: empty state, no form, no request
-- [ ] Unknown pack id: removed with the notice
-- [ ] Held request: "Carregando carrinho...", no form; aborted: error + retry, no form
-- [ ] Full gate passes; test count reported
+- [x] Signed out: pop-up "Faça login para finalizar a compra", no form, no request, URL unchanged after 60 s of fake clock and no `meta refresh` (lessons L-009/L-010); "Fazer login" → `login.html?voltar=checkout.html`; "Voltar" and Esc → `carrinho.html`; signing in lands on `checkout.html` with the cart intact -> `tests/checkout.spec.js`
+- [x] Signed in, two packs: `GET /packs`, both listed in cart order with prices, "Total: R$ 99,80"; the form is visible with "Pagar R$ 99,80"
+- [x] Empty cart: empty state, no form, no request
+- [x] Unknown pack id: removed with the notice
+- [x] Held request: "Carregando carrinho...", no form; aborted: error + retry, no form
+- [x] Full gate passes; test count reported
 
 **Tests**: e2e
 **Gate**: full
 **Commit**: `feat(checkout): add the checkout page with login and summary`
+
+**Status**: Complete
+
+Test count: 293 (283 + 10). The signed-out test applies lessons L-009/L-010 from slice 2 (fake clock 60 s, no meta refresh); absence checks on the form first require it to exist (L-001). The form markup (four fields) lands here because the summary shows it; its validation is T4.
 
 ---
 

@@ -211,15 +211,15 @@ A visitor can fill a cart (slice 4) but cannot buy it. The plan's flow continues
 | -------------- | ----- | ----- | ------ |
 | CK-01 | P1: From the cart to the checkout | Tasks | Implementing |
 | CK-02 | P1: From the cart to the checkout | Tasks | Implementing |
-| ACC-01 | P1: Checkout requires a session | Specify | Pending |
-| ACC-02 | P1: Checkout requires a session | Specify | Pending |
-| ACC-03 | P1: Checkout requires a session | Specify | Pending |
-| ACC-04 | P1: Checkout requires a session | Specify | Pending |
-| RES-01 | P1: Order summary | Specify | Pending |
-| RES-02 | P1: Order summary | Specify | Pending |
-| RES-03 | P1: Order summary | Specify | Pending |
-| RES-04 | P1: Order summary | Specify | Pending |
-| RES-05 | P1: Order summary | Specify | Pending |
+| ACC-01 | P1: Checkout requires a session | Tasks | Implementing |
+| ACC-02 | P1: Checkout requires a session | Tasks | Implementing |
+| ACC-03 | P1: Checkout requires a session | Tasks | Implementing |
+| ACC-04 | P1: Checkout requires a session | Tasks | Implementing |
+| RES-01 | P1: Order summary | Tasks | Implementing |
+| RES-02 | P1: Order summary | Tasks | Implementing |
+| RES-03 | P1: Order summary | Tasks | Implementing |
+| RES-04 | P1: Order summary | Tasks | Implementing |
+| RES-05 | P1: Order summary | Tasks | Implementing |
 | FORM-01 | P1: Card form validation | Specify | Pending |
 | FORM-02 | P1: Card form validation | Specify | Pending |
 | FORM-03 | P1: Card form validation | Specify | Pending |
@@ -238,7 +238,7 @@ A visitor can fill a cart (slice 4) but cannot buy it. The plan's flow continues
 | OK-02 | P1: Purchase confirmation | Specify | Pending |
 | OK-03 | P1: Purchase confirmation | Specify | Pending |
 | OK-04 | P1: Purchase confirmation | Specify | Pending |
-| REG-01 | P1: Existing behaviour preserved | Specify | Pending |
+| REG-01 | P1: Existing behaviour preserved | Tasks | Implementing |
 | EDGE-01 | Edge cases | Specify | Pending |
 | EDGE-02 | Edge cases | Tasks | Implementing |
 | EDGE-03 | Edge cases | Tasks | Implementing |

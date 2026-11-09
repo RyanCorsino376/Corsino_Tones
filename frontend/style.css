@@ -220,6 +220,72 @@ input:focus-visible{
     text-decoration: none;
 }
 
+/*------------- Checkout ----------------------------------------------*/
+
+.checkout-resumo[hidden],
+.form-pagamento[hidden],
+.checkout-confirmacao[hidden]{
+    display: none;
+}
+
+.itens-checkout{
+    display: grid;
+    gap: 8px;
+    margin: 12px 0;
+    padding: 0;
+    list-style: none;
+}
+
+.itens-checkout li{
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 12px 16px;
+    background-color: var(--bg-card);
+}
+
+.form-pagamento{
+    display: grid;
+    gap: 16px;
+    max-width: 420px;
+    margin-top: 32px;
+}
+
+.form-pagamento fieldset{
+    display: grid;
+    gap: 6px;
+    margin: 0;
+    padding: 0;
+    border: 0;
+}
+
+.form-pagamento input{
+    min-height: 36px;
+    padding: 0 10px;
+    font-family: inherit;
+    font-size: medium;
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    color: var(--text-primary);
+}
+
+.campos-lado-a-lado{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+.botao-pagar{
+    min-height: 44px;
+    font-size: large;
+}
+
+.aviso-teste{
+    margin: 0;
+    color: var(--text-secondary);
+    font-size: small;
+}
+
 /*------------- Pop-up de login ---------------------------------------*/
 
 .aviso-login{
