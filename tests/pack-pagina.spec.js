@@ -149,3 +149,82 @@ test.describe('etapa05-packs T5 - pack page', () => {
     await expect(page.getByText('Olá, Ryan', { exact: true })).toBeVisible();
   });
 });
+
+// Tests derive from .specs/features/etapa05-biblioteca/spec.md: OWN-01..04, REG-02.
+test.describe('etapa05-biblioteca T4 - "Na biblioteca" (R2)', () => {
+  const COMPRADO = 'rock-boss-gt-1000';
+  const OUTRO = 'metal-nux-mg-30';
+  const novoUsuario = () => 10000000 + Math.floor(Math.random() * 900000000);
+  const sessaoDe = (id) => JSON.stringify({ id, nome: `Usuário ${id}`, email: `u${id}@exemplo.com` });
+  const comprar = (request, usuarioId, packIds, status = 'pago') =>
+    request.post(`${API}/pedidos`, { data: { usuarioId, packIds, totalCentavos: 0, status, criadoEm: '2026-11-01T10:00:00.000Z' } });
+  const entrarComo = async (page, id) => {
+    await page.goto('login.html');
+    await page.evaluate((s) => sessionStorage.setItem('corsino:sessao', s), sessaoDe(id));
+  };
+  const adicionar = (page) => page.getByRole('button', { name: 'Adicionar ao carrinho' });
+  const naBiblioteca = (page) => page.getByRole('link', { name: 'Na biblioteca' });
+
+  // OWN-01
+  test('quem já comprou o pack vê "Na biblioteca" e não vê "Adicionar ao carrinho"; outro pack segue à venda', async ({ page, request }) => {
+    const eu = novoUsuario();
+    await comprar(request, eu, [COMPRADO]);
+    await entrarComo(page, eu);
+
+    await page.goto(`pack.html?id=${COMPRADO}`);
+    await expect(naBiblioteca(page)).toHaveAttribute('href', 'biblioteca.html');
+    await expect(adicionar(page)).toHaveCount(0);
+
+    await page.goto(`pack.html?id=${OUTRO}`);
+    await expect(adicionar(page)).toBeVisible();
+    await expect(naBiblioteca(page)).toHaveCount(0);
+  });
+
+  // OWN-02 (and the status guard behind it)
+  test('um pack comprado só por outro usuário, ou em pedido não pago, segue com "Adicionar ao carrinho"', async ({ page, request }) => {
+    const eu = novoUsuario();
+    await comprar(request, novoUsuario(), [OUTRO]);
+    await comprar(request, eu, [OUTRO], 'pendente');
+    await entrarComo(page, eu);
+
+    await page.goto(`pack.html?id=${OUTRO}`);
+    await expect(adicionar(page)).toBeVisible();
+    await expect(naBiblioteca(page)).toHaveCount(0);
+  });
+
+  // OWN-03
+  test('sem sessão: botão de adicionar e nenhuma requisição a /pedidos', async ({ page }) => {
+    await page.goto('login.html');
+    await page.evaluate(() => sessionStorage.clear());
+    const pedidos = [];
+    page.on('request', (req) => { if (req.url().startsWith(`${API}/pedidos`)) pedidos.push(req.url()); });
+
+    await page.goto(`pack.html?id=${COMPRADO}`);
+    await expect(adicionar(page)).toBeVisible();
+    expect(pedidos).toEqual([]);
+  });
+
+  // OWN-04
+  test('se a leitura dos pedidos falha, a página mostra o pack com "Adicionar ao carrinho"', async ({ page, request }) => {
+    const eu = novoUsuario();
+    await comprar(request, eu, [COMPRADO]);
+    await entrarComo(page, eu);
+    await page.route(/127\.0\.0\.1:3000\/pedidos/, (route) => route.abort());
+
+    await page.goto(`pack.html?id=${COMPRADO}`);
+    await expect(page.locator('h1')).not.toHaveText('');
+    await expect(adicionar(page)).toBeVisible();
+    await expect(page.getByText(MENSAGEM_ERRO)).toHaveCount(0);
+  });
+
+  // REG-02
+  test('um pack no carrinho que não foi comprado ainda mostra "No carrinho"', async ({ page }) => {
+    await entrarComo(page, novoUsuario());
+    await page.evaluate((id) => localStorage.setItem('corsino:carrinho', JSON.stringify([id])), OUTRO);
+
+    await page.goto(`pack.html?id=${OUTRO}`);
+    await expect(page.getByRole('link', { name: 'No carrinho' })).toHaveAttribute('href', 'carrinho.html');
+    await expect(adicionar(page)).toHaveCount(0);
+    await expect(naBiblioteca(page)).toHaveCount(0);
+  });
+});

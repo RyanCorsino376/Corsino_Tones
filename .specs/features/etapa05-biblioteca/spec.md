@@ -134,27 +134,27 @@ A purchase ends with "Ir para a biblioteca", but the library is still an empty p
 
 | Requirement ID | Story | Phase | Status |
 | -------------- | ----- | ----- | ------ |
-| LIB-01 | P1: Library of bought packs | Tasks | Pending |
-| LIB-02 | P1: Library of bought packs | Tasks | Pending |
-| LIB-03 | P1: Library of bought packs | Tasks | Pending |
-| LIB-04 | P1: Library of bought packs | Tasks | Pending |
-| LIB-05 | P1: Library of bought packs | Tasks | Pending |
-| LIB-06 | P1: Library of bought packs | Tasks | Pending |
-| LIB-07 | P1: Library of bought packs | Tasks | Pending |
-| LIB-08 | P1: Library of bought packs | Tasks | Pending |
-| LIB-09 | P1: Library of bought packs | Tasks | Pending |
-| DL-01 | P1: Download of each preset | Tasks | Pending |
-| DL-02 | P1: Download of each preset | Tasks | Pending |
-| DL-03 | P1: Download of each preset | Tasks | Pending |
-| DL-04 | P1: Download of each preset | Tasks | Pending |
-| OWN-01 | P1: A bought pack is not sold again | Tasks | Pending |
-| OWN-02 | P1: A bought pack is not sold again | Tasks | Pending |
-| OWN-03 | P1: A bought pack is not sold again | Tasks | Pending |
-| OWN-04 | P1: A bought pack is not sold again | Tasks | Pending |
-| REG-01 | P1: Existing behaviour kept | Tasks | Pending |
-| REG-02 | P1: Existing behaviour kept | Tasks | Pending |
+| LIB-01 | P1: Library of bought packs | Tasks | Implementing |
+| LIB-02 | P1: Library of bought packs | Tasks | Implementing |
+| LIB-03 | P1: Library of bought packs | Tasks | Implementing |
+| LIB-04 | P1: Library of bought packs | Tasks | Implementing |
+| LIB-05 | P1: Library of bought packs | Tasks | Implementing |
+| LIB-06 | P1: Library of bought packs | Tasks | Implementing |
+| LIB-07 | P1: Library of bought packs | Tasks | Implementing |
+| LIB-08 | P1: Library of bought packs | Tasks | Implementing |
+| LIB-09 | P1: Library of bought packs | Tasks | Implementing |
+| DL-01 | P1: Download of each preset | Tasks | Implementing |
+| DL-02 | P1: Download of each preset | Tasks | Implementing |
+| DL-03 | P1: Download of each preset | Tasks | Implementing |
+| DL-04 | P1: Download of each preset | Tasks | Implementing |
+| OWN-01 | P1: A bought pack is not sold again | Tasks | Implementing |
+| OWN-02 | P1: A bought pack is not sold again | Tasks | Implementing |
+| OWN-03 | P1: A bought pack is not sold again | Tasks | Implementing |
+| OWN-04 | P1: A bought pack is not sold again | Tasks | Implementing |
+| REG-01 | P1: Existing behaviour kept | Tasks | Implementing |
+| REG-02 | P1: Existing behaviour kept | Tasks | Implementing |
 
-**Coverage:** 19 total, 0 mapped to tasks yet.
+**Coverage:** 19 total, 19 mapped to tasks.
 
 ---
 

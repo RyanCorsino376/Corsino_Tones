@@ -3,7 +3,9 @@
 // listed, not shown as cards: they are not sold alone.
 import { buscarPack } from '../api/packs.js';
 import { listarPresetsDoPack } from '../api/presets.js';
+import { idsComprados } from '../servicos/biblioteca.js';
 import { adicionarAoCarrinho, estaNoCarrinho } from '../servicos/carrinho.js';
+import { usuarioAtual } from '../servicos/sessao.js';
 import { atualizarCabecalho, atualizarContadorCarrinho } from '../ui/cabecalho.js';
 import { carregarComEstado } from '../ui/estado.js';
 import { formatarPreco, ROTULOS } from '../ui/formato.js';
@@ -39,9 +41,32 @@ function criarItem(preset) {
     return item;
 }
 
-/** "No carrinho" link when the pack is in the cart, otherwise the add button. */
-function mostrarAcaoCarrinho(id) {
+/**
+ * Whether the signed-in user already bought the pack (plan R2). A signed-out
+ * visitor owns nothing, so no request is made. If the orders cannot be read the
+ * page still works: the library, not this page, is what proves ownership.
+ */
+async function jaComprou(id) {
+    const usuario = usuarioAtual();
+    if (!usuario) return false;
+    try {
+        return (await idsComprados(usuario.id)).has(id);
+    } catch {
+        return false;
+    }
+}
+
+/** "Na biblioteca" if bought, "No carrinho" if in the cart, otherwise the add button. */
+function mostrarAcaoCarrinho(id, comprado) {
     const acao = topo.querySelector('.pack-acao');
+    if (comprado) {
+        const link = document.createElement('a');
+        link.href = 'biblioteca.html';
+        link.className = 'botao-no-carrinho';
+        link.textContent = 'Na biblioteca';
+        acao.replaceChildren(link);
+        return;
+    }
     if (estaNoCarrinho(id)) {
         const link = document.createElement('a');
         link.href = 'carrinho.html';
@@ -58,21 +83,21 @@ function mostrarAcaoCarrinho(id) {
         adicionarAoCarrinho(id);
         // The button is replaced at once by the "No carrinho" link, so the pack
         // is stored once. A second click of a double click follows that link.
-        mostrarAcaoCarrinho(id);
+        mostrarAcaoCarrinho(id, false);
         topo.querySelector('.pack-aviso').textContent = 'Pack adicionado ao carrinho.';
         atualizarContadorCarrinho();
     });
     acao.replaceChildren(botao);
 }
 
-function mostrarPack(pack, presets) {
+function mostrarPack(pack, presets, comprado) {
     document.title = `${pack.nome} | CorsinoTones`;
     topo.querySelector('h1').textContent = pack.nome;
     topo.querySelector('.pack-quantidade').textContent = presets.length === 1 ? '1 preset' : `${presets.length} presets`;
     topo.querySelector('.pack-descricao').textContent = pack.descricao;
     topo.querySelector('.pack-preco').textContent = formatarPreco(pack.precoCentavos);
     conteudo.querySelector('.pack-presets').replaceChildren(...presets.map(criarItem));
-    mostrarAcaoCarrinho(pack.id);
+    mostrarAcaoCarrinho(pack.id, comprado);
     topo.hidden = false;
     conteudo.hidden = false;
 }
@@ -84,11 +109,11 @@ if (id === null || !ID_VALIDO.test(id)) {
 } else {
     carregarComEstado({
         alvo,
-        // Both reads start at once; the pack page needs the two.
-        buscar: () => Promise.all([buscarPack(id), listarPresetsDoPack(id)]),
-        aoCarregar([pack, presets]) {
+        // The reads start at once; the page needs all of them.
+        buscar: () => Promise.all([buscarPack(id), listarPresetsDoPack(id), jaComprou(id)]),
+        aoCarregar([pack, presets, comprado]) {
             if (pack === null) mostrarNaoEncontrado();
-            else mostrarPack(pack, presets);
+            else mostrarPack(pack, presets, comprado);
         },
         mensagens: {
             carregando: 'Carregando pack...',

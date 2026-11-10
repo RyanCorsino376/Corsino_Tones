@@ -10,7 +10,7 @@ Implement these tasks with the `tlc-spec-driven` skill: **activate it by name an
 
 **Spec**: `.specs/features/etapa05-biblioteca/spec.md`
 **Design**: none (inline: the change reuses `api/`, `servicos/catalogo.js`, `ui/estado.js`; see Design notes)
-**Status**: In progress (T1-T3 complete)
+**Status**: Done (pending Verifier)
 
 ### Design notes (inline)
 
@@ -184,16 +184,20 @@ Test count: 322 (319 + 3). Mutants (file name, `packId` missing from the JSON, b
 
 **Done when**:
 
-- [ ] Signed in as a user with a paid order of pack A: A shows "Na biblioteca" -> `biblioteca.html` and no "Adicionar ao carrinho"; pack B shows the add button
-- [ ] A pack bought only by another user shows "Adicionar ao carrinho"
-- [ ] Signed out: add button and no request to `/pedidos`
-- [ ] Orders request aborted: the pack and "Adicionar ao carrinho" still show
-- [ ] A pack in the cart that was not bought still shows "No carrinho" (existing tests pass unchanged)
-- [ ] Full gate passes; test count reported
+- [x] Signed in as a user with a paid order of pack A: A shows "Na biblioteca" -> `biblioteca.html` and no "Adicionar ao carrinho"; pack B shows the add button
+- [x] A pack bought only by another user shows "Adicionar ao carrinho"
+- [x] Signed out: add button and no request to `/pedidos`
+- [x] Orders request aborted: the pack and "Adicionar ao carrinho" still show
+- [x] A pack in the cart that was not bought still shows "No carrinho" (existing tests pass unchanged)
+- [x] Full gate passes; test count reported
 
 **Tests**: e2e
 **Gate**: full
 **Commit**: `feat(pack): show "Na biblioteca" for a pack already bought`
+
+**Status**: Complete
+
+Test count: 327 (322 + 5). Mutants (no session guard, a fixed user id, the failure rethrown, the "Na biblioteca" branch removed or forced, `status=pago` dropped from the URL) each fail a test, except the removal of the `!usuario` guard: that one is equivalent, because `usuario.id` throws, the `catch` returns false and no request is sent either way.
 
 ---
 
