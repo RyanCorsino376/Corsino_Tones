@@ -64,23 +64,18 @@ Rejected: keeping classic scripts with `window.*` globals, which hide dependenci
 
 ## Handoff
 
-**Feature**: `etapa05-carrinho` (slice 4 of `.specs/features/etapa05-loja/plano.md`); slices 1-3 done
-**Branch**: `feat/etapa05-loja`, not pushed (push/PR not authorized yet)
-**Phase**: Execute complete; Verifier PASS on iteration 2 (iteration 1: six weak tests, no code defect, all fixed)
+**Feature**: `etapa05-checkout` (slice 5); slices 1-4 done and verified
+**Branch**: `feat/etapa05-loja`, not pushed
+**Phase**: Execute done (T1-T5, HEAD `99b3c60`, 303 tests); Verifier iteration 1 = FAIL, test gaps only, **fixes not started**
 
-**What exists now**: packs of one style for one pedalboard model (slice 3) and a cart kept in `localStorage` (`corsino:carrinho`): "Adicionar ao carrinho" on the pack page, "Carrinho (N)" in every header, `carrinho.html` with removal and total. One cart per browser; "Sair" empties it.
+**Next step (iteration 1 fixes, tests only, in `tests/checkout.spec.js`)** - see `.specs/features/etapa05-checkout/validation.md`:
+1. PED-01/RES-01: route `GET /packs` with distinct prices (e.g. 4990 and 2590), a non-alphabetical cart (`['rock-zoom-g6','clean-nux-mg-30']`), a signed-in user whose id is not 1; assert each summary price, the total and the order body (`usuarioId`, `packIds`, `totalCentavos`). Kills M11, M12, M14, M15, M23.
+2. OK-01: assert each confirmation `.item-preco`; create one order before the test so the new id is not 1, and assert the exact "Pedido nº {id}". Kills M18, M24.
+3. OK-03: spec wording "SHALL remove the key `corsino:carrinho`".
+Then re-apply each survivor to confirm it is killed, commit, stop the dev servers, run Verifier iteration 2, restart the servers.
 
-**Completed**: T1-T4 plus one round of test fixes. 27 of 27 requirements `Verified`; `validate_state.py etapa05-carrinho` exits 0.
+**Uncommitted**: `tasks.md` (T5 note about an ungated commit, later proven green), `validation.md`, `LESSONS.md`, `lessons.json`.
 
-**Test suite**: 272 passing. `npx playwright test`. The machine was slower on 2026-11-09 (full suite 1.5-2.5 min).
+**Dev servers**: `npm run api` and `python3 -m http.server 8080` running for the user; stop them before any Verifier run.
 
-**Next step**: slice 5, checkout and order ("Finalizar compra" on the cart page, login required, simulated card payment, `POST /pedidos` with `packIds`, approved/declined screen, cart emptied only when approved). Then slice 6 (library with downloads) and slice 7 (documentation).
-
-**Blockers**: none.
-
-**Watch out for**:
-- Open UX choice for the user: a double click on "Adicionar ao carrinho" stores the pack once, but the second click follows the "No carrinho" link to the cart page.
-- The cart icon is the Lucide "shopping-cart" placeholder; the user may bring their own SVG (same `viewBox 0 0 24 24`, `currentColor`, stroke 2), in the six HTML files.
-- Dev servers (`npm run api`, `python3 -m http.server 8080`) occupy ports 3000/8080; stop them before a Verifier run (its scratch tree starts its own servers with `CI=1`).
-- Lessons: L-002 and L-003 confirmed; candidates L-011 to L-018 (see `.specs/LESSONS.md`).
-- `docs/proposta.md` still describes free presets; `docs/etapa-05.md` covers slices 1-2 only.
+**After slice 5**: slice 6 (library with downloads, "Na biblioteca"), slice 7 (docs: `proposta.md`, `docs/etapa-05.md`). Open UX choice: double click on "Adicionar ao carrinho" follows the "No carrinho" link.

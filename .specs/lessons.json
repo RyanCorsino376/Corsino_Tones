@@ -3,7 +3,7 @@
   "promote_threshold": 2,
   "window_days": 45,
   "quarantine_threshold": 2,
-  "next_id": 19,
+  "next_id": 22,
   "lessons": [
     {
       "id": "L-001",
@@ -250,17 +250,19 @@
       "text": "Assert per-item values with fixture data whose values differ per item; uniform seed values hide which item a value came from.",
       "signal": "surviving_mutant",
       "scope": "tests",
-      "status": "candidate",
+      "status": "confirmed",
       "features": [
-        "etapa05-carrinho"
+        "etapa05-carrinho",
+        "etapa05-checkout"
       ],
-      "recurrence": 1,
+      "recurrence": 2,
       "harmful": 0,
       "evidence": [
-        "M29 frontend/paginas/carrinho.js:36 (PAGC-01) (tests)"
+        "M29 frontend/paginas/carrinho.js:36 (PAGC-01) (tests)",
+        "M23 frontend/paginas/checkout.js:50 (RES-01); M14/M15/M11/M12 (tests)"
       ],
       "created": "2026-11-09T17:35:07Z",
-      "last_seen": "2026-11-09T17:35:07Z"
+      "last_seen": "2026-11-09T19:37:26Z"
     },
     {
       "id": "L-015",
@@ -333,6 +335,60 @@
       ],
       "created": "2026-11-09T17:35:07Z",
       "last_seen": "2026-11-09T17:35:07Z"
+    },
+    {
+      "id": "L-019",
+      "key": "surviving_mutant::when asserting a server generated id make sure the id under test cannot equal a plausible constant such as 1 create a prior record first",
+      "text": "When asserting a server-generated id, make sure the id under test cannot equal a plausible constant such as 1; create a prior record first.",
+      "signal": "surviving_mutant",
+      "scope": "tests",
+      "status": "candidate",
+      "features": [
+        "etapa05-checkout"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "M18 frontend/paginas/checkout.js:139 (OK-01) (tests)"
+      ],
+      "created": "2026-11-09T19:37:26Z",
+      "last_seen": "2026-11-09T19:37:26Z"
+    },
+    {
+      "id": "L-020",
+      "key": "surviving_mutant::when a criterion lists several attributes of each shown item assert every attribute not only the item name",
+      "text": "When a criterion lists several attributes of each shown item, assert every attribute, not only the item name.",
+      "signal": "surviving_mutant",
+      "scope": "tests",
+      "status": "candidate",
+      "features": [
+        "etapa05-checkout"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "M24 frontend/paginas/checkout.js:142 (OK-01) (tests)"
+      ],
+      "created": "2026-11-09T19:37:26Z",
+      "last_seen": "2026-11-09T19:37:26Z"
+    },
+    {
+      "id": "L-021",
+      "key": "spec_precision_gap::say whether an emptied storage key is removed or holds an empty value empty is ambiguous",
+      "text": "Say whether an emptied storage key is removed or holds an empty value; empty is ambiguous.",
+      "signal": "spec_precision_gap",
+      "scope": "spec",
+      "status": "candidate",
+      "features": [
+        "etapa05-checkout"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "OK-03 spec.md (corsino:carrinho SHALL be empty) (spec)"
+      ],
+      "created": "2026-11-09T19:37:26Z",
+      "last_seen": "2026-11-09T19:37:26Z"
     }
   ]
 }

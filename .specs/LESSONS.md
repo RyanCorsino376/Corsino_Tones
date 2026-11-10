@@ -20,6 +20,12 @@ Corroborated across multiple features. Safe to apply as guidance.
 - evidence: FILT-07 / M12 (tests) (+1 more)
 - last seen: 2026-11-06T19:23:49Z
 
+### L-014 - Assert per-item values with fixture data whose values differ per item; uniform seed values hide which item a value came from.
+- signal: `surviving_mutant` · recurrence: 2 feature(s) · scope: `tests` · harmful: 0
+- features: etapa05-carrinho, etapa05-checkout
+- evidence: M29 frontend/paginas/carrinho.js:36 (PAGC-01) (tests) (+1 more)
+- last seen: 2026-11-09T19:37:26Z
+
 ## Candidates (under observation - do NOT load as guidance yet)
 
 Seen once or not yet corroborated. Tracked, not trusted.
@@ -90,12 +96,6 @@ Seen once or not yet corroborated. Tracked, not trusted.
 - evidence: M23b frontend/login.html:23 (HDR-01) (tests)
 - last seen: 2026-11-09T17:35:07Z
 
-### L-014 - Assert per-item values with fixture data whose values differ per item; uniform seed values hide which item a value came from.
-- signal: `surviving_mutant` · recurrence: 1 feature(s) · scope: `tests` · harmful: 0
-- features: etapa05-carrinho
-- evidence: M29 frontend/paginas/carrinho.js:36 (PAGC-01) (tests)
-- last seen: 2026-11-09T17:35:07Z
-
 ### L-015 - Assert stored state right after the operation under test, before a later write can normalize it.
 - signal: `surviving_mutant` · recurrence: 1 feature(s) · scope: `tests` · harmful: 0
 - features: etapa05-carrinho
@@ -119,6 +119,24 @@ Seen once or not yet corroborated. Tracked, not trusted.
 - features: etapa05-carrinho
 - evidence: PAGC-02 / M15 frontend/paginas/carrinho.js:63 (spec)
 - last seen: 2026-11-09T17:35:07Z
+
+### L-019 - When asserting a server-generated id, make sure the id under test cannot equal a plausible constant such as 1; create a prior record first.
+- signal: `surviving_mutant` · recurrence: 1 feature(s) · scope: `tests` · harmful: 0
+- features: etapa05-checkout
+- evidence: M18 frontend/paginas/checkout.js:139 (OK-01) (tests)
+- last seen: 2026-11-09T19:37:26Z
+
+### L-020 - When a criterion lists several attributes of each shown item, assert every attribute, not only the item name.
+- signal: `surviving_mutant` · recurrence: 1 feature(s) · scope: `tests` · harmful: 0
+- features: etapa05-checkout
+- evidence: M24 frontend/paginas/checkout.js:142 (OK-01) (tests)
+- last seen: 2026-11-09T19:37:26Z
+
+### L-021 - Say whether an emptied storage key is removed or holds an empty value; empty is ambiguous.
+- signal: `spec_precision_gap` · recurrence: 1 feature(s) · scope: `spec` · harmful: 0
+- features: etapa05-checkout
+- evidence: OK-03 spec.md (corsino:carrinho SHALL be empty) (spec)
+- last seen: 2026-11-09T19:37:26Z
 
 ## Quarantined (failed when applied - ignore)
 
