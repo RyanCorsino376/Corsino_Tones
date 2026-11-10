@@ -12,10 +12,12 @@ const formatoBRL = (centavos) => new Intl.NumberFormat('pt-BR', { style: 'curren
 /** Stores the cart (and optionally a session) before the page under test opens. */
 async function preparar(page, { carrinho = [], sessao = false } = {}) {
   await page.goto('login.html');
+  // `sessao` is true (Ryan, id 1) or a session JSON string for another user.
+  const sessaoJson = sessao === true ? SESSAO_RYAN : sessao || null;
   await page.evaluate(([chave, valor, sessaoJson]) => {
     localStorage.setItem(chave, valor);
     if (sessaoJson) sessionStorage.setItem('corsino:sessao', sessaoJson);
-  }, [CHAVE_CARRINHO, JSON.stringify(carrinho), sessao ? SESSAO_RYAN : null]);
+  }, [CHAVE_CARRINHO, JSON.stringify(carrinho), sessaoJson]);
 }
 
 const finalizar = (page) => page.getByRole('link', { name: 'Finalizar compra' });
@@ -57,6 +59,23 @@ const dialogo = (page) => page.getByRole('dialog');
 async function packsPorId(page) {
   const packs = await page.request.get(`${API}/packs`).then((r) => r.json());
   return Object.fromEntries(packs.map((p) => [p.id, p]));
+}
+
+// Distinct prices (lesson L-014): the seed prices every pack at 4990, which hides
+// where a price or a total comes from.
+const PRECOS = { 'rock-zoom-g6': 4990, 'clean-nux-mg-30': 2590 };
+const OUTRA_SESSAO = '{"id":7,"nome":"Outra Pessoa","email":"outra@exemplo.com"}';
+
+/** Serves GET /packs with the PRECOS prices so every pack differs. */
+async function precosDistintos(page) {
+  await page.route(`${API}/packs`, async (route) => {
+    const resposta = await route.fetch();
+    const packs = await resposta.json();
+    await route.fulfill({
+      response: resposta,
+      json: packs.map((p) => (PRECOS[p.id] === undefined ? p : { ...p, precoCentavos: PRECOS[p.id] })),
+    });
+  });
 }
 
 test.describe('etapa05-checkout T3 - session required', () => {
@@ -121,18 +140,21 @@ test.describe('etapa05-checkout T3 - order summary', () => {
   // RES-01
   test('lista os packs na ordem do carrinho, com preço e total, e mostra o formulário com "Pagar {total}"', async ({ page }) => {
     const porId = await packsPorId(page);
-    await preparar(page, { carrinho: ['clean-nux-mg-30', 'rock-zoom-g6'], sessao: true });
+    await precosDistintos(page);
+    // Cart order is not alphabetical, so "cart order" differs from a sorted list.
+    const carrinho = ['rock-zoom-g6', 'clean-nux-mg-30'];
+    await preparar(page, { carrinho, sessao: true });
     const pedido = page.waitForRequest(`${API}/packs`);
     await page.goto('checkout.html');
     await pedido;
 
     const itens = page.locator('.itens-checkout li');
     await expect(itens).toHaveCount(2);
-    for (const [i, id] of ['clean-nux-mg-30', 'rock-zoom-g6'].entries()) {
+    for (const [i, id] of carrinho.entries()) {
       await expect(itens.nth(i)).toContainText(porId[id].nome);
-      await expect(itens.nth(i).locator('.item-preco')).toHaveText(formatoBRL(porId[id].precoCentavos));
+      await expect(itens.nth(i).locator('.item-preco')).toHaveText(formatoBRL(PRECOS[id]));
     }
-    const total = formatoBRL(porId['clean-nux-mg-30'].precoCentavos + porId['rock-zoom-g6'].precoCentavos);
+    const total = formatoBRL(PRECOS['rock-zoom-g6'] + PRECOS['clean-nux-mg-30']);
     await expect(page.locator('.checkout-resumo .total-carrinho')).toHaveText(`Total: ${total}`);
     await expect(formulario(page)).toBeVisible();
     await expect(formulario(page).locator('button[type="submit"]')).toHaveText(`Pagar ${total}`);
@@ -297,11 +319,17 @@ function gravarRequisicoes(page) {
 
 test.describe('etapa05-checkout T5 - payment, order and confirmation', () => {
   // PAY-01, PAY-02, PED-01, PED-02, OK-01..03, PAY-04
-  test('cartão válido: processa, grava um pedido exato e mostra a confirmação', async ({ page }) => {
+  test('cartão válido: processa, grava um pedido exato e mostra a confirmação', async ({ page, request }) => {
     const porId = await packsPorId(page);
-    const carrinho = ['clean-nux-mg-30', 'rock-zoom-g6'];
-    await abrirCheckout(page, carrinho);
-    const totalCentavos = carrinho.reduce((s, id) => s + porId[id].precoCentavos, 0);
+    await precosDistintos(page);
+    // An earlier order makes the new id differ from 1, so a fixed "Pedido nº 1" fails.
+    await request.post(`${API}/pedidos`, { data: { usuarioId: 99, packIds: [], totalCentavos: 0, status: 'pago', criadoEm: new Date().toISOString() } });
+    // Not alphabetical, and a user whose id is not 1.
+    const carrinho = ['rock-zoom-g6', 'clean-nux-mg-30'];
+    await preparar(page, { carrinho, sessao: OUTRA_SESSAO });
+    await page.goto('checkout.html');
+    await expect(formulario(page)).toBeVisible();
+    const totalCentavos = carrinho.reduce((s, id) => s + PRECOS[id], 0);
     const requisicoes = gravarRequisicoes(page);
     const resposta = page.waitForResponse((r) => r.url() === `${API}/pedidos` && r.request().method() === 'POST');
 
@@ -317,14 +345,20 @@ test.describe('etapa05-checkout T5 - payment, order and confirmation', () => {
     expect(posts).toHaveLength(1);
     const corpo = JSON.parse(posts[0].body);
     expect(Object.keys(corpo).sort()).toEqual(['criadoEm', 'packIds', 'status', 'totalCentavos', 'usuarioId']);
-    expect(corpo).toMatchObject({ usuarioId: 1, packIds: carrinho, totalCentavos, status: 'pago' });
+    expect(corpo).toMatchObject({ usuarioId: 7, packIds: carrinho, totalCentavos, status: 'pago' });
     expect(new Date(corpo.criadoEm).toISOString()).toBe(corpo.criadoEm);
 
     // OK-01
     const confirmacao = page.locator('.checkout-confirmacao');
     await expect(confirmacao.getByRole('heading', { name: 'Compra aprovada!' })).toBeVisible();
-    await expect(confirmacao).toContainText(`Pedido nº ${pedidoCriado.id}`);
-    for (const id of carrinho) await expect(confirmacao).toContainText(porId[id].nome);
+    expect(pedidoCriado.id).not.toBe(1);
+    await expect(confirmacao.getByText(/^Pedido nº/)).toHaveText(`Pedido nº ${pedidoCriado.id}`);
+    const itensOk = confirmacao.locator('li');
+    await expect(itensOk).toHaveCount(2);
+    for (const [i, id] of carrinho.entries()) {
+      await expect(itensOk.nth(i)).toContainText(porId[id].nome);
+      await expect(itensOk.nth(i).locator('.item-preco')).toHaveText(formatoBRL(PRECOS[id]));
+    }
     await expect(confirmacao).toContainText(`Total: ${formatoBRL(totalCentavos)}`);
     await expect(confirmacao.getByRole('link', { name: 'Ir para a biblioteca' })).toHaveAttribute('href', 'biblioteca.html');
     await expect(formulario(page)).toBeHidden();

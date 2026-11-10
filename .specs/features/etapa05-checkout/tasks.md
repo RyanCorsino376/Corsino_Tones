@@ -10,7 +10,7 @@ Implement these tasks with the `tlc-spec-driven` skill: **activate it by name an
 
 **Spec**: `.specs/features/etapa05-checkout/spec.md`
 **Design**: `.specs/features/etapa05-checkout/design.md`
-**Status**: Done (pending Verifier)
+**Status**: Done; Verifier iteration 1 FAIL (test gaps), fixes applied, iteration 2 pending
 
 ### Verifier speed and ports
 
@@ -214,9 +214,13 @@ Test count: 298 (293 + 5). The field-message helpers are copied from `paginas/lo
 
 **Status**: Complete
 
-Test count: 303 (298 + 5). Test fix during the task: the card holder name first matched the account name ("Ryan Corsino"), which is rightly in the session, so the no-card-data check failed; the test now uses a holder name that exists nowhere else. Card error messages use the field's width (the login forms cap them at 200 px), seen in a screenshot.
+Test count: 303 (298 + 5). Test fix during the task: the card holder name first matched the account name ("Ryan Corsino"), which is rightly in the session, so the no-card-data check failed; the test now uses a holder name that exists nowhere else. Card error messages use the field's width (the login forms cap them at 200 px), seen in a screenshot. Process slip: the commit ran in the same shell chain as a partial test run that had 2 load timeouts (overflow tests at 320/375 px, ~37 s each, load average 5.8); the commit was not gated. Right after, the two tests passed in isolation (7 s) and the full suite passed on the committed tree (303).
 
 ---
+
+## Fix iteration 1 (tests only)
+
+Fix 1 and Fix 2 from `validation.md` applied in `tests/checkout.spec.js`: `GET /packs` served with distinct prices (4990 and 2590), a non-alphabetical cart, a session with `usuarioId` 7, an earlier order so the new id is not 1, and assertions on each summary price, each confirmation price, the total, the order body and the exact "Pedido nº {id}". OK-03 reworded in `spec.md` ("remove the `corsino:carrinho` key"). Mutants M11, M12, M14, M15, M18, M23, M24 re-applied one at a time against `tests/checkout.spec.js`: each makes at least one test fail (production file restored, no diff). Suite of the file: 22 passing.
 
 ## Phase Execution Map
 

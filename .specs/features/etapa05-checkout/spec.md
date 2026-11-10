@@ -176,7 +176,7 @@ A visitor can fill a cart (slice 4) but cannot buy it. The plan's flow continues
 
 1. WHEN the order is recorded THEN the system SHALL replace the form and the summary with "Compra aprovada!", "Pedido nº {id}", the bought packs with their prices, the total and a link "Ir para a biblioteca" to `biblioteca.html`.
 2. WHEN the confirmation shows THEN the header SHALL read "Carrinho (0)".
-3. WHEN the order is recorded THEN `corsino:carrinho` SHALL be empty.
+3. WHEN the order is recorded THEN the system SHALL remove the `corsino:carrinho` key from `localStorage`.
 4. WHEN the visitor reloads the page after the confirmation THEN the system SHALL show the empty-cart state and SHALL NOT create another order.
 
 **Independent Test**: After approval, "Compra aprovada!" and "Pedido nº 1" (or the next id) show; reload; "Seu carrinho está vazio.".
