@@ -90,9 +90,9 @@ form.addEventListener('reset', function () {
     setTimeout(atualizar, 0);
 });
 form.addEventListener('submit', function (evento) {
-    // Filtering is client-side: "Aplicar" only re-runs the filter in place.
+    // Filters apply on change; this only stops Enter in the search box
+    // (tied to this form) from submitting it and reloading the page.
     evento.preventDefault();
-    atualizar();
 });
 
 atualizarCabecalho();

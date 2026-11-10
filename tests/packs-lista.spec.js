@@ -206,12 +206,13 @@ test.describe('etapa05-packs T3 - brand and style filters (LIST-06, rev. 2)', ()
     await expect(page.locator('.grade-presets .cartao')).toHaveCount(9);
   });
 
-  // LIST-09: "Aplicar" never reloads.
-  test('"Aplicar" mantém a página e a lista filtrada', async ({ page }) => {
+  // The filter applies on change, so there is no "Aplicar" button.
+  test('não há botão "Aplicar" e marcar uma caixa já filtra sem recarregar', async ({ page }) => {
     const url = page.url();
     await page.evaluate(() => { window.semRecarregar = true; });
+    await expect(page.getByRole('button', { name: 'Limpar' })).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Aplicar' })).toHaveCount(0);
     await page.locator('#marca-nux').check();
-    await page.getByRole('button', { name: 'Aplicar' }).click();
     expect(page.url()).toBe(url);
     expect(await page.evaluate(() => window.semRecarregar)).toBe(true);
     expect((await nomesVisiveis(page)).sort()).toEqual(['Clean · NUX MG-30', 'Metal · NUX MG-30']);

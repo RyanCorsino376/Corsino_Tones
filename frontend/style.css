@@ -505,22 +505,11 @@ input:focus-visible{
     cursor: pointer;
 }
 
-.filtro-acoes button[type="submit"]{
-    background-color: var(--brand-accent);
-    border: 0;
-    color: var(--text-primary);
-}
-
-/* The secondary action stays quiet so the accent colour marks only one path. */
 .filtro-acoes button[type="reset"]{
     background-color: transparent;
     border: 1px solid var(--border-subtle);
     color: var(--text-secondary);
     transition: color .2s ease, border-color .2s ease;
-}
-
-.filtro-acoes button[type="submit"]:hover{
-    filter: brightness(1.1);
 }
 
 .filtro-acoes button[type="reset"]:hover{
