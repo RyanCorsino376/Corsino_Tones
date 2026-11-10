@@ -332,22 +332,43 @@ input:focus-visible{
 
 /*------------- Página inicial ----------------------------------------*/
 
+/* Hero: the photo fills the section as a background. It fades in from dark and
+   settles from 150% to 100% scale, the same effect as the reference site's
+   slider (fade through dark 1s, pan/zoom 4s). */
 .welcome{
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+    box-sizing: border-box;
+    min-height: clamp(480px, calc(40vh + 200px), 620px);
     padding: clamp(24px, 6vw, 80px);
     display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
     justify-content: center;
     align-items: center;
-    gap: clamp(24px, 10vw, 200px);
+    background-color: #000;
 }
 
 .fotoAdm{
-    width: min(500px, 100%);
-    height: auto;
-    aspect-ratio: 5 / 3;
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+    width: 100%;
+    height: 100%;
     object-fit: cover;
-    background-color: var(--color-gray-400);
+    object-position: 50% 22%;
+    transform-origin: 50% 50%;
+    animation:
+        fundo-entrada 1s cubic-bezier(.455, .03, .515, .955) both,
+        fundo-zoom 4s cubic-bezier(.645, .045, .355, 1) both;
+}
+
+/* Dark veil keeps the text readable and blends the photo into the page colour. */
+.welcome::after{
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: linear-gradient(to bottom, rgba(0, 0, 0, .35), rgba(22, 24, 27, .85));
 }
 
 .frasePrincipal{
@@ -355,10 +376,51 @@ input:focus-visible{
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    gap: 12px;
     text-align: center;
-    min-height: 300px;
-    width: min(300px, 100%);
+    width: min(640px, 100%);
     color: var(--text-primary);
+    animation: texto-entrada .9s cubic-bezier(.215, .61, .355, 1) .6s both;
+}
+
+.boasVindas{
+    margin: 0;
+    font-size: clamp(.85rem, 2vw, 1.05rem);
+    letter-spacing: .25em;
+    text-transform: uppercase;
+    color: var(--brand-accent);
+}
+
+.frasePrincipal h2{
+    margin: 0;
+    font-size: clamp(1.6rem, 4.5vw, 2.8rem);
+    line-height: 1.15;
+}
+
+.frasePrincipal span{
+    color: var(--text-secondary);
+}
+
+@keyframes fundo-entrada{
+    from{ opacity: 0; }
+    to{ opacity: 1; }
+}
+
+@keyframes fundo-zoom{
+    from{ transform: scale(1.5); }
+    to{ transform: scale(1); }
+}
+
+@keyframes texto-entrada{
+    from{ opacity: 0; transform: translateY(24px); }
+    to{ opacity: 1; transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce){
+    .fotoAdm,
+    .frasePrincipal{
+        animation: none;
+    }
 }
 
 .tituloCarrossel{
