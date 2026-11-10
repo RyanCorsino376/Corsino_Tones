@@ -5,7 +5,7 @@ const { test, expect } = require('@playwright/test');
 
 // Tests derive from .specs/features/etapa05-packs/spec.md: FIX-01..04.
 
-const NOVO_TEXTO = 'Packs de presets por estilo: compre uma vez e baixe quando quiser na sua biblioteca';
+const NOVO_TEXTO = 'Compre uma vez e baixe quando quiser na sua biblioteca';
 
 test.describe('etapa05-packs T7 - leftovers from slice 2', () => {
   // FIX-01

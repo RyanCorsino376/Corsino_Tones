@@ -57,7 +57,7 @@ This slice turns the "Presets" page into a **"Packs"** page that lists pack card
 | Loading and error texts | List and carousel: "Carregando packs..." / "Não foi possível carregar os packs. Verifique sua conexão e tente novamente."; pack page: "Carregando pack..." / "Não foi possível carregar o pack. Verifique sua conexão e tente novamente."; all with "Tentar novamente" | Same `carregarComEstado` pattern as slice 1, renamed from "presets" | n |
 | Pack page | `pack.html?id={id}`: name, description, price, "{N} presets", then a plain list (not cards) of the included presets with name, brand · equipment and description; reuses the two-column `.preset-topo` block | Showing the contents is not a preset card; the existing responsive rules and tests for that block keep applying | n |
 | Invalid pack id *(rev. 2)* | Missing or not matching `^[a-z0-9]+(-[a-z0-9]+)*$` → "Pack não encontrado." with a link "Ver todos os packs" to `packs.html`, without any request; a well-formed id answered with 404 → same message | Avoids a request that can only fail | n |
-| New home text | "Packs de presets por estilo: compre uma vez e baixe quando quiser na sua biblioteca"; `<meta name="description">` drops "download gratuito" too | Replaces the free-download promise; the user can reword it at review | n |
+| New home text | "Compre uma vez e baixe quando quiser na sua biblioteca"; `<meta name="description">` drops "download gratuito" too | Replaces the free-download promise; the user can reword it at review | n |
 | Disabled button style | Any disabled `button` gets reduced opacity and `cursor: not-allowed` | One rule covers "Entrando...", "Cadastrando..." and future buttons | n |
 | README | Describes stage 05 and the packs, `npm run api` / `api:lento` / `api:reset`, the test account, the module folders, links to `docs/etapa-05.md`; no `login.js` or `preset.html` | It still says stage 03 | n |
 | etapa04 list criteria | CAT-01..05, FILT-01..09, EMPTY-01..03 and EDGE-01 of `etapa04-interatividade` are superseded by LIST-* here: the same behaviours, applied to packs. `tests/presets-lista.spec.js` is rewritten for packs (renamed `tests/packs-lista.spec.js`) | The list shows packs now; asserting nine preset cards would test a page that no longer exists | n |
@@ -177,7 +177,7 @@ This slice turns the "Presets" page into a **"Packs"** page that lists pack card
 
 **Acceptance Criteria**
 
-1. The home page SHALL show "Packs de presets por estilo: compre uma vez e baixe quando quiser na sua biblioteca" and SHALL NOT contain "download gratuito", in its body or in its `<meta name="description">`.
+1. The home page SHALL show "Compre uma vez e baixe quando quiser na sua biblioteca" and SHALL NOT contain "download gratuito", in its body or in its `<meta name="description">`.
 2. WHILE a `button` is disabled, the system SHALL render it with an opacity lower than 1 and `cursor: not-allowed`.
 3. The README SHALL state that the project is at stage 05, SHALL describe the packs, SHALL list `npm run api`, `npm run api:lento` and `npm run api:reset` and the test account `ryan@exemplo.com` / `teste123`, and SHALL link to `docs/etapa-05.md`.
 4. The README SHALL NOT mention `frontend/login.js`, `preset.html` or `presets.html`.
