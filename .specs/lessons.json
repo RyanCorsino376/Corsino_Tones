@@ -3,7 +3,7 @@
   "promote_threshold": 2,
   "window_days": 45,
   "quarantine_threshold": 2,
-  "next_id": 22,
+  "next_id": 23,
   "lessons": [
     {
       "id": "L-001",
@@ -32,17 +32,19 @@
       "status": "confirmed",
       "features": [
         "etapa04-interatividade",
-        "etapa05-carrinho"
+        "etapa05-carrinho",
+        "etapa05-checkout"
       ],
-      "recurrence": 2,
+      "recurrence": 3,
       "harmful": 0,
       "evidence": [
         "V02 frontend/login.js:42 (tests)",
         "V02b frontend/login.js:42 (tests) (tests)",
-        "M05 frontend/servicos/carrinho.js:8 (CAR-03) (tests)"
+        "M05 frontend/servicos/carrinho.js:8 (CAR-03) (tests)",
+        "N15 tests/pagamento.spec.js:33 (tests)"
       ],
       "created": "2026-09-27T15:34:56Z",
-      "last_seen": "2026-11-09T17:35:07Z"
+      "last_seen": "2026-11-10T19:12:07Z"
     },
     {
       "id": "L-003",
@@ -389,6 +391,24 @@
       ],
       "created": "2026-11-09T19:37:26Z",
       "last_seen": "2026-11-09T19:37:26Z"
+    },
+    {
+      "id": "L-022",
+      "key": "surviving_mutant::a suffix or prefix rule needs a sample whose marker appears elsewhere in the value not only samples that have it at the end or lack it",
+      "text": "A suffix or prefix rule needs a sample whose marker appears elsewhere in the value, not only samples that have it at the end or lack it.",
+      "signal": "surviving_mutant",
+      "scope": "tests",
+      "status": "candidate",
+      "features": [
+        "etapa05-checkout"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "N01 tests/pagamento.spec.js:63 (tests)"
+      ],
+      "created": "2026-11-10T19:12:07Z",
+      "last_seen": "2026-11-10T19:12:07Z"
     }
   ]
 }

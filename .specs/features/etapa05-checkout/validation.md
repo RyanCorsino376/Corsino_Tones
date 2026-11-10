@@ -1,9 +1,9 @@
 # Checkout and Order (etapa05-checkout) Validation
 
-**Date**: 2026-11-09
+**Date**: 2026-11-10
 **Spec**: `.specs/features/etapa05-checkout/spec.md`
-**Diff range**: `147a26d..99b3c60` (5 implementation commits on `feat/etapa05-loja`)
-**Verifier**: independent sub-agent (author ≠ verifier), iteration 1 of 3
+**Diff range**: `147a26d..HEAD` for the checkout files (implementation `99b3c60` and earlier, test fix `c37dc67`); sensor ran on a scratch worktree of `HEAD` = `9edaaee` content for these files
+**Verifier**: independent sub-agent (author ≠ verifier), iteration 2 of 3
 
 **Verdict**: FAIL
 
@@ -17,93 +17,91 @@
 | T2 | ✅ Done | `83b7d83` |
 | T3 | ✅ Done | `b7d0caa` |
 | T4 | ✅ Done | `ca83924` |
-| T5 | ⚠️ Done, tests weak | `99b3c60`. Production code matches the spec in every place the Verifier read; 7 sensor survivors are test-strength gaps (see Discrimination Sensor) |
+| T5 | ✅ Done | `99b3c60`, tests strengthened in `c37dc67`: all 7 iteration-1 survivors are now killed |
 
 ---
 
 ## Spec-Anchored Acceptance Criteria
 
+Line numbers are those of the files at `HEAD`.
+
 | ID | Spec-defined outcome | `file:line` + assertion | Result |
 | -- | -------------------- | ----------------------- | ------ |
-| CK-01 | Link "Finalizar compra" → `checkout.html` while the list shows | `tests/checkout.spec.js:28-29` - `toBeVisible()`, `toHaveAttribute('href','checkout.html')` | ✅ PASS |
-| CK-02 | No link in empty, loading, error states | `tests/checkout.spec.js:33` (empty, after the link was visible), `:45-46` (`toHaveCount(1)` then `toBeHidden()` while loading), `:49` (error) | ✅ PASS |
-| ACC-01 | Modal dialog with the text, no form, no request, no self-navigation | `tests/checkout.spec.js:71-80` - `toContainText('Faça login para finalizar a compra')`, `:modal` true, form `toHaveCount(1)`+`toBeHidden()`, URL after 60 s fake clock, no meta refresh, `pedidos` `toEqual([])` | ✅ PASS |
-| ACC-02 | `login.html?voltar=checkout.html` | `tests/checkout.spec.js:88` - `toHaveURL(/login\.html\?voltar=checkout\.html$/)` | ✅ PASS |
-| ACC-03 | "Voltar" and Esc → `carrinho.html` | `tests/checkout.spec.js:92-102` - `toHaveURL(/carrinho\.html$/)` for both | ✅ PASS |
-| ACC-04 | Lands on `checkout.html`, cart unchanged | `tests/checkout.spec.js:114-116` - URL, 2 items, storage `'["rock-zoom-g6","clean-nux-mg-30"]'` | ✅ PASS |
-| RES-01 | `GET /packs`; packs in cart order with name and formatted price; "Total: {sum}" | `tests/checkout.spec.js:125-138` - per-index name + `.item-preco` `toHaveText(formatoBRL(...))`, total | ⚠️ PASS with weak data: every seed pack costs 4990, so per-item price and sum sources are not discriminated (M23, M15 survived) |
-| RES-02 | Empty text, "Ver os packs" → `packs.html`, no form, no request | `tests/checkout.spec.js:147-152` | ✅ PASS |
-| RES-03 | Unknown pack removed + exact notice | `tests/checkout.spec.js:159-161` - exact text, 1 item, storage `'["rock-zoom-g6"]'` | ✅ PASS |
-| RES-04 | Exact error text, "Tentar novamente", no form | `tests/checkout.spec.js:188-191` | ✅ PASS |
-| RES-05 | "Carregando carrinho..." and no form while pending | `tests/checkout.spec.js:171-175` | ✅ PASS |
-| FORM-01 | Four labelled fields + "Pagar {total}" | `tests/checkout.spec.js:227-228` - `getByLabel(rotulo,{exact:true}).toBeVisible()`, button text | ✅ PASS |
-| FORM-02 | 16 digits once spaces removed; exact message | `tests/pagamento.spec.js:31-35`, `tests/checkout.spec.js:239-241` | ✅ PASS |
-| FORM-03 | ≥ 2 chars after trim; exact message | `tests/pagamento.spec.js:40-43` (incl. `' R '`) | ✅ PASS |
-| FORM-04 | `MM/AA`, month 01-12, not before current month | `tests/pagamento.spec.js:48-51` - accepts `11/26` (current), rejects `10/26`, `13/27`, `00/27` ... with fixed `hoje` | ✅ PASS |
+| CK-01 | Link "Finalizar compra" → `checkout.html` while the list shows | `tests/checkout.spec.js:30-31` - `toBeVisible()`, `toHaveAttribute('href','checkout.html')` | ✅ PASS |
+| CK-02 | No link in empty, loading, error states | `tests/checkout.spec.js:35` (empty), `:47-48` (`toHaveCount(1)` then `toBeHidden()` while loading), `:51` (error) | ✅ PASS |
+| ACC-01 | Modal dialog with the text, no form, no request, no self-navigation | `tests/checkout.spec.js:91-99` - `toContainText('Faça login para finalizar a compra')`, `:modal` true, form `toHaveCount(1)`+`toBeHidden()`, URL after 60 s fake clock, no meta refresh, `pedidos` `toEqual([])` | ✅ PASS |
+| ACC-02 | `login.html?voltar=checkout.html` | `tests/checkout.spec.js:107` - `toHaveURL(/login\.html\?voltar=checkout\.html$/)` | ✅ PASS |
+| ACC-03 | "Voltar" and Esc → `carrinho.html` | `tests/checkout.spec.js:111-121` - `toHaveURL(/carrinho\.html$/)` for both | ✅ PASS |
+| ACC-04 | Lands on `checkout.html`, cart unchanged | `tests/checkout.spec.js:133-135` - URL, 2 items, storage `'["rock-zoom-g6","clean-nux-mg-30"]'` | ✅ PASS |
+| RES-01 | `GET /packs`; packs in cart order with name and formatted price; "Total: {sum}" | `tests/checkout.spec.js:141-160` - distinct prices 4990/2590 via `page.route`, non-alphabetical cart, per-index name and `.item-preco` `toHaveText(formatoBRL(PRECOS[id]))`, total and "Pagar {total}" | ✅ PASS (M15, M23, N14, N18 killed). Iteration-1 gap closed |
+| RES-02 | Empty text, "Ver os packs" → `packs.html`, no form, no request | `tests/checkout.spec.js:169-174` | ✅ PASS |
+| RES-03 | Unknown pack removed + exact notice | `tests/checkout.spec.js:181-183` - exact text, 1 item, storage `'["rock-zoom-g6"]'` | ✅ PASS (N07 killed) |
+| RES-04 | Exact error text, "Tentar novamente", no form | `tests/checkout.spec.js:210-213` | ✅ PASS |
+| RES-05 | "Carregando carrinho..." and no form while pending | `tests/checkout.spec.js:193-197` | ✅ PASS |
+| FORM-01 | Four labelled fields + "Pagar {total}" | `tests/checkout.spec.js:249-250` - `getByLabel(rotulo,{exact:true}).toBeVisible()`, button text | ✅ PASS |
+| FORM-02 | 16 digits once spaces removed; exact message | `tests/pagamento.spec.js:31-34`, `tests/checkout.spec.js:258-263` | ⚠️ PASS with a hole: no 16-character value that holds a non-digit, so a rule that strips every non-digit is accepted (N15 survived) |
+| FORM-03 | ≥ 2 chars after trim; exact message | `tests/pagamento.spec.js:40-42` (incl. `' R '`) | ✅ PASS (N02, N16 killed) |
+| FORM-04 | `MM/AA`, month 01-12, not before current month | `tests/pagamento.spec.js:48-50` - accepts `11/26` (current), rejects `10/26`, `13/27`, `00/27` ... with fixed `hoje` | ✅ PASS (N11, N17 killed) |
 | FORM-05 | Exactly 3 digits | `tests/pagamento.spec.js:56-57` - rejects `12`, `1234`, `12a` | ✅ PASS |
-| FORM-06 | `aria-invalid`, `aria-describedby` → message, focus first rejected, no payment | `tests/checkout.spec.js:239-245`, `:253-255` (focus on validade, not numero), `:277` (no duplicates) | ✅ PASS |
-| FORM-07 | Editing to valid removes message and `aria-invalid` without submit | `tests/checkout.spec.js:266-268` | ✅ PASS |
-| PAY-01 | Decision at 1500 ms, not before | `tests/pagamento.spec.js:77-80` - `'pendente'` at 1499 ms, decided at 1501 ms | ✅ PASS |
-| PAY-02 | Disabled + "Processando pagamento..." while pending | `tests/checkout.spec.js:312-313` | ✅ PASS |
-| PAY-03 | Exact decline text in `role="alert"`, cart/values kept, button back, no request | `tests/checkout.spec.js:357-363` - alert `toHaveText(RECUSADO)`, `requisicoes` `toEqual([])`, storage, values, button text | ✅ PASS |
-| PAY-04 | No card field in any request, nothing stored | `tests/checkout.spec.js:337-345`, `tests/pagamento.spec.js:93` | ✅ PASS |
-| PED-01 | `POST /pedidos` with session `usuarioId`, `packIds` in cart order, `totalCentavos` = summary total, `status:"pago"`, ISO `criadoEm`, no other field | `tests/checkout.spec.js:317-321` - exact key set; `toMatchObject({ usuarioId: 1, packIds: carrinho, totalCentavos, status: 'pago' })` | ❌ GAP: `usuarioId` only ever 1 (M11 survived); cart `['clean-nux-mg-30','rock-zoom-g6']` is already sorted, so "cart order" is not distinguished from sorted (M12 survived); `totalCentavos` equals any 4990×n formula (M14, M15 survived) |
-| PED-02 | Cart emptied only after `POST` succeeds | `tests/checkout.spec.js:380` - storage kept after aborted POST | ✅ PASS (M08 killed) |
-| PED-03 | Exact failure text in `role="alert"`, cart/values kept, button back | `tests/checkout.spec.js:379-383` | ✅ PASS |
-| OK-01 | "Compra aprovada!", "Pedido nº {id}", packs **with their prices**, total, "Ir para a biblioteca" → `biblioteca.html`; form + summary replaced | `tests/checkout.spec.js:325-331` - heading, `toContainText('Pedido nº ${pedidoCriado.id}')`, names only, total, link | ❌ GAP: prices in the confirmation list not asserted (M24 survived); order id is 1 in an isolated run, so a fixed "Pedido nº 1" passes (M18 survived) |
-| OK-02 | Header "Carrinho (0)" | `tests/checkout.spec.js:333` | ✅ PASS |
-| OK-03 | `corsino:carrinho` empty | `tests/checkout.spec.js:334` - `toBeNull()` | ⚠️ Spec-precision gap (minor): "empty" does not say absent key vs `[]`; test pins the implementation's choice (key removed) |
-| OK-04 | Reload → empty state, no new order | `tests/checkout.spec.js:408-411` | ✅ PASS |
-| REG-01 | Slices 1-4 kept; library "Voltar" → `index.html` | `tests/cabecalho.spec.js:108-112`, `:115` + full gate | ✅ PASS (M20 killed) |
-| EDGE-01 | Double click → one payment, ≤ 1 POST | `tests/checkout.spec.js:395-397` | ✅ PASS (M16 killed) |
-| EDGE-02 | Current-month expiry accepted | `tests/pagamento.spec.js:48` (`11/26` with `hoje` 2026-11-15) | ✅ PASS (M01 killed) |
-| EDGE-03 | Number with spaces accepted | `tests/pagamento.spec.js:32`, used end-to-end by `CARTAO_OK` | ✅ PASS (M03 killed) |
+| FORM-06 | `aria-invalid`, `aria-describedby` → message, focus first rejected, no payment | `tests/checkout.spec.js:262-267`, `:275-277` (focus on validade, not numero), `:299` (no duplicates) | ✅ PASS |
+| FORM-07 | Editing to valid removes message and `aria-invalid` without submit | `tests/checkout.spec.js:288-290` | ✅ PASS |
+| PAY-01 | Decision at 1500 ms, not before | `tests/pagamento.spec.js:77-80` - `'pendente'` at 1499 ms, decided at 1501 ms | ✅ PASS (N10 killed) |
+| PAY-02 | Disabled + "Processando pagamento..." while pending | `tests/checkout.spec.js:340-341` | ✅ PASS |
+| PAY-03 | Card **ending** in `0000` is declined; exact text in `role="alert"`, cart/values kept, button back, no request | `tests/checkout.spec.js:391-397`; rule at `tests/pagamento.spec.js:63` (only `…1111` and `…0000`) | ⚠️ PASS with a hole: a number that contains `0000` but does not end in it is never tried, so `endsWith` → `includes` survives (N01) |
+| PAY-04 | No card field in any request, nothing stored | `tests/checkout.spec.js:371-379` (digits, formatted number, name, expiry, `cvv\|cartao\|numero\|validade` in URL+body; storage), `tests/pagamento.spec.js:93` | ✅ PASS (N19 killed) |
+| PED-01 | `POST /pedidos` with session `usuarioId`, `packIds` in cart order, `totalCentavos` = summary total, `status:"pago"`, ISO `criadoEm`, no other field | `tests/checkout.spec.js:347-349` - exact key set; `toMatchObject({ usuarioId: 7, packIds: ['rock-zoom-g6','clean-nux-mg-30'], totalCentavos: 7580, status: 'pago' })`; ISO round-trip | ✅ PASS (M11, M12, M14, N04, N05 killed). Iteration-1 gap closed |
+| PED-02 | Cart emptied only after `POST` succeeds | `tests/checkout.spec.js:414` - storage kept after aborted POST; `:368` emptied after success | ✅ PASS (N06, N13 killed) |
+| PED-03 | Exact failure text in `role="alert"`, cart/values kept, button back | `tests/checkout.spec.js:413-417`, retry creates one order `:421` | ✅ PASS (N09 killed) |
+| OK-01 | "Compra aprovada!", "Pedido nº {id}", packs with their prices, total, "Ir para a biblioteca" → `biblioteca.html`; form + summary replaced | `tests/checkout.spec.js:353-365` - heading, `expect(pedidoCriado.id).not.toBe(1)` then `toHaveText('Pedido nº ${pedidoCriado.id}')`, per-item name + `.item-preco`, total, link `href`, form and summary hidden | ✅ PASS (M18, M24 killed). Iteration-1 gap closed |
+| OK-02 | Header "Carrinho (0)" | `tests/checkout.spec.js:367` | ✅ PASS |
+| OK-03 | `corsino:carrinho` key removed | `tests/checkout.spec.js:368` - `toBeNull()` | ✅ PASS (spec reworded; precision gap closed; N13 killed) |
+| OK-04 | Reload → empty state, no new order | `tests/checkout.spec.js:443-445` | ✅ PASS |
+| REG-01 | Slices 1-4 kept; library "Voltar" → `index.html` | `tests/cabecalho.spec.js:108-115` + full gate | ⚠️ Gate has 1 red test, `tests/ajustes.spec.js:12` (slice 3 FIX-01), caused by commit `9edaaee` (hero), outside the checkout diff; reproduced on a clean worktree of `HEAD` |
+| EDGE-01 | Double click → one payment, ≤ 1 POST | `tests/checkout.spec.js:429-431` | ✅ PASS |
+| EDGE-02 | Current-month expiry accepted | `tests/pagamento.spec.js:48` (`11/26` with `hoje` 2026-11-15) | ✅ PASS |
+| EDGE-03 | Number with spaces accepted | `tests/pagamento.spec.js:32`, used end-to-end by `CARTAO_OK` | ✅ PASS |
 
-**Status**: ❌ Gaps present (PED-01, OK-01; RES-01 weak data) · 1 minor spec-precision gap (OK-03)
+**Status**: ⚠️ 31/33 matched without reservation; FORM-02 and PAY-03 each have a test hole (N15, N01); REG-01 depends on a failure outside this feature.
 
 ---
 
 ## Discrimination Sensor
 
-Scratch: `git worktree add` under the session scratchpad, `node_modules` symlinked, `node mock/preparar.js --reset` before each mutant, `CI=1`. Each mutant ran only the spec files covering the mutated module. Baseline in the worktree: 67/67 passed (pagamento, checkout, cabecalho, api-mock).
+Scratch: `git worktree add --detach` under the session scratchpad, `node_modules` symlinked, `node mock/preparar.js --reset` before each mutant, `CI=1`. Each mutant ran only the spec files covering the mutated module (`pagamento.js` and `pedidos.js`: pagamento + checkout, 31 tests; `checkout.js`: checkout, 22 tests). Baseline in the worktree: 31/31 passed.
 
 | # | File:line | Description | Specs run | Killed? |
 | - | --------- | ----------- | --------- | ------- |
-| M01 | `frontend/servicos/pagamento.js:35` | Expiry `>=` → `>` (rejects current month) | pagamento, checkout | ✅ `pagamento.spec.js:47` |
-| M02 | `frontend/servicos/pagamento.js:35` | Expiry accepts the previous month | pagamento, checkout | ✅ `pagamento.spec.js:47` |
-| M03 | `frontend/servicos/pagamento.js:27` | Number rule does not strip spaces | pagamento, checkout | ✅ 8 tests |
-| M04 | `frontend/servicos/pagamento.js:37` | CVV `\d{3}` → `\d{3,4}` | pagamento, checkout | ✅ `pagamento.spec.js:55` |
-| M05 | `frontend/servicos/pagamento.js:51` | Decide at 1000 ms | pagamento, checkout | ✅ `pagamento.spec.js:64` ×2 |
-| M06 | `frontend/servicos/pagamento.js:49` | `endsWith('0000')` → `startsWith` | pagamento, checkout | ✅ 2 tests |
-| M07 | `frontend/paginas/checkout.js:175` | Last 4 card digits added to the order body | checkout | ✅ `checkout.spec.js:300` |
-| M08 | `frontend/paginas/checkout.js:171` | Cart emptied before `POST /pedidos` | checkout | ✅ `checkout.spec.js:367` |
-| M09 | `frontend/paginas/checkout.js:183` | Cart emptied on decline | checkout | ✅ `checkout.spec.js:349` |
-| M10 | `frontend/paginas/checkout.js:183` | Order sent on decline | checkout | ✅ `checkout.spec.js:349` |
-| M11 | `frontend/paginas/checkout.js:172` | `usuarioId: usuarioAtual().id` → `1` | checkout | ❌ Survived |
-| M12 | `frontend/paginas/checkout.js:173` | `packIds` sorted | checkout | ❌ Survived |
-| M13 | `frontend/paginas/checkout.js:173` | `packIds` reversed | checkout | ✅ `checkout.spec.js:300` |
-| M14 | `frontend/paginas/checkout.js:174` | `totalCentavos` = first item price × count | checkout | ❌ Survived |
-| M15 | `frontend/paginas/checkout.js:48` | Summary total = count × 4990 | checkout | ❌ Survived |
-| M16 | `frontend/paginas/checkout.js:166` | Button not disabled while paying | checkout | ✅ 2 tests |
-| M17 | `frontend/paginas/checkout.js:167` | Pending text missing | checkout | ✅ `checkout.spec.js:300` |
-| M18 | `frontend/paginas/checkout.js:139` | Fixed "Pedido nº 1" | checkout | ❌ Survived (the only order in an isolated run has id 1) |
-| M19 | `frontend/paginas/checkout.js:210` | Checkout pop-up "Voltar"/Esc → `index.html` | checkout | ✅ `checkout.spec.js:96` ×2 |
-| M20 | `frontend/ui/aviso-login.js:10` | Default `voltarPara` changed (library pop-up) | cabecalho | ✅ `cabecalho.spec.js:108`, `:115` |
-| M21 | `frontend/carrinho.html:54` | "Finalizar compra" moved out of the list section | checkout | ✅ 2 tests |
-| M22 | `frontend/paginas/checkout.js:213` | Form shown while loading | checkout | ✅ 2 tests |
-| M23 | `frontend/paginas/checkout.js:50` | Summary item prices all from the first item | checkout | ❌ Survived |
-| M24 | `frontend/paginas/checkout.js:142` | Confirmation list shows names without prices | checkout | ❌ Survived |
-| M25 | `frontend/paginas/checkout.js:200` | No live re-validation | checkout | ✅ `checkout.spec.js:259` |
-| M26 | `frontend/paginas/checkout.js:179` | Header counter not refreshed after the order | checkout | ✅ `checkout.spec.js:300` |
-| M27 | `frontend/paginas/checkout.js:183` | `form.reset()` after a failure | checkout | ✅ 2 tests |
-| M28 | `frontend/paginas/checkout.js:124` | Alert without `role="alert"` | checkout | ✅ 2 tests |
-| M29 | `frontend/paginas/checkout.js:114` | Focus on first field instead of first error | checkout | ✅ `checkout.spec.js:249` |
-| M30 | `frontend/paginas/checkout.js:166` | Card-holder name stored in `sessionStorage` | checkout | ✅ `checkout.spec.js:300` |
+| M11 | `frontend/paginas/checkout.js:172` | `usuarioId: usuarioAtual().id` → `1` | checkout | ✅ Killed (1 failed) |
+| M12 | `frontend/paginas/checkout.js:173` | `packIds` sorted | checkout | ✅ Killed |
+| M14 | `frontend/paginas/checkout.js:174` | `totalCentavos` = first price × count | checkout | ✅ Killed |
+| M15 | `frontend/paginas/checkout.js:48` | Summary total = count × 4990 | checkout | ✅ Killed (2 failed) |
+| M18 | `frontend/paginas/checkout.js:139` | Fixed "Pedido nº 1" | checkout | ✅ Killed |
+| M23 | `frontend/paginas/checkout.js:40` | Summary item prices all from the first item | checkout | ✅ Killed (2 failed) |
+| M24 | `frontend/paginas/checkout.js:142` | Confirmation items without prices | checkout | ✅ Killed |
+| N01 | `frontend/servicos/pagamento.js:49` | `endsWith('0000')` → `includes('0000')` (declines a card with 0000 in the middle) | pagamento, checkout | ❌ Survived (31 passed) |
+| N02 | `frontend/servicos/pagamento.js:28` | Name `>= 2` → `> 2` | pagamento, checkout | ✅ Killed |
+| N03 | `frontend/servicos/pagamento.js:27` | Number `\d{16}` → `\d{16,17}` | pagamento, checkout | ✅ Killed |
+| N04 | `frontend/paginas/checkout.js:175` | Order `status` `'pago'` → `'pendente'` | checkout | ✅ Killed |
+| N05 | `frontend/paginas/checkout.js:176` | `criadoEm` as `toString()` instead of ISO | checkout | ✅ Killed |
+| N06 | `frontend/paginas/checkout.js:183` | Cart emptied when the order request fails | checkout | ✅ Killed |
+| N07 | `frontend/paginas/checkout.js:62` | Unknown packs no longer removed from the cart | checkout | ✅ Killed |
+| N08 | `frontend/paginas/checkout.js:186` | Button text after a failure fixed to `Pagar` (no total) | checkout | ✅ Killed (2 failed) |
+| N09 | `frontend/paginas/checkout.js:183` | Order failure shows the decline message | checkout | ✅ Killed |
+| N10 | `frontend/servicos/pagamento.js:15` | Wait 1500 → 2500 ms | pagamento, checkout | ✅ Killed (2 failed) |
+| N11 | `frontend/servicos/pagamento.js:32` | Expiry century `2000` → `2100` | pagamento, checkout | ✅ Killed (2 failed) |
+| N12 | `frontend/api/pedidos.js:9` | `POST` → `PUT` | pagamento, checkout | ✅ Killed (5 failed) |
+| N13 | `frontend/paginas/checkout.js:178` | Cart not emptied after a successful order | checkout | ✅ Killed (2 failed) |
+| N14 | `frontend/paginas/checkout.js:48` | Total reduce seed `0` → `1` (off by one cent) | checkout | ✅ Killed (3 failed) |
+| N15 | `frontend/servicos/pagamento.js:24` | Strip every non-digit instead of spaces only (accepts `4111-1111-1111-1111`) | pagamento, checkout | ❌ Survived (31 passed) |
+| N16 | `frontend/servicos/pagamento.js:28` | Name rule without `trim()` | pagamento, checkout | ✅ Killed |
+| N17 | `frontend/servicos/pagamento.js:30` | Month regex `1[0-2]` → `1[0-3]` | pagamento, checkout | ✅ Killed |
+| N18 | `frontend/paginas/checkout.js:51` | Summary total = count × first price | checkout | ✅ Killed |
+| N19 | `frontend/paginas/checkout.js:171` | Last 4 digits of the card added to the order body | checkout | ✅ Killed |
 
-**Sensor depth**: P0-full (payment / data integrity), manual fault injection, 30 mutants
-**Result**: 23/30 killed, 7 survived - FAIL ❌
+**Sensor depth**: P0-full (payment / order / data integrity), manual fault injection, 26 mutants (7 re-applied from iteration 1, 19 new)
+**Result**: 24/26 killed, 2 survived - FAIL ❌
 
-Survivors share two root causes: (a) uniform fixture values - every seed pack costs 4990, the only session is user 1, the two-item cart is already in alphabetical order, the only order in an isolated run gets id 1 (lesson L-014 recurs); (b) OK-01's "with their prices" in the confirmation has no assertion.
+Both survivors are in `tests/pagamento.spec.js` and both are real deviations from the spec text (PAY-03 "ends in `0000`", FORM-02 "16 digits once spaces are removed"). All 7 iteration-1 survivors are killed.
 
 ---
 
@@ -112,56 +110,54 @@ Survivors share two root causes: (a) uniform fixture values - every seed pack co
 | Principle | Status |
 | --------- | ------ |
 | Minimum code | ✅ |
-| Surgical changes (`aviso-login.js` gains one defaulted parameter; `irParaInicio` removed as now unused) | ✅ |
-| No scope creep | ✅ (`aviso-teste` hint under the button is a small addition, harmless) |
-| Matches patterns (field-message pattern of etapa04, `carregarComEstado`, `requisicao`) | ✅ |
-| Spec-anchored outcome check | ❌ PED-01, OK-01 (see above) |
-| Per-layer coverage (service boundaries 1:1; page happy + edge + error) | ✅ structure; ❌ data discrimination |
-| Every test maps to a spec requirement | ✅ (`pagamento.spec.js:115` seed test maps to the T1 Done-when / mock-data decision) |
-| Documented guidelines followed: `.specs/LESSONS.md` (L-001, L-009, L-010 applied; L-014 not applied) | ⚠️ |
+| Surgical changes | ✅ |
+| No scope creep | ✅ |
+| Matches patterns | ✅ |
+| Spec-anchored outcome check | ⚠️ FORM-02, PAY-03 holes (N15, N01) |
+| Per-layer coverage (service boundaries 1:1; page happy + edge + error) | ✅ |
+| Every test maps to a spec requirement | ✅ |
+| Documented guidelines followed: `.specs/LESSONS.md` (L-001, L-009, L-010, L-014 applied; L-002 not applied to FORM-02) | ⚠️ |
 
 ---
 
 ## Edge Cases
 
-- [x] EDGE-01 double click: one POST (`checkout.spec.js:391`, M16 killed)
-- [x] EDGE-02 current month accepted (`pagamento.spec.js:48`, M01 killed)
-- [x] EDGE-03 number with spaces accepted (`pagamento.spec.js:32`, M03 killed)
+- [x] EDGE-01 double click: one POST (`checkout.spec.js:429-431`)
+- [x] EDGE-02 current month accepted (`pagamento.spec.js:48`)
+- [x] EDGE-03 number with spaces accepted (`pagamento.spec.js:32`)
 
 ---
 
 ## Gate Check
 
 - **Gate command**: `npx playwright test` (Build, from tasks.md), run on the real tree with `CI=1` after `node mock/preparar.js --reset`
-- **Result**: 302 passed, 1 failed, 0 skipped in 2.2 min
-- **Failure**: `tests/login-api.spec.js:182` (etapa05-auth CAD, out of this diff) - `toHaveURL` timeout of 5 s under load. Re-run in isolation: `tests/login-api.spec.js` 20/20 passed. Treated as a load flake, not a regression.
-- **Test count before feature**: 272 (etapa05-carrinho validation)
-- **Test count after feature**: 303
-- **Delta**: +31 (9 in `pagamento.spec.js`, 22 in `checkout.spec.js`)
+- **Result**: 315 passed, 1 failed, 0 skipped (1.5 min)
+- **Failure**: `tests/ajustes.spec.js:12` (etapa05-packs T7 FIX-01, "a página inicial mostra o novo texto..."). Not flaky: it fails the same way on a clean worktree of `HEAD`. Cause is commit `9edaaee` (home hero), which changed `frontend/index.html`, outside the checkout diff.
+- **Real tree during the run**: it was not clean. Another session was working on the library slice (modified `frontend/api/pedidos.js`, `biblioteca.html`, `paginas/biblioteca.js`, `style.css`, new `servicos/biblioteca.js`, `tests/biblioteca*.spec.js`) and `HEAD` moved from `9edaaee` to `1fe6e67` (docs only). The Verifier did not touch the real tree. The sensor ran on a clean worktree, so its results do not depend on those edits; the gate count (315) includes the new library tests.
+- **Test count before this feature**: 272; **after (iteration 1)**: 303; **now**: 316 (includes in-progress library tests)
 - **Skipped tests**: none
-- **Assertions weakened**: none found (`cabecalho.spec.js`, `api-mock.spec.js` unchanged in the range)
 
 ---
 
 ## Fix Plans
 
-### Fix 1: Discriminating data for the order body and the summary (PED-01, RES-01)
+### Fix 1: Decline rule must be "ends in 0000" (PAY-03)
 
-- **Root cause**: uniform fixtures - all packs 4990, session always user 1, the two-item cart already sorted.
-- **Fix task**: in `tests/checkout.spec.js`, for the valid-card test (`:300`) and RES-01 (`:122`): serve `GET /packs` through `page.route` with distinct prices (e.g. 4990 and 2590), use a cart whose order is not alphabetical (e.g. `['rock-zoom-g6', 'clean-nux-mg-30']`), and a session with a user id other than 1 (a registered user, or a second seed user). Assert per-item prices, the total, and the body's `usuarioId`, `packIds`, `totalCentavos` against those values.
-- **Verify**: M11, M12, M14, M15, M23 are killed.
-- **Priority**: Major
+- **Root cause**: only two cards are tried, `…1111` and `…0000`; a number with `0000` elsewhere is never exercised.
+- **Fix task**: in `tests/pagamento.spec.js:63`, add a case such as `4111 0000 1111 1111` expecting `'aprovado'` (and, in the same list, `0000 1111 1111 1111`).
+- **Verify**: N01 is killed.
+- **Priority**: Minor
 
-### Fix 2: Confirmation prices and order number (OK-01)
+### Fix 2: Number must be digits once spaces are removed (FORM-02)
 
-- **Root cause**: no assertion on confirmation prices; the order id coincides with a constant.
-- **Fix task**: assert each confirmation item's `.item-preco` text against its pack price (with the distinct prices of Fix 1); create one order before the test (e.g. `request.post('/pedidos', ...)`) so the id under test is not 1, and assert the exact "Pedido nº {id}" text.
-- **Verify**: M18, M24 are killed.
-- **Priority**: Major
+- **Root cause**: the rejection samples at `tests/pagamento.spec.js:33` never hold 16 characters with a non-digit among them (`4111a11111111111` has 15 digits).
+- **Fix task**: add to the rejection list `4111-1111-1111-1111` and `41111111111111a1` (16 digits plus a stray character, which a "strip all non-digits" rule would accept).
+- **Verify**: N15 is killed.
+- **Priority**: Minor
 
-### Note (spec-precision, minor): OK-03
+### Note (out of this feature): `tests/ajustes.spec.js:12`
 
-"`corsino:carrinho` SHALL be empty" - state whether the key is removed or holds `[]`, or make the test accept both.
+Commit `9edaaee` replaced the home text that the slice 3 test `NOVO_TEXTO` expects. Either the test or the hero text must be updated by the owner of that commit; the gate stays red until then.
 
 ---
 
@@ -169,11 +165,10 @@ Survivors share two root causes: (a) uniform fixture values - every seed pack co
 
 | Requirement | Previous Status | New Status |
 | ----------- | --------------- | ---------- |
-| CK-01..02, ACC-01..04, RES-02..05, FORM-01..07, PAY-01..04, PED-02, PED-03, OK-02, OK-04, REG-01, EDGE-01..03 | Implementing | ✅ Verified |
-| RES-01 | Implementing | ❌ Needs Fix (tests) |
-| PED-01 | Implementing | ❌ Needs Fix (tests) |
-| OK-01 | Implementing | ❌ Needs Fix (tests) |
-| OK-03 | Implementing | ⚠️ Verified, spec wording to tighten |
+| CK-01..02, ACC-01..04, RES-01..05, FORM-01, FORM-03..07, PAY-01, PAY-02, PAY-04, PED-01..03, OK-01..04, EDGE-01..03 | Implementing / Needs Fix | ✅ Verified |
+| FORM-02 | Implementing | ❌ Needs Fix (tests, N15) |
+| PAY-03 | Implementing | ❌ Needs Fix (tests, N01) |
+| REG-01 | Implementing | ⚠️ Blocked by `ajustes.spec.js:12` (commit `9edaaee`, not this feature) |
 
 (spec.md is not edited by the Verifier.)
 
@@ -181,14 +176,14 @@ Survivors share two root causes: (a) uniform fixture values - every seed pack co
 
 ## Summary
 
-**Overall**: ❌ Not Ready
+**Overall**: ❌ Not Ready (close: two one-line test additions plus the unrelated red test)
 
-**Spec-anchored check**: 29/33 matched; 3 gaps (RES-01 weak data, PED-01, OK-01), 1 minor spec-precision gap (OK-03)
-**Sensor**: 23/30 mutants killed, 7 survived (M11, M12, M14, M15, M18, M23, M24)
-**Gate**: 302 passed + 1 out-of-scope load flake that passes in isolation (303 total)
+**Spec-anchored check**: 31/33 matched; FORM-02 and PAY-03 have test holes; REG-01 blocked by an out-of-scope failure
+**Sensor**: 24/26 mutants killed, 2 survived (N01, N15)
+**Gate**: 315 passed, 1 failed (`ajustes.spec.js:12`, pre-existing on `HEAD`)
 
-**What works**: card rules and their boundaries, the 1500 ms decision, decline without requests, no card data in requests or storage, cart kept on decline and on order failure, single order on double click and on retry, session pop-up with "Voltar" to the cart, library pop-up unchanged.
+**What works**: all iteration-1 gaps are closed (PED-01, OK-01, RES-01, OK-03); order body, summary and confirmation values are pinned with distinct prices, user id 7, a non-alphabetical cart and an order id other than 1; no production defect found.
 
-**Issues found**: tests cannot tell the right order body/summary values from constants that happen to equal the fixtures; the confirmation's prices are unasserted. No production defect found.
+**Issues found**: two weak rule tests in `tests/pagamento.spec.js`; one unrelated red test from the hero commit.
 
-**Next steps**: route Fix 1 and Fix 2 to an implementer (tests only), then re-verify (iteration 2 of 3).
+**Next steps**: apply Fix 1 and Fix 2 (tests only), have the `9edaaee` owner repair `ajustes.spec.js:12`, then re-verify (iteration 3 of 3).

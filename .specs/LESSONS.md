@@ -9,10 +9,10 @@
 Corroborated across multiple features. Safe to apply as guidance.
 
 ### L-002 - When a spec fixes an anchored regex, include a rejection sample that embeds a valid match inside invalid text.
-- signal: `surviving_mutant` · recurrence: 2 feature(s) · scope: `tests` · harmful: 0
-- features: etapa04-interatividade, etapa05-carrinho
-- evidence: V02 frontend/login.js:42 (tests) (+2 more)
-- last seen: 2026-11-09T17:35:07Z
+- signal: `surviving_mutant` · recurrence: 3 feature(s) · scope: `tests` · harmful: 0
+- features: etapa04-interatividade, etapa05-carrinho, etapa05-checkout
+- evidence: V02 frontend/login.js:42 (tests) (+3 more)
+- last seen: 2026-11-10T19:12:07Z
 
 ### L-003 - A locale-collation requirement needs sample data whose order differs between code-point and locale comparison.
 - signal: `spec_precision_gap` · recurrence: 2 feature(s) · scope: `tests` · harmful: 0
@@ -137,6 +137,12 @@ Seen once or not yet corroborated. Tracked, not trusted.
 - features: etapa05-checkout
 - evidence: OK-03 spec.md (corsino:carrinho SHALL be empty) (spec)
 - last seen: 2026-11-09T19:37:26Z
+
+### L-022 - A suffix or prefix rule needs a sample whose marker appears elsewhere in the value, not only samples that have it at the end or lack it.
+- signal: `surviving_mutant` · recurrence: 1 feature(s) · scope: `tests` · harmful: 0
+- features: etapa05-checkout
+- evidence: N01 tests/pagamento.spec.js:63 (tests)
+- last seen: 2026-11-10T19:12:07Z
 
 ## Quarantined (failed when applied - ignore)
 
