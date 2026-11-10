@@ -10,7 +10,7 @@ Implement these tasks with the `tlc-spec-driven` skill: **activate it by name an
 
 **Spec**: `.specs/features/etapa05-biblioteca/spec.md`
 **Design**: none (inline: the change reuses `api/`, `servicos/catalogo.js`, `ui/estado.js`; see Design notes)
-**Status**: Draft
+**Status**: In progress (T1, T2 complete)
 
 ### Design notes (inline)
 
@@ -88,17 +88,21 @@ T4
 
 **Done when**:
 
-- [ ] `listarPedidosPagos(7)` requests `GET /pedidos?usuarioId=7&status=pago` and resolves with the list -> `tests/biblioteca-servico.spec.js`
-- [ ] `packsDaBiblioteca` with orders `[{id:1, criadoEm:'2026-11-01...', packIds:['a','b']}, {id:2, criadoEm:'2026-11-05...', packIds:['c','a']}]` and a catalogue of a, b, c returns `c, a, b` (newest order first, then `packIds` order, `a` once at its newest position)
-- [ ] A `packId` missing from the catalogue is dropped; no orders returns `[]`
-- [ ] Two orders with the same `criadoEm` order by the greater `id`
-- [ ] `carregarBiblioteca(7)` shows only user 7's packs when user 1 also has a paid order, and ignores an order with `status: 'pendente'` (real mock data created in the test)
-- [ ] `idsComprados(7)` resolves with the set of distinct pack ids
-- [ ] Full gate passes; test count reported
+- [x] `listarPedidosPagos(7)` requests `GET /pedidos?usuarioId=7&status=pago` and resolves with the list -> `tests/biblioteca-servico.spec.js`
+- [x] `packsDaBiblioteca` with orders `[{id:1, criadoEm:'2026-11-01...', packIds:['a','b']}, {id:2, criadoEm:'2026-11-05...', packIds:['c','a']}]` and a catalogue of a, b, c returns `c, a, b` (newest order first, then `packIds` order, `a` once at its newest position)
+- [x] A `packId` missing from the catalogue is dropped; no orders returns `[]`
+- [x] Two orders with the same `criadoEm` order by the greater `id`
+- [x] `carregarBiblioteca(7)` shows only user 7's packs when user 1 also has a paid order, and ignores an order with `status: 'pendente'` (real mock data created in the test)
+- [x] `idsComprados(7)` resolves with the set of distinct pack ids
+- [x] Full gate passes; test count reported
 
 **Tests**: e2e (`tests/biblioteca-servico.spec.js`)
 **Gate**: full
 **Commit**: `feat(library): add the paid orders API and the library service`
+
+**Status**: Complete
+
+Test count: 311 (305 + 6). Mutants of the service and the API (sort direction, tie-break, de-duplication, missing pack, `status=pago` in the URL) each fail at least one test; the first status mutant hit a comment and was redone on the code line.
 
 ---
 
@@ -117,17 +121,21 @@ T4
 
 **Done when**:
 
-- [ ] Signed out: the pop-up "Faça login para acessar sua biblioteca", no library request, URL unchanged after 60 s of fake clock and no `meta refresh` (lessons L-009/L-010) -> `tests/biblioteca.spec.js`
-- [ ] Signed in with paid orders of two packs (distinct names, preset counts 3 and 2): one block per pack in newest-order-first order, each with "N presets" and one row per preset (name, "{marca} · {equipamento}", description); a second user's pack is absent; an order with status `pendente` adds nothing
-- [ ] The same pack in two paid orders shows one block
-- [ ] A `packId` with no pack: no block and no notice
-- [ ] No paid order: "Sua biblioteca ainda está vazia." and "Explorar packs" -> `packs.html`; with orders neither is in the page
-- [ ] Held request: "Carregando biblioteca..." and no block; aborted: error text with "Tentar novamente", no block; the retry shows the library
-- [ ] Full gate passes; test count reported
+- [x] Signed out: the pop-up "Faça login para acessar sua biblioteca", no library request, URL unchanged after 60 s of fake clock and no `meta refresh` (lessons L-009/L-010) -> `tests/biblioteca.spec.js`
+- [x] Signed in with paid orders of two packs (distinct names, preset counts 3 and 2): one block per pack in newest-order-first order, each with "N presets" and one row per preset (name, "{marca} · {equipamento}", description); a second user's pack is absent; an order with status `pendente` adds nothing
+- [x] The same pack in two paid orders shows one block
+- [x] A `packId` with no pack: no block and no notice
+- [x] No paid order: "Sua biblioteca ainda está vazia." and "Explorar packs" -> `packs.html`; with orders neither is in the page
+- [x] Held request: "Carregando biblioteca..." and no block; aborted: error text with "Tentar novamente", no block; the retry shows the library
+- [x] Full gate passes; test count reported
 
 **Tests**: e2e
 **Gate**: full
 **Commit**: `feat(library): list the bought packs and their presets`
+
+**Status**: Complete
+
+Test count: 319 (311 + 8). Page mutants (empty text, preset count, description, session user id, hidden list) each fail a test; a first run let "list always hidden" survive because a count ignores visibility, so the main test now asserts the first block is visible. The singular "1 preset" is covered by serving a single preset through `page.route`.
 
 ---
 
