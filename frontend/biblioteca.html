@@ -43,10 +43,14 @@
     </nav>
     <main class="conteudo">
         <h1>Biblioteca</h1>
-        <section class="biblioteca-vazia">
+        <!-- Loading and error messages; empty once the library is drawn. -->
+        <div class="estado-carga"></div>
+        <!-- Shown by paginas/biblioteca.js: the empty text or the pack blocks. -->
+        <section class="biblioteca-vazia" hidden>
             <p>Sua biblioteca ainda está vazia.</p>
             <a href="packs.html">Explorar packs</a>
         </section>
+        <section class="biblioteca-packs" hidden></section>
     </main>
     <footer class="rodape">Copyright 2026 ®</footer>
     <script type="module" src="paginas/biblioteca.js"></script>

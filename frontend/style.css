@@ -685,6 +685,10 @@ input:focus-visible{
     text-align: center;
 }
 
+.biblioteca-vazia[hidden]{
+    display: none;
+}
+
 .biblioteca-vazia a{
     color: var(--text-primary);
     border: 1px solid var(--border-subtle);
@@ -695,6 +699,26 @@ input:focus-visible{
 
 .biblioteca-vazia a:hover{
     border-color: var(--text-secondary);
+}
+
+/*------------- Biblioteca: packs comprados ---------------------------*/
+
+.biblioteca-packs{
+    display: grid;
+    gap: 32px;
+}
+
+.biblioteca-packs[hidden]{
+    display: none;
+}
+
+.biblioteca-pack h2{
+    margin: 0 0 4px;
+}
+
+.biblioteca-pack .pack-quantidade{
+    margin: 0 0 16px;
+    color: var(--text-secondary);
 }
 
 /*------------- Cards de preset ---------------------------------------*/
