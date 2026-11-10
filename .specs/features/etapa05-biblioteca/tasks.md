@@ -10,7 +10,7 @@ Implement these tasks with the `tlc-spec-driven` skill: **activate it by name an
 
 **Spec**: `.specs/features/etapa05-biblioteca/spec.md`
 **Design**: none (inline: the change reuses `api/`, `servicos/catalogo.js`, `ui/estado.js`; see Design notes)
-**Status**: In progress (T1, T2 complete)
+**Status**: In progress (T1-T3 complete)
 
 ### Design notes (inline)
 
@@ -154,14 +154,18 @@ Test count: 319 (311 + 8). Page mutants (empty text, preset count, description, 
 
 **Done when**:
 
-- [ ] Every preset row has a "Download" button (count equals the number of preset rows) -> `tests/biblioteca.spec.js`
-- [ ] Activating it on the second preset of a pack saves the file `preset-{that id}.json` (Playwright `download` event); its content parsed as JSON equals `{ id, nome, estilo, marca, equipamento, descricao, packId }` of that preset, not of another
-- [ ] `pack.html`, `packs.html` and `index.html` contain no "Download" button or link
-- [ ] Full gate passes; test count reported
+- [x] Every preset row has a "Download" button (count equals the number of preset rows) -> `tests/biblioteca.spec.js`
+- [x] Activating it on the second preset of a pack saves the file `preset-{that id}.json` (Playwright `download` event); its content parsed as JSON equals `{ id, nome, estilo, marca, equipamento, descricao, packId }` of that preset, not of another
+- [x] `pack.html`, `packs.html` and `index.html` contain no "Download" button or link
+- [x] Full gate passes; test count reported
 
 **Tests**: e2e
 **Gate**: full
 **Commit**: `feat(library): download each preset as a JSON file`
+
+**Status**: Complete
+
+Test count: 322 (319 + 3). Mutants (file name, `packId` missing from the JSON, button label, a "Download" link on `pack.html`, a changed field) each fail a test. Test data fix in this commit: the user ids in `tests/biblioteca*.spec.js` were `Date.now() % 100000` counters that repeat every 100 s, and orders from earlier runs stay in `db.json`, so one run met an old order; they are now random. One full run had a timeout in `pagamento.spec.js` (fake clock, load); the test passed 9 of 9 in isolation and the full rerun passed.
 
 ---
 

@@ -7,9 +7,8 @@ const { test, expect } = require('@playwright/test');
 // Modules are imported inside a host page.
 
 const API = 'http://127.0.0.1:3000';
-let proximo = 9000000 + (Date.now() % 100000) * 10;
-/** A user id no other test uses, so orders created here never leak elsewhere. */
-const novoUsuario = () => (proximo += 1);
+/** A random user id: orders from earlier runs stay in db.json, so a counter would meet them again. */
+const novoUsuario = () => 10000000 + Math.floor(Math.random() * 900000000);
 
 const pedidoDe = (usuarioId, packIds, criadoEm, status = 'pago') => ({ usuarioId, packIds, totalCentavos: 0, status, criadoEm });
 

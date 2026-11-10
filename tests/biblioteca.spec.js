@@ -7,8 +7,8 @@ const { test, expect } = require('@playwright/test');
 
 const API = 'http://127.0.0.1:3000';
 const PEDIDOS = /127\.0\.0\.1:3000\/pedidos/;
-let proximo = 9100000 + (Date.now() % 100000) * 10;
-const novoUsuario = () => (proximo += 1);
+/** A random user id: orders from earlier runs stay in db.json, so a counter would meet them again. */
+const novoUsuario = () => 10000000 + Math.floor(Math.random() * 900000000);
 const sessaoDe = (id) => JSON.stringify({ id, nome: `Usuário ${id}`, email: `u${id}@exemplo.com` });
 const pedidoDe = (usuarioId, packIds, criadoEm, status = 'pago') => ({ usuarioId, packIds, totalCentavos: 0, status, criadoEm });
 
@@ -178,5 +178,68 @@ test.describe('etapa05-biblioteca T2 - the library of bought packs', () => {
 
     await expect(blocos(page)).toHaveCount(1);
     await expect(page.getByText('Não foi possível carregar a biblioteca.')).toHaveCount(0);
+  });
+});
+
+test.describe('etapa05-biblioteca T3 - download of each preset', () => {
+  // DL-01
+  test('cada linha de preset tem um botão "Download"', async ({ page, request }) => {
+    const eu = novoUsuario();
+    await criar(request, pedidoDe(eu, [ROCK, BLUES], '2026-11-01T10:00:00.000Z'));
+    const cat = await catalogo(page);
+    await abrir(page, eu);
+
+    const total = cat.presets(ROCK).length + cat.presets(BLUES).length;
+    await expect(page.locator('.pack-presets li')).toHaveCount(total);
+    await expect(page.getByRole('button', { name: 'Download' })).toHaveCount(total);
+    for (const linha of await page.locator('.pack-presets li').all()) {
+      await expect(linha.getByRole('button', { name: 'Download' })).toHaveCount(1);
+    }
+  });
+
+  // DL-02, DL-03
+  test('"Download" do segundo preset salva preset-{id}.json com os dados desse preset', async ({ page, request }) => {
+    const eu = novoUsuario();
+    await criar(request, pedidoDe(eu, [ROCK], '2026-11-01T10:00:00.000Z'));
+    const cat = await catalogo(page);
+    const alvo = cat.presets(ROCK)[1];
+    await abrir(page, eu);
+
+    const evento = page.waitForEvent('download');
+    await page.locator('.pack-presets li').nth(1).getByRole('button', { name: 'Download' }).click();
+    const download = await evento;
+
+    expect(download.suggestedFilename()).toBe(`preset-${alvo.id}.json`);
+    const conteudo = JSON.parse(require('fs').readFileSync(await download.path(), 'utf8'));
+    expect(conteudo).toEqual({
+      id: alvo.id,
+      nome: alvo.nome,
+      estilo: alvo.estilo,
+      marca: alvo.marca,
+      equipamento: alvo.equipamento,
+      descricao: alvo.descricao,
+      packId: alvo.packId,
+    });
+    expect(alvo.id).not.toBe(cat.presets(ROCK)[0].id);
+  });
+
+  // DL-04
+  test('pack.html, packs.html e index.html não têm "Download"', async ({ page, request }) => {
+    const eu = novoUsuario();
+    await criar(request, pedidoDe(eu, [ROCK], '2026-11-01T10:00:00.000Z'));
+    await page.goto('login.html');
+    await page.evaluate((s) => sessionStorage.setItem('corsino:sessao', s), sessaoDe(eu));
+    const paginas = [
+      ['pack.html?id=' + ROCK, '.pack-presets li'],
+      ['packs.html', '.grade-presets .cartao'],
+      ['index.html', '.carrossel .cartao'],
+    ];
+    for (const [url, carregado] of paginas) {
+      await page.goto(url);
+      await expect(page.locator(carregado).first(), url).toBeVisible();
+      await expect(page.getByText(/download/i), url).toHaveCount(0);
+      await expect(page.getByRole('button', { name: /download/i }), url).toHaveCount(0);
+      await expect(page.getByRole('link', { name: /download/i }), url).toHaveCount(0);
+    }
   });
 });

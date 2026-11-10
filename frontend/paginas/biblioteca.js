@@ -5,6 +5,7 @@ import { carregarBiblioteca } from '../servicos/biblioteca.js';
 import { usuarioAtual } from '../servicos/sessao.js';
 import { pedirLogin } from '../ui/aviso-login.js';
 import { atualizarCabecalho } from '../ui/cabecalho.js';
+import { baixarPreset } from '../ui/download.js';
 import { carregarComEstado } from '../ui/estado.js';
 import { ROTULOS } from '../ui/formato.js';
 
@@ -21,7 +22,12 @@ function criarLinhaPreset(preset) {
     equipamento.textContent = `${ROTULOS.marca[preset.marca]} · ${preset.equipamento}`;
     const descricao = document.createElement('p');
     descricao.textContent = preset.descricao;
-    item.append(nome, equipamento, descricao);
+    const baixar = document.createElement('button');
+    baixar.type = 'button';
+    baixar.className = 'botao-tentar botao-download';
+    baixar.textContent = 'Download';
+    baixar.addEventListener('click', () => baixarPreset(preset));
+    item.append(nome, equipamento, descricao, baixar);
     return item;
 }
 

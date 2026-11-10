@@ -716,6 +716,10 @@ input:focus-visible{
     margin: 0 0 4px;
 }
 
+.biblioteca-pack .botao-download{
+    margin-top: 8px;
+}
+
 .biblioteca-pack .pack-quantidade{
     margin: 0 0 16px;
     color: var(--text-secondary);
