@@ -30,7 +30,9 @@ test.describe('etapa05-checkout T1 - card rules', () => {
   test('número: 16 dígitos, com ou sem espaços', async ({ page }) => {
     expect(await validar(page, 'numero', '4111111111111111')).toBe('');
     expect(await validar(page, 'numero', '4111 1111 1111 1111')).toBe('');
-    for (const ruim of ['411111111111111', '41111111111111111', '4111a11111111111', '', '    ']) {
+    // Anchored rule (lesson L-002): 16 digits once spaces go, but any other character rejects,
+    // including inputs that would become 16 digits if every non-digit were stripped.
+    for (const ruim of ['411111111111111', '41111111111111111', '4111a11111111111', '4111-1111-1111-1111', '4111111111111111a', '', '    ']) {
       expect(await validar(page, 'numero', ruim), ruim).toBe(MSG.numero);
     }
   });
@@ -60,7 +62,13 @@ test.describe('etapa05-checkout T1 - card rules', () => {
 
 test.describe('etapa05-checkout T1 - simulated payment', () => {
   // PAY-01, PAY-03: the decision comes after 1500 ms, by the card rule.
-  for (const [numero, esperado] of [['4111 1111 1111 1111', 'aprovado'], ['4111 1111 1111 0000', 'PagamentoRecusado']]) {
+  for (const [numero, esperado] of [
+    ['4111 1111 1111 1111', 'aprovado'],
+    ['4111 1111 1111 0000', 'PagamentoRecusado'],
+    // 0000 elsewhere than at the end does not decline (PAY-03 is "ending in 0000").
+    ['4111 0000 1111 1111', 'aprovado'],
+    ['0000 1111 1111 1111', 'aprovado'],
+  ]) {
     test(`processarPagamento(${numero}) decide "${esperado}" aos 1500 ms, não antes`, async ({ page }) => {
       await page.clock.install({ time: new Date('2026-11-15T10:00:00') });
       await page.clock.pauseAt(new Date('2026-11-15T10:00:01'));
