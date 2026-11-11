@@ -64,18 +64,14 @@ Rejected: keeping classic scripts with `window.*` globals, which hide dependenci
 
 ## Handoff
 
-**Feature**: `etapa05-checkout` (slice 5); slices 1-4 done and verified
+**Feature**: `etapa05-loja` (stage 05), slices 1-6 implemented
 **Branch**: `feat/etapa05-loja`, not pushed
-**Phase**: Execute done (T1-T5, HEAD `99b3c60`, 303 tests); Verifier iteration 1 = FAIL, test gaps only, **fixes not started**
+**Phase**: all slices done and Verifier PASS (api-modulos, packs, carrinho, biblioteca, checkout iteration 3). auth closed by user decision after iteration 3 (P07e now killed).
 
-**Next step (iteration 1 fixes, tests only, in `tests/checkout.spec.js`)** - see `.specs/features/etapa05-checkout/validation.md`:
-1. PED-01/RES-01: route `GET /packs` with distinct prices (e.g. 4990 and 2590), a non-alphabetical cart (`['rock-zoom-g6','clean-nux-mg-30']`), a signed-in user whose id is not 1; assert each summary price, the total and the order body (`usuarioId`, `packIds`, `totalCentavos`). Kills M11, M12, M14, M15, M23.
-2. OK-01: assert each confirmation `.item-preco`; create one order before the test so the new id is not 1, and assert the exact "Pedido nº {id}". Kills M18, M24.
-3. OK-03: spec wording "SHALL remove the key `corsino:carrinho`".
-Then re-apply each survivor to confirm it is killed, commit, stop the dev servers, run Verifier iteration 2, restart the servers.
+**Gate**: `npx playwright test` = 327 passed (2026-11-11).
 
-**Uncommitted**: `tasks.md` (T5 note about an ungated commit, later proven green), `validation.md`, `LESSONS.md`, `lessons.json`.
+**Next step**: decide about `frontend/servicos/carrinho.js` (whitespace only), commit the pending work, then open the PR. Minor library gaps are listed in `etapa05-biblioteca/validation.md`.
 
-**Dev servers**: `npm run api` and `python3 -m http.server 8080` running for the user; stop them before any Verifier run.
+**Uncommitted**: `frontend/servicos/carrinho.js` (whitespace only, not from the specs; decide whether to discard), `.specs` edits of 2026-11-11 (STATE, biblioteca tasks and validation, checkout validation).
 
-**After slice 5**: slice 6 (library with downloads, "Na biblioteca"), slice 7 (docs: `proposta.md`, `docs/etapa-05.md`). Open UX choice: double click on "Adicionar ao carrinho" follows the "No carrinho" link.
+**Dev servers**: not running.

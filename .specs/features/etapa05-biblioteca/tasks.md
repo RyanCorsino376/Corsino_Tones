@@ -10,7 +10,7 @@ Implement these tasks with the `tlc-spec-driven` skill: **activate it by name an
 
 **Spec**: `.specs/features/etapa05-biblioteca/spec.md`
 **Design**: none (inline: the change reuses `api/`, `servicos/catalogo.js`, `ui/estado.js`; see Design notes)
-**Status**: Done (pending Verifier)
+**Status**: Done (Verifier PASS, 327 tests, 13/13 mutants killed)
 
 ### Design notes (inline)
 
