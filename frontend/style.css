@@ -1,17 +1,18 @@
 :root{
-  --color-dark-900: #16181b;
-  --color-dark-800: #212429;
-  --color-dark-600: #3a3e45;
-  --color-gray-400: #a8adb5;
-  --color-gray-100: #f0f0f0;
-  --color-red-500:  #e7473c;
+  /* Cream and black: cream page, slightly darker cream cards, black accent. */
+  --color-cream-100: #fffdf2;
+  --color-cream-200: #f4f1e3;
+  --color-cream-300: #dcd8c6;
+  --color-gray-600:  #666255;
+  --color-black:     #000000;
 
-  --bg-app:          var(--color-dark-900);
-  --bg-card:         var(--color-dark-800);
-  --border-subtle:   var(--color-dark-600);
-  --text-secondary:  var(--color-gray-400);
-  --text-primary:    var(--color-gray-100);
-  --brand-accent:    var(--color-red-500);
+  --bg-app:          var(--color-cream-100);
+  --bg-card:         var(--color-cream-200);
+  --border-subtle:   var(--color-cream-300);
+  --text-secondary:  var(--color-gray-600);
+  --text-primary:    var(--color-black);
+  --brand-accent:    var(--color-black);
+  --on-accent:       var(--color-cream-100);
 }
 
 body{
@@ -346,6 +347,11 @@ input:focus-visible{
     justify-content: center;
     align-items: center;
     background-color: #000;
+    /* The hero stays dark (photo + veil), so its text keeps light colours
+       even though the rest of the page is light. */
+    --text-primary:   #fffdf2;
+    --text-secondary: #dcd8c6;
+    --brand-accent:   #fffdf2;
 }
 
 .fotoAdm{
@@ -852,7 +858,7 @@ button:disabled{
     font-size: medium;
     background-color: var(--brand-accent);
     border: 0;
-    color: var(--text-primary);
+    color: var(--on-accent);
     cursor: pointer;
 }
 
@@ -958,7 +964,7 @@ fieldset{
     border: 0;
     min-height: 32px;
     width: min(200px, 100%);
-    color: var(--text-primary);
+    color: var(--on-accent);
     font-size: medium;
     font-family: inherit;
     cursor: pointer;
@@ -1036,6 +1042,18 @@ fieldset{
     .cartao-login.js-flip{
         transition: none;
     }
+}
+
+/*------------- Bordas dos cards (tema claro) -------------------------*/
+
+/* White cards on a sand background need a hairline to stand out. */
+.cartao,
+.itens-carrinho li,
+.itens-checkout li,
+.pack-presets li,
+.preset-capa,
+.login{
+    border: 1px solid var(--border-subtle);
 }
 
 /*------------- Responsivo --------------------------------------------*/

@@ -6,7 +6,6 @@ export const CHAVE_CARRINHO = 'corsino:carrinho';
 
 // Same shape as a pack id: lowercase words joined by single dashes.
 const ID_PACK = /^[a-z0-9]+(-[a-z0-9]+)*$/;
-
 /** Pack ids in the cart. A corrupt value is removed and counts as an empty cart. */
 export function itensDoCarrinho() {
     const texto = localStorage.getItem(CHAVE_CARRINHO);
@@ -18,7 +17,7 @@ export function itensDoCarrinho() {
             return [...new Set(itens)];
         }
     } catch {
-        // Falls through to removal below.
+        // Falls through to removal below.  
     }
     localStorage.removeItem(CHAVE_CARRINHO);
     return [];
