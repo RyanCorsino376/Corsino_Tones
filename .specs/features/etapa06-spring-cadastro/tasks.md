@@ -225,10 +225,10 @@ T14 -> T15 -> T16 -> T17 -> T18 -> T19
 
 **Done when**:
 
-- [ ] `EmailEmUso` message is "Este e-mail já está cadastrado."
-- [ ] `CredenciaisInvalidas` (same package, own file) message is "E-mail ou senha incorretos."
-- [ ] Gate passes: `cd backend && ./mvnw -q test`
-- [ ] Test count: 5 tests pass (no silent deletions)
+- [x] `EmailEmUso` message is "Este e-mail já está cadastrado."
+- [x] `CredenciaisInvalidas` (same package, own file) message is "E-mail ou senha incorretos."
+- [x] Gate passes: `cd backend && ./mvnw -q test`
+- [x] Test count: 5 tests pass (no silent deletions)
 
 **Tests**: none
 **Gate**: full
