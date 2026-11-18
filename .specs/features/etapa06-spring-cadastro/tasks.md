@@ -146,9 +146,9 @@ T14 -> T15 -> T16 -> T17 -> T18 -> T19
 
 **Done when**:
 
-- [ ] Interface matches the design signatures
-- [ ] Gate passes: `cd backend && ./mvnw -q test`
-- [ ] Test count: 1 test passes (no silent deletions)
+- [x] Interface matches the design signatures
+- [x] Gate passes: `cd backend && ./mvnw -q test`
+- [x] Test count: 1 test passes (no silent deletions)
 
 **Tests**: none
 **Gate**: full
