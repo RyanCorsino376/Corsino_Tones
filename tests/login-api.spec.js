@@ -56,7 +56,8 @@ test.describe('etapa05-auth T5 - login through the API', () => {
 
     await enviarLogin(page, '  RYAN@Exemplo.com ', 'teste123');
 
-    expect((await pedido).postDataJSON().email.trim()).toBe('RYAN@Exemplo.com');
+    // The browser itself strips the spaces of an <input type="email">; the page must not change the casing.
+    expect((await pedido).postDataJSON().email).toBe('RYAN@Exemplo.com');
     await expect(page).toHaveURL(/\/frontend\/index\.html$/);
     expect(JSON.parse(await lerSessao(page))).toEqual({ id: 1, nome: 'Ryan Corsino', email: 'ryan@exemplo.com' });
   });
@@ -207,6 +208,7 @@ test.describe('etapa05-auth T6 - registration through the API', () => {
     await expect(campo).toHaveAttribute('aria-invalid', 'true');
     const idMensagem = await campo.getAttribute('aria-describedby');
     await expect(page.locator(`#${idMensagem}`)).toHaveText(MSG_EMAIL_EM_USO);
+    await expect(campo).toBeFocused(); // WEB-09: "and focus it"
     expect(posts).toEqual([`${API_AUTH}/cadastro`]);
     expect(await lerSessao(page)).toBeNull();
     await expect(page).toHaveURL(/\/frontend\/login\.html$/);
@@ -269,5 +271,68 @@ test.describe('etapa05-auth Verifier fix - success replaces the login page in hi
     await expect(page).toHaveURL(/\/frontend\/index\.html$/);
 
     expect(await page.evaluate(() => history.length)).toBe(tamanhoAntes);
+  });
+});
+
+// Verifier fix (etapa06-front-spring-auth, iteration 1): page-level proof of WEB-17, WEB-18, WEB-05, WEB-11.
+test.describe('etapa06-front-spring-auth Verifier fix - values and failures at page level', () => {
+  /** Answers every Spring auth request with `status`/`json` and records the JSON bodies. */
+  async function responderERegistrar(page, status, json) {
+    const corpos = [];
+    await page.route(`${API_AUTH}/**`, (rota) => {
+      corpos.push(rota.request().postDataJSON());
+      return rota.fulfill({ status, json });
+    });
+    return corpos;
+  }
+
+  // WEB-17, WEB-18: the page sends the typed values untouched. The browser strips the
+  // spaces around an <input type="email">, so for e-mails only the casing is observable.
+  test('o login envia o e-mail com a caixa digitada e a senha com os espaços digitados', async ({ page }) => {
+    const corpos = await responderERegistrar(page, 401, { status: 401, mensagem: MSG_CREDENCIAIS, campos: {} });
+    await page.goto('login.html');
+    await enviarLogin(page, 'RYAN@Exemplo.com', '  espacos 1  ');
+
+    await expect(page.locator('#form-login [role="alert"]')).toHaveText(MSG_CREDENCIAIS);
+    expect(corpos).toEqual([{ email: 'RYAN@Exemplo.com', senha: '  espacos 1  ' }]);
+  });
+
+  test('o cadastro envia nome e senha com os espaços digitados e o e-mail com a caixa digitada', async ({ page }) => {
+    const corpos = await responderERegistrar(page, 409, { status: 409, mensagem: MSG_EMAIL_EM_USO, campos: {} });
+    await page.goto('login.html');
+    await enviarCadastro(page, '  Ana Souza ', 'Ana@X.COM', '  senha 1234  ');
+
+    await expect(page.locator('#cadastro-email')).toHaveAttribute('aria-invalid', 'true');
+    expect(corpos).toEqual([{ nome: '  Ana Souza ', email: 'Ana@X.COM', senha: '  senha 1234  ' }]);
+  });
+
+  // WEB-05: anything that is not a 401 or a 400 with fields is a communication failure.
+  test('um 500 no login mostra o alerta de conexão e mantém os valores', async ({ page }) => {
+    await responderERegistrar(page, 500, {});
+    await page.goto('login.html');
+    await enviarLogin(page, 'ryan@exemplo.com', 'teste123');
+
+    await expect(page.locator('#form-login [role="alert"]')).toHaveText(MSG_CONEXAO);
+    await expect(page.locator('#email')).toHaveValue('ryan@exemplo.com');
+    await expect(page.locator('#senha')).toHaveValue('teste123');
+    expect(await lerSessao(page)).toBeNull();
+  });
+
+  // WEB-11
+  test('um 500 no cadastro mostra o alerta de conexão', async ({ page }) => {
+    await responderERegistrar(page, 500, {});
+    await page.goto('login.html');
+    await enviarCadastro(page, 'Ana Teste', emailUnico(), 'senha1234');
+
+    await expect(page.locator('#form-cadastro [role="alert"]')).toHaveText(MSG_CONEXAO);
+    expect(await lerSessao(page)).toBeNull();
+  });
+
+  test('um 400 sem campos no cadastro mostra o alerta de conexão', async ({ page }) => {
+    await responderERegistrar(page, 400, { status: 400, mensagem: 'Corpo da requisição inválido.', campos: {} });
+    await page.goto('login.html');
+    await enviarCadastro(page, 'Ana Teste', emailUnico(), 'senha1234');
+
+    await expect(page.locator('#form-cadastro [role="alert"]')).toHaveText(MSG_CONEXAO);
   });
 });

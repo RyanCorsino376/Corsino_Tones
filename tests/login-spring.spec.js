@@ -112,4 +112,21 @@ test.describe('etapa06-front-spring-auth T11 - login page against the real Sprin
     await expect(page.locator('.grade-presets .cartao-nome').first()).toBeVisible();
     expect(await page.locator('.grade-presets .cartao-nome').count()).toBeGreaterThan(0);
   });
+
+  // WEB-19: the cart and checkout pages also keep working on the mock with Spring down.
+  test('sem resposta do Spring, o carrinho e o checkout continuam mostrando o pack do mock', async ({ page }) => {
+    await page.route('http://127.0.0.1:8081/**', (rota) => rota.abort());
+    await page.goto('index.html');
+    await page.evaluate(() => {
+      localStorage.setItem('corsino:carrinho', JSON.stringify(['rock-zoom-g6']));
+      sessionStorage.setItem('corsino:sessao', JSON.stringify({ id: 1, nome: 'Ryan Corsino', email: 'ryan@exemplo.com' }));
+    });
+
+    await page.goto('carrinho.html');
+    await expect(page.locator('.itens-carrinho li')).toHaveCount(1);
+    await expect(page.locator('.itens-carrinho li').first()).toContainText('Rock · Zoom G6');
+
+    await page.goto('checkout.html');
+    await expect(page.locator('.checkout-resumo .item-preco')).toHaveCount(1);
+  });
 });

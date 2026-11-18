@@ -433,3 +433,15 @@ Execution is strictly sequential. 11 tasks fit one batch of about 8 plus 3; exec
 ## Requirement Coverage
 
 WEB-01: T3, T4, T7, T10 · WEB-02: T5, T7 · WEB-03: T5, T7 · WEB-04: T3, T6 · WEB-05: T3, T5, T7 · WEB-06: T11 · WEB-07: T4, T7, T8, T10 · WEB-08: T5, T7 · WEB-09: T5, T7 · WEB-10: T6 · WEB-11: T5, T7 · WEB-12: T7, T8, T9 · WEB-13: T1 · WEB-14: T2 · WEB-15: T11 · WEB-16: T11 · WEB-17: T4, T5 · WEB-18: T4, T5 · WEB-19: T11.
+
+---
+
+## Fixes after Verifier iteration 1 (FAIL)
+
+Test-only fixes, no production code changed:
+
+- **WEB-17, WEB-18 (page level)**: `tests/login-api.spec.js` now types a password with spaces and a mixed-case e-mail on both forms and asserts the untrimmed request body; the weak `.email.trim()` assertion became an exact one. (The browser itself strips spaces around an `<input type="email">`, so for e-mails only the casing is observable.)
+- **WEB-09 focus**: the duplicate-e-mail test asserts `#cadastro-email` is focused.
+- **WEB-05, WEB-11 (page level)**: a login `500`, a registration `500` and a registration `400` without `campos` each show the connection alert.
+- **WEB-19**: `tests/login-spring.spec.js` also opens the cart and checkout pages with Spring down.
+- **WEB-14**: no dedicated test; the requirement is proved by the failure of every real-server test when the Spring `webServer` entry is removed (Verifier mutant M29).
