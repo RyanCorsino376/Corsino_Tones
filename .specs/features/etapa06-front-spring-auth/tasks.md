@@ -366,14 +366,14 @@ T11
 
 **Done when**:
 
-- [ ] Registering a unique e-mail through the page reaches `index.html` and `sessionStorage['corsino:sessao']` holds that user's `id` (a number other than 1), `nome` and `email` and no other key
-- [ ] Opening a fresh page and signing in with the same e-mail (other letter case) and password reaches `index.html` with the same `id`
-- [ ] `ryan@exemplo.com` / `teste123` gives id 1 and "Ryan Corsino"
-- [ ] A wrong password shows "E-mail ou senha incorretos." and no session; registering the same e-mail twice shows the duplicate message on the e-mail field
-- [ ] After a successful login neither `sessionStorage` nor `localStorage` contains the password or a string starting with `eyJ` (token)
-- [ ] With every request to 8081 aborted, `packs.html` still lists the packs from the mock
-- [ ] Gate passes: `npx playwright test` (full suite)
-- [ ] Test count: 7 new tests pass
+- [x] Registering a unique e-mail through the page reaches `index.html` and `sessionStorage['corsino:sessao']` holds that user's `id` (a number other than 1), `nome` and `email` and no other key
+- [x] Opening a fresh page and signing in with the same e-mail (other letter case) and password reaches `index.html` with the same `id`
+- [x] `ryan@exemplo.com` / `teste123` gives id 1 and "Ryan Corsino"
+- [x] A wrong password shows "E-mail ou senha incorretos." and no session; registering the same e-mail twice shows the duplicate message on the e-mail field
+- [x] After a successful login neither `sessionStorage` nor `localStorage` contains the password or a string starting with `eyJ` (token)
+- [x] With every request to 8081 aborted, `packs.html` still lists the packs from the mock
+- [x] Gate passes: `npx playwright test` (full suite)
+- [x] Test count: 7 new tests pass
 
 **Tests**: e2e
 **Gate**: full
