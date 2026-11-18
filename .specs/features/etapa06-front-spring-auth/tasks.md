@@ -197,14 +197,14 @@ T11
 
 **Done when**:
 
-- [ ] A `200` answer with user `{id: 7, nome: 'Davi', email: 'davi@x.com'}` makes `entrar` resolve exactly `{id: 7, nome: 'Davi', email: 'davi@x.com'}` (no token, no password)
-- [ ] `401` -> `CredenciaisInvalidas`; `409` on `cadastrar` -> `EmailEmUso`; `400` with `campos` -> `DadosInvalidos` carrying those `campos`
-- [ ] Network abort, timeout, `500`, `404` and a `400` without `campos` -> `ErroApi`
-- [ ] `cadastrar` sends name and e-mail as typed (no trim, no lower-case) and the password unchanged; `entrar` does the same
-- [ ] A `201` answer makes `cadastrar` resolve `{id, nome, email}` of the answer
-- [ ] No call to `/usuarios` on the mock
-- [ ] Gate passes: `npx playwright test tests/auth.spec.js`
-- [ ] Test count: 10 tests pass in the rewritten file
+- [x] A `200` answer with user `{id: 7, nome: 'Davi', email: 'davi@x.com'}` makes `entrar` resolve exactly `{id: 7, nome: 'Davi', email: 'davi@x.com'}` (no token, no password)
+- [x] `401` -> `CredenciaisInvalidas`; `409` on `cadastrar` -> `EmailEmUso`; `400` with `campos` -> `DadosInvalidos` carrying those `campos`
+- [x] Network abort, timeout, `500`, `404` and a `400` without `campos` -> `ErroApi`
+- [x] `cadastrar` sends name and e-mail as typed (no trim, no lower-case) and the password unchanged; `entrar` does the same
+- [x] A `201` answer makes `cadastrar` resolve `{id, nome, email}` of the answer
+- [x] No call to `/usuarios` on the mock
+- [x] Gate passes: `npx playwright test tests/auth.spec.js`
+- [x] Test count: 10 tests pass in the rewritten file
 
 **Tests**: e2e
 **Gate**: quick
