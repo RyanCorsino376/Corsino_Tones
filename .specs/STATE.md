@@ -72,6 +72,12 @@ We will issue HS256 JWTs with `spring-security-oauth2-jose` (Nimbus). The secret
 
 Rejected: the `jjwt` library (a second JWT stack next to the one protected routes will use) and a hand-built token. Secrets never go in git. Feature: `etapa06-spring-cadastro`.
 
+### AD-012: Auth goes to Spring while the catalogue and orders stay on the mock
+
+We will keep two API base URLs in `frontend/api/cliente.js`: `BASE_URL` (json-server, port 3000) and `SPRING_URL` (Spring Boot, port 8081). `requisicao` takes a `servidor` option to pick one; the default stays the mock. Only `/auth/*` calls use Spring for now, and each later slice moves its resource over.
+
+Extends AD-008 (which assumed one switch of `BASE_URL`): the migration is gradual, so both servers must coexist. Rejected: a proxy in front of both, which adds a process for a temporary state. Feature: `etapa06-front-spring-auth`.
+
 ---
 
 ## Handoff
