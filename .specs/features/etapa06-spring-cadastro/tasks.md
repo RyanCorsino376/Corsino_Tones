@@ -417,12 +417,12 @@ T14 -> T15 -> T16 -> T17 -> T18 -> T19
 
 **Done when**:
 
-- [ ] With the default seed, registering `ryan@exemplo.com` -> 409 and registering `novo@exemplo.com` -> 201 with id 2
-- [ ] A fixture seed with ids 3 and 7 (two users) loads both and the next registration gets id 8; the stored hash is not the fixture's plain password
-- [ ] A missing seed path starts the app with no users (a registration gets id 1) and logs a warning
-- [ ] The seed file's bytes and `mock/db.json` modification time are the same before and after startup and a registration
-- [ ] Gate passes: `cd backend && ./mvnw -q test`
-- [ ] Test count: 4 new tests pass
+- [x] With the default seed, registering `ryan@exemplo.com` -> 409 and registering `novo@exemplo.com` -> 201 with id 2
+- [x] A fixture seed with ids 3 and 7 (two users) loads both and the next registration gets id 8; the stored hash is not the fixture's plain password
+- [x] A missing seed path starts the app with no users (a registration gets id 1) and logs a warning
+- [x] The seed file's bytes and `mock/db.json` modification time are the same before and after startup and a registration
+- [x] Gate passes: `cd backend && ./mvnw -q test`
+- [x] Test count: 4 new tests pass
 
 **Tests**: integration
 **Gate**: full
