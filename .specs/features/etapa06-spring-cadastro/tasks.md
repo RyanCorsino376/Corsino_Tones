@@ -121,9 +121,9 @@ T14 -> T15 -> T16 -> T17 -> T18 -> T19
 
 **Done when**:
 
-- [ ] Record compiles with the four fields
-- [ ] Gate passes: `cd backend && ./mvnw -q test`
-- [ ] Test count: 1 test passes (no silent deletions)
+- [x] Record compiles with the four fields
+- [x] Gate passes: `cd backend && ./mvnw -q test`
+- [x] Test count: 1 test passes (no silent deletions)
 
 **Tests**: none
 **Gate**: full
