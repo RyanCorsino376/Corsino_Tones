@@ -60,6 +60,18 @@ We will load page code with `<script type="module">` and split it into `frontend
 
 Rejected: keeping classic scripts with `window.*` globals, which hide dependencies and are what stage 05 asks to replace. The layering also keeps `api/` and `servicos/` portable to a later React rewrite. Pages must be served over HTTP; `file://` blocks modules. Feature: `etapa05-api-modulos`.
 
+### AD-010: The server is Spring MVC layers over a repository interface
+
+We will build `backend/` as a REST API with the packages `controller`, `service`, `repository`, `model` and `dto` under `com.corsinotones`. Controllers parse JSON and call services; services hold the rules; only `repository` touches stored data, behind an interface. The first implementation keeps users in memory, seeded from `mock/db.seed.json`.
+
+The View of MVC is the React app, so the server renders no HTML. The interface lets PostgreSQL replace the in-memory class later without touching controller or service. Rejected: Thymeleaf pages (contradict the React migration) and reading or writing `mock/db.json` directly (two processes on one file). Feature: `etapa06-spring-cadastro`.
+
+### AD-011: Tokens are JWTs from Spring Security, signed with an environment secret
+
+We will issue HS256 JWTs with `spring-security-oauth2-jose` (Nimbus). The secret comes from `CORSINO_JWT_SECRET` (at least 32 characters) and the app refuses to start without it; tokens last 2 hours. Passwords are stored only as BCrypt hashes, and login answers the same `401` for an unknown e-mail and a wrong password.
+
+Rejected: the `jjwt` library (a second JWT stack next to the one protected routes will use) and a hand-built token. Secrets never go in git. Feature: `etapa06-spring-cadastro`.
+
 ---
 
 ## Handoff
