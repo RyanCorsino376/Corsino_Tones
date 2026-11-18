@@ -251,9 +251,9 @@ T14 -> T15 -> T16 -> T17 -> T18 -> T19
 
 **Done when**:
 
-- [ ] Record compiles; JSON has exactly `status`, `mensagem`, `campos`
-- [ ] Gate passes: `cd backend && ./mvnw -q test`
-- [ ] Test count: 5 tests pass (no silent deletions)
+- [x] Record compiles; JSON has exactly `status`, `mensagem`, `campos`
+- [x] Gate passes: `cd backend && ./mvnw -q test`
+- [x] Test count: 5 tests pass (no silent deletions)
 
 **Tests**: none
 **Gate**: full
