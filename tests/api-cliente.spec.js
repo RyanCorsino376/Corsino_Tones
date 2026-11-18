@@ -109,3 +109,87 @@ test.describe('T2 - cliente da API', () => {
     await expect.poll(() => erros.length).toBe(1);
   });
 });
+
+// etapa06-front-spring-auth T3: WEB-01 (the call goes to the chosen server), WEB-04
+// (the body of an error answer reaches the caller), WEB-05 (limit and log still apply).
+test.describe('etapa06 T3 - servidor escolhido e corpo do erro', () => {
+  test.beforeEach(async ({ page }) => {
+    await page.goto('login.html');
+  });
+
+  /** Runs requisicao() in the page and reports the outcome, including status and corpo of an ErroApi. */
+  function chamarRequisicao(page, caminho, opcoes) {
+    return page.evaluate(async ({ caminho, opcoes }) => {
+      const { requisicao, ErroApi } = await import('/frontend/api/cliente.js');
+      try {
+        return { ok: true, dados: await requisicao(caminho, opcoes) };
+      } catch (erro) {
+        return { ok: false, erroApi: erro instanceof ErroApi, status: erro.status, corpo: erro.corpo };
+      }
+    }, { caminho, opcoes });
+  }
+
+  // WEB-01
+  test('com servidor "spring" a requisição vai para a porta 8081', async ({ page }) => {
+    await page.route('http://127.0.0.1:8081/auth/x', (rota) => rota.fulfill({ json: { de: 'spring' } }));
+    const pedido = page.waitForRequest('http://127.0.0.1:8081/auth/x');
+
+    expect(await chamarRequisicao(page, '/auth/x', { servidor: 'spring' })).toEqual({ ok: true, dados: { de: 'spring' } });
+    expect((await pedido).url()).toBe('http://127.0.0.1:8081/auth/x');
+  });
+
+  // WEB-01: the default stays the mock.
+  test('sem a opção servidor a requisição continua indo para o mock na porta 3000', async ({ page }) => {
+    await page.route('http://127.0.0.1:3000/x', (rota) => rota.fulfill({ json: { de: 'mock' } }));
+
+    expect(await chamarRequisicao(page, '/x')).toEqual({ ok: true, dados: { de: 'mock' } });
+  });
+
+  // WEB-01: "servidor" is an option of requisicao, not something fetch should receive.
+  test('a opção servidor não é repassada ao fetch', async ({ page }) => {
+    await page.route('http://127.0.0.1:8081/auth/x', (rota) => rota.fulfill({ json: {} }));
+    const chaves = await page.evaluate(async () => {
+      const { requisicao } = await import('/frontend/api/cliente.js');
+      const original = window.fetch;
+      let recebidas = null;
+      window.fetch = (url, init) => { recebidas = Object.keys(init); return original(url, init); };
+      await requisicao('/auth/x', { servidor: 'spring', method: 'POST' });
+      window.fetch = original;
+      return recebidas;
+    });
+
+    expect(chaves).toContain('method');
+    expect(chaves).not.toContain('servidor');
+  });
+
+  // WEB-04
+  test('um 400 com corpo JSON vira ErroApi com status 400 e o corpo em erro.corpo', async ({ page }) => {
+    await page.route('http://127.0.0.1:8081/auth/x', (rota) => rota.fulfill({
+      status: 400, json: { status: 400, mensagem: 'Dados inválidos.', campos: { email: 'm' } },
+    }));
+
+    expect(await chamarRequisicao(page, '/auth/x', { servidor: 'spring' })).toEqual({
+      ok: false, erroApi: true, status: 400, corpo: { status: 400, mensagem: 'Dados inválidos.', campos: { email: 'm' } },
+    });
+  });
+
+  // WEB-04, WEB-05: a body that is not JSON leaves corpo null and the error is still an ErroApi.
+  test('um 500 com corpo que não é JSON vira ErroApi com corpo null', async ({ page }) => {
+    await page.route('http://127.0.0.1:8081/auth/x', (rota) => rota.fulfill({ status: 500, body: 'erro html', contentType: 'text/html' }));
+
+    expect(await chamarRequisicao(page, '/auth/x', { servidor: 'spring' })).toEqual({
+      ok: false, erroApi: true, status: 500, corpo: null,
+    });
+  });
+
+  // WEB-05, ERR-07: a failed Spring call is still one ErroApi and one console.error line.
+  test('falha de rede numa chamada ao Spring vira ErroApi com status 0 e registra um console.error', async ({ page }) => {
+    const erros = registrosDeErro(page);
+    await page.route('http://127.0.0.1:8081/auth/x', (rota) => rota.abort());
+
+    expect(await chamarRequisicao(page, '/auth/x', { servidor: 'spring' })).toEqual({
+      ok: false, erroApi: true, status: 0, corpo: null,
+    });
+    await expect.poll(() => erros.length).toBe(1);
+  });
+});

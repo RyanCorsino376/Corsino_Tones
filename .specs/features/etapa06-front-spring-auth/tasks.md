@@ -138,12 +138,12 @@ T11
 
 **Done when**:
 
-- [ ] `requisicao('/x', {servidor: 'spring'})` fetches `http://127.0.0.1:8081/x`; without the option it still fetches `http://127.0.0.1:3000/x`
-- [ ] The `servidor` key is not passed to `fetch`
-- [ ] A `400` answer with body `{"campos":{"email":"m"}}` rejects with an `ErroApi` whose `status` is 400 and whose `corpo` equals that object; a `500` with a non-JSON body gives `corpo` `null`
-- [ ] The 8000 ms limit and the `console.error` log still apply to Spring calls
-- [ ] Gate passes: `npx playwright test tests/api-cliente.spec.js`
-- [ ] Test count: existing tests plus 4 new tests pass
+- [x] `requisicao('/x', {servidor: 'spring'})` fetches `http://127.0.0.1:8081/x`; without the option it still fetches `http://127.0.0.1:3000/x`
+- [x] The `servidor` key is not passed to `fetch`
+- [x] A `400` answer with body `{"campos":{"email":"m"}}` rejects with an `ErroApi` whose `status` is 400 and whose `corpo` equals that object; a `500` with a non-JSON body gives `corpo` `null`
+- [x] The 8000 ms limit and the `console.error` log still apply to Spring calls
+- [x] Gate passes: `npx playwright test tests/api-cliente.spec.js`
+- [x] Test count: existing 6 tests plus 6 new tests (11 -> 12 in the file) pass
 
 **Tests**: e2e
 **Gate**: quick
