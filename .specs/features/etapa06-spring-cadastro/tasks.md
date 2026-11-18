@@ -333,9 +333,9 @@ T14 -> T15 -> T16 -> T17 -> T18 -> T19
 
 **Done when**:
 
-- [ ] Record has no password or hash field
-- [ ] Gate passes: `cd backend && ./mvnw -q test`
-- [ ] Test count: 17 tests pass (no silent deletions)
+- [x] Record has no password or hash field
+- [x] Gate passes: `cd backend && ./mvnw -q test`
+- [x] Test count: 17 tests pass (no silent deletions)
 
 **Tests**: none
 **Gate**: full
