@@ -497,10 +497,10 @@ T14 -> T15 -> T16 -> T17 -> T18 -> T19
 
 **Done when**:
 
-- [ ] Secret API confirmed against the Spring Security 6.5 docs and the choice noted in the commit body (design risk)
-- [ ] An `ApplicationContextRunner` test: missing secret, blank secret and a 31-character secret each fail to start with a message containing `CORSINO_JWT_SECRET`; a 32-character secret starts
-- [ ] Gate passes: `cd backend && ./mvnw -q test`
-- [ ] Test count: 4 new tests pass
+- [x] Secret API confirmed against the Spring Security 7 docs (`NimbusJwtEncoder.withSecretKey`) and the choice noted in the commit body (design risk)
+- [x] An `ApplicationContextRunner` test: empty secret (the Surefire process always defines the variable, so "missing" is the empty value), blank secret and a 31-character secret each fail to start with a message containing `CORSINO_JWT_SECRET`; a 32-character secret starts
+- [x] Gate passes: `cd backend && ./mvnw -q test`
+- [x] Test count: 4 new tests pass
 
 **Tests**: integration
 **Gate**: full
