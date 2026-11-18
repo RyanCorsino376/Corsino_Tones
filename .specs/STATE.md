@@ -82,14 +82,16 @@ Extends AD-008 (which assumed one switch of `BASE_URL`): the migration is gradua
 
 ## Handoff
 
-**Feature**: `etapa05-loja` (stage 05), slices 1-6 implemented
-**Branch**: `feat/etapa05-loja`, not pushed
-**Phase**: all slices done and Verifier PASS (api-modulos, packs, carrinho, biblioteca, checkout iteration 3). auth closed by user decision after iteration 3 (P07e now killed).
+**Feature**: stage 06, server part: `etapa06-spring-cadastro` and `etapa06-front-spring-auth` (both implemented)
+**Branch**: `feat/etapa06-spring-cadastro`, not pushed, no PR
+**Phase**: both features done and Verifier PASS (`validation.md` in each folder). `etapa06-front-spring-auth` passed on iteration 2 after test-only fixes.
 
-**Gate**: `npx playwright test` = 327 passed (2026-11-11).
+**Gate**: `npx playwright test` = 354 passed; `cd backend && ./mvnw -q clean test` = 76 passed (2026-11-18). Node is not on PATH in this WSL shell: run `export NVM_DIR="$HOME/.nvm"; . "$NVM_DIR/nvm.sh"` first.
 
-**Next step**: decide about `frontend/servicos/carrinho.js` (whitespace only), commit the pending work, then open the PR. Minor library gaps are listed in `etapa05-biblioteca/validation.md`.
+**Next step**: open the PR for the branch, then start the next slice (packs and presets endpoints on Spring, then orders). The React part (`etapa06-react-catalogo`) has a spec only and no code.
 
-**Uncommitted**: `frontend/servicos/carrinho.js` (whitespace only, not from the specs; decide whether to discard), `.specs` edits of 2026-11-11 (STATE, biblioteca tasks and validation, checkout validation).
+**Open gaps (deferred by the user)**: non-blocking gaps of `etapa06-spring-cadastro/validation.md`: SRV-02 (port asserted by property only), SRV-03 (layer rule only checks the controller), LOG-09 (absent secret tested as empty), SEED-04 (seed file read-only check), M8 (dummy hash validity).
 
-**Dev servers**: not running.
+**Uncommitted**: `.specs/LESSONS.md` and `.specs/lessons.json` (user's earlier edits mixed with lessons L-023 to L-031 from the Verifiers; decide before committing), `.specs/features/etapa06-react-catalogo/` (untracked).
+
+**Dev servers**: not running. Start order and commands: README, section "Como executar". Spring needs `CORSINO_JWT_SECRET` (32+ characters).
