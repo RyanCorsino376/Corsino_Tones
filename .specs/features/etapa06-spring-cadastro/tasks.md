@@ -199,10 +199,10 @@ T14 -> T15 -> T16 -> T17 -> T18 -> T19
 
 **Done when**:
 
-- [ ] Preflight `OPTIONS /auth/cadastro` and `/auth/login` from each allowed origin answers 200 with `Access-Control-Allow-Origin` equal to that origin
-- [ ] Preflight from `http://evil.example` and from `http://localhost:3000` is rejected (403, no allow-origin header)
-- [ ] Gate passes: `cd backend && ./mvnw -q test`
-- [ ] Test count: 4 new tests pass
+- [x] Preflight `OPTIONS /auth/cadastro` and `/auth/login` from each allowed origin answers 200 with `Access-Control-Allow-Origin` equal to that origin
+- [x] Preflight from `http://evil.example` and from `http://localhost:3000` is rejected (403, no allow-origin header)
+- [x] Gate passes: `cd backend && ./mvnw -q test`
+- [x] Test count: 4 new tests pass
 
 **Tests**: integration
 **Gate**: full
