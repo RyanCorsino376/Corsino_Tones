@@ -53,4 +53,30 @@ class SegurancaConfigTest {
 				.andExpect(status().isForbidden())
 				.andExpect(header().doesNotExist("Access-Control-Allow-Origin"));
 	}
+
+	// WEB-13: the front end also runs on 127.0.0.1 (Playwright and the dev server), a different origin from localhost.
+	@Test
+	void legadoEm127PodeFazerPreflightDosDoisEndpoints() throws Exception {
+		for (String rota : new String[] {"/auth/cadastro", "/auth/login"}) {
+			preflight(rota, "http://127.0.0.1:8080")
+					.andExpect(status().isOk())
+					.andExpect(header().string("Access-Control-Allow-Origin", "http://127.0.0.1:8080"));
+		}
+	}
+
+	@Test
+	void viteEm127PodeFazerPreflightDosDoisEndpoints() throws Exception {
+		for (String rota : new String[] {"/auth/cadastro", "/auth/login"}) {
+			preflight(rota, "http://127.0.0.1:5173")
+					.andExpect(status().isOk())
+					.andExpect(header().string("Access-Control-Allow-Origin", "http://127.0.0.1:5173"));
+		}
+	}
+
+	@Test
+	void outraPortaEm127ERejeitada() throws Exception {
+		preflight("/auth/login", "http://127.0.0.1:3000")
+				.andExpect(status().isForbidden())
+				.andExpect(header().doesNotExist("Access-Control-Allow-Origin"));
+	}
 }

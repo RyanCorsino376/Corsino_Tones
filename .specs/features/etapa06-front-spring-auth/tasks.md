@@ -83,10 +83,10 @@ T11
 
 **Done when**:
 
-- [ ] Preflight `OPTIONS /auth/login` and `/auth/cadastro` from `http://127.0.0.1:8080` and from `http://127.0.0.1:5173` answers 200 with `Access-Control-Allow-Origin` equal to that origin
-- [ ] The two `localhost` origins still pass; `http://evil.example` and `http://127.0.0.1:3000` are refused (403, no allow-origin header)
-- [ ] Gate passes: `cd backend && ./mvnw -q clean test`
-- [ ] Test count: 73 plus 4 new tests pass
+- [x] Preflight `OPTIONS /auth/login` and `/auth/cadastro` from `http://127.0.0.1:8080` and from `http://127.0.0.1:5173` answers 200 with `Access-Control-Allow-Origin` equal to that origin
+- [x] The two `localhost` origins still pass; `http://evil.example` and `http://127.0.0.1:3000` are refused (403, no allow-origin header)
+- [x] Gate passes: `cd backend && ./mvnw -q clean test`
+- [x] Test count: 73 plus 3 new tests (5 preflight scenarios) pass
 
 **Tests**: integration
 **Gate**: full

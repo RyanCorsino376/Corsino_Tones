@@ -15,8 +15,10 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @Configuration
 public class SegurancaConfig {
 
-	// Legacy front end (8080) and the Vite dev server (5173).
-	private static final List<String> ORIGENS_PERMITIDAS = List.of("http://localhost:8080", "http://localhost:5173");
+	// Legacy front end (8080) and the Vite dev server (5173), on localhost and on 127.0.0.1
+	// (the browser treats them as different origins).
+	private static final List<String> ORIGENS_PERMITIDAS = List.of("http://localhost:8080", "http://localhost:5173",
+			"http://127.0.0.1:8080", "http://127.0.0.1:5173");
 
 	// Stateless JSON API without cookies, so CSRF protection is off. No route needs a token yet.
 	@Bean
