@@ -287,11 +287,11 @@ T11
 
 **Done when**:
 
-- [ ] A valid submit asserts exactly one `POST` to `/auth/cadastro` (or `/auth/login`) on 8081 and none to the mock
-- [ ] An invalid submit still sends no request to either server
-- [ ] All validation-message tests keep their assertions
-- [ ] Gate passes: `npx playwright test tests/login-validacao.spec.js`
-- [ ] Test count: unchanged from the baseline of this file
+- [x] A valid submit asserts exactly one `POST` to `/auth/cadastro` (or `/auth/login`) on 8081 and none to the mock
+- [x] An invalid submit still sends no request to either server
+- [x] All validation-message tests keep their assertions
+- [x] Gate passes: `npx playwright test tests/login-validacao.spec.js`
+- [x] Test count: unchanged from the baseline of this file
 
 **Tests**: e2e
 **Gate**: quick
