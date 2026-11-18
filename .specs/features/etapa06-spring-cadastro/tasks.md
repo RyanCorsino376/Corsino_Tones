@@ -472,9 +472,9 @@ T14 -> T15 -> T16 -> T17 -> T18 -> T19
 
 **Done when**:
 
-- [ ] JSON has exactly `token` and `usuario`
-- [ ] Gate passes: `cd backend && ./mvnw -q test`
-- [ ] Test count: all earlier tests pass (no silent deletions)
+- [x] JSON has exactly `token` and `usuario`
+- [x] Gate passes: `cd backend && ./mvnw -q test`
+- [x] Test count: all earlier tests pass (no silent deletions)
 
 **Tests**: none
 **Gate**: full
