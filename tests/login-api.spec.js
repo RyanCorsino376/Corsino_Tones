@@ -4,9 +4,13 @@ const path = require('path');
 const { test, expect } = require('@playwright/test');
 
 // Tests derive from .specs/features/etapa05-auth/spec.md: AUTH-*, PROT-02..04,
-// EDGE-02 (login, T5) and CAD-* (registration, T6).
+// EDGE-02 (login, T5) and CAD-* (registration, T6), now served by Spring
+// (.specs/features/etapa06-front-spring-auth/spec.md: WEB-01..03, WEB-05, WEB-07..09,
+// WEB-11, WEB-12). Tests that expect a success or a refusal run against the real
+// Spring server started by playwright.config.js; those that need a failure or a
+// pending request intercept it.
 
-const API_USUARIOS = 'http://127.0.0.1:3000/usuarios';
+const API_AUTH = 'http://127.0.0.1:8081/auth';
 const CHAVE = 'corsino:sessao';
 const MSG_CREDENCIAIS = 'E-mail ou senha incorretos.';
 const MSG_CONEXAO = 'Não foi possível conectar ao servidor. Tente novamente.';
@@ -19,11 +23,11 @@ async function enviarLogin(page, email, senha) {
   await page.locator('#form-login button[type="submit"]').click();
 }
 
-/** Holds every /usuarios request until the returned function is called with 'continue' or 'abort'. */
-async function segurarUsuarios(page) {
+/** Holds every Spring auth request until the returned function is called with 'continue' or 'abort'. */
+async function segurarAuth(page) {
   let decidir;
   const decisao = new Promise((resolver) => { decidir = resolver; });
-  await page.route(`${API_USUARIOS}**`, async (rota) => {
+  await page.route(`${API_AUTH}/**`, async (rota) => {
     const acao = await decisao;
     return acao === 'abort' ? rota.abort() : rota.continue();
   });
@@ -34,24 +38,27 @@ test.describe('etapa05-auth T5 - login through the API', () => {
   // AUTH-02, AUTH-03, PROT-02
   test('e-mail e senha corretos abrem a sessão e levam à página inicial', async ({ page }) => {
     await page.goto('login.html');
-    const pedido = page.waitForRequest((req) => req.url().startsWith(`${API_USUARIOS}?`));
+    const pedido = page.waitForRequest((req) => req.url() === `${API_AUTH}/login`);
 
     await enviarLogin(page, 'ryan@exemplo.com', 'teste123');
 
-    expect(new URL((await pedido).url()).search).toBe('?email=ryan%40exemplo.com');
+    const req = await pedido;
+    expect(req.method()).toBe('POST');
+    expect(req.postDataJSON()).toEqual({ email: 'ryan@exemplo.com', senha: 'teste123' });
     await expect(page).toHaveURL(/\/frontend\/index\.html$/);
     expect(JSON.parse(await lerSessao(page))).toEqual({ id: 1, nome: 'Ryan Corsino', email: 'ryan@exemplo.com' });
   });
 
-  // AUTH-02, EDGE-01: the e-mail is sent trimmed and lowercased.
+  // AUTH-02, EDGE-01, WEB-18: the page sends the e-mail as typed; Spring lower-cases it, so the account is found.
   test('o e-mail digitado com maiúsculas e espaços encontra a conta', async ({ page }) => {
     await page.goto('login.html');
-    const pedido = page.waitForRequest((req) => req.url().startsWith(`${API_USUARIOS}?`));
+    const pedido = page.waitForRequest((req) => req.url() === `${API_AUTH}/login`);
 
     await enviarLogin(page, '  RYAN@Exemplo.com ', 'teste123');
 
-    expect(new URL((await pedido).url()).search).toBe('?email=ryan%40exemplo.com');
+    expect((await pedido).postDataJSON().email.trim()).toBe('RYAN@Exemplo.com');
     await expect(page).toHaveURL(/\/frontend\/index\.html$/);
+    expect(JSON.parse(await lerSessao(page))).toEqual({ id: 1, nome: 'Ryan Corsino', email: 'ryan@exemplo.com' });
   });
 
   // PROT-02
@@ -91,7 +98,7 @@ test.describe('etapa05-auth T5 - login through the API', () => {
 
   // AUTH-05
   test('falha de comunicação mostra o alerta de conexão e mantém os valores', async ({ page }) => {
-    await page.route(`${API_USUARIOS}**`, (rota) => rota.abort());
+    await page.route(`${API_AUTH}/**`, (rota) => rota.abort());
     await page.goto('login.html');
     await enviarLogin(page, 'ryan@exemplo.com', 'teste123');
 
@@ -103,7 +110,7 @@ test.describe('etapa05-auth T5 - login through the API', () => {
 
   // AUTH-06, EDGE-02
   test('enquanto espera, o botão fica desativado com "Entrando..." e volta ao normal após falha', async ({ page }) => {
-    const decidir = await segurarUsuarios(page);
+    const decidir = await segurarAuth(page);
     await page.goto('login.html');
     await enviarLogin(page, 'ryan@exemplo.com', 'teste123');
 
@@ -166,16 +173,20 @@ async function enviarCadastro(page, nome, email, senha) {
 
 test.describe('etapa05-auth T6 - registration through the API', () => {
   // CAD-02, CAD-04, PROT-02
-  test('um cadastro novo cria um único registro, abre a sessão e leva à página inicial', async ({ page, request }) => {
+  test('um cadastro novo envia um único POST, abre a sessão e leva à página inicial', async ({ page, request }) => {
     const email = emailUnico();
+    const posts = [];
+    page.on('request', (req) => { if (req.method() === 'POST' && req.url() === `${API_AUTH}/cadastro`) posts.push(req.postDataJSON()); });
     await page.goto('login.html');
     await enviarCadastro(page, 'Ana Teste', email, 'senha1234');
 
     await expect(page).toHaveURL(/\/frontend\/index\.html$/);
-    const registros = await (await request.get(`${API_USUARIOS}?email=${encodeURIComponent(email)}`)).json();
-    expect(registros).toHaveLength(1);
-    expect(registros[0]).toMatchObject({ nome: 'Ana Teste', email, senha: 'senha1234' });
-    expect(JSON.parse(await lerSessao(page))).toEqual({ id: registros[0].id, nome: 'Ana Teste', email });
+    expect(posts).toEqual([{ nome: 'Ana Teste', email, senha: 'senha1234' }]);
+    const sessao = JSON.parse(await lerSessao(page));
+    expect(sessao).toEqual({ id: expect.any(Number), nome: 'Ana Teste', email });
+    // The account exists on the server: it signs in with the same password and the same id.
+    const login = await request.post(`${API_AUTH}/login`, { data: { email, senha: 'senha1234' } });
+    expect((await login.json()).usuario.id).toBe(sessao.id);
   });
 
   // PROT-02
@@ -185,8 +196,8 @@ test.describe('etapa05-auth T6 - registration through the API', () => {
     await expect(page).toHaveURL(/\/frontend\/biblioteca\.html$/);
   });
 
-  // CAD-03
-  test('um e-mail já cadastrado é apontado no campo e nenhum POST é enviado', async ({ page }) => {
+  // CAD-03, WEB-09: the server answers 409; the page points at the e-mail field.
+  test('um e-mail já cadastrado é apontado no campo, com um único POST e sem sessão', async ({ page }) => {
     const posts = [];
     page.on('request', (req) => { if (req.method() === 'POST') posts.push(req.url()); });
     await page.goto('login.html');
@@ -196,14 +207,14 @@ test.describe('etapa05-auth T6 - registration through the API', () => {
     await expect(campo).toHaveAttribute('aria-invalid', 'true');
     const idMensagem = await campo.getAttribute('aria-describedby');
     await expect(page.locator(`#${idMensagem}`)).toHaveText(MSG_EMAIL_EM_USO);
-    expect(posts).toEqual([]);
+    expect(posts).toEqual([`${API_AUTH}/cadastro`]);
     expect(await lerSessao(page)).toBeNull();
     await expect(page).toHaveURL(/\/frontend\/login\.html$/);
   });
 
   // CAD-05
   test('falha no POST mostra o alerta de conexão e mantém os três valores', async ({ page }) => {
-    await page.route(`${API_USUARIOS}**`, (rota) => (rota.request().method() === 'POST' ? rota.abort() : rota.continue()));
+    await page.route(`${API_AUTH}/**`, (rota) => rota.abort());
     await page.goto('login.html');
     const email = emailUnico();
     await enviarCadastro(page, 'Ana Teste', email, 'senha1234');
@@ -215,17 +226,9 @@ test.describe('etapa05-auth T6 - registration through the API', () => {
     expect(await lerSessao(page)).toBeNull();
   });
 
-  // CAD-05: the duplicate check failing is also a communication failure.
-  test('falha na verificação do e-mail mostra o mesmo alerta de conexão', async ({ page }) => {
-    await page.route(`${API_USUARIOS}**`, (rota) => rota.abort());
-    await page.goto('login.html');
-    await enviarCadastro(page, 'Ana Teste', emailUnico(), 'senha1234');
-    await expect(page.locator('#form-cadastro [role="alert"]')).toHaveText(MSG_CONEXAO);
-  });
-
   // CAD-06, EDGE-02
   test('enquanto espera, o botão fica desativado com "Cadastrando..." e volta ao normal após falha', async ({ page }) => {
-    const decidir = await segurarUsuarios(page);
+    const decidir = await segurarAuth(page);
     await page.goto('login.html');
     await enviarCadastro(page, 'Ana Teste', emailUnico(), 'senha1234');
 

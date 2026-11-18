@@ -257,13 +257,13 @@ T11
 
 **Done when**:
 
-- [ ] The successful login asserts a `POST` to `http://127.0.0.1:8081/auth/login` whose JSON body has `email` and `senha`, and the session equals `{id: 1, nome: 'Ryan Corsino', email: 'ryan@exemplo.com'}`
-- [ ] The `?voltar=` redirects, history, pending-button, single-alert and already-signed-in tests keep their assertions
-- [ ] Duplicate registration is driven by a `409` answer and shows "Este e-mail já está cadastrado." on the e-mail field
-- [ ] Communication failures abort `**/auth/**` on 8081 and show "Não foi possível conectar ao servidor. Tente novamente."
-- [ ] The file's test count is unchanged (`grep -c "test("` before and after) except tests that only existed for the mock's two-step e-mail check, each removed one named in the commit body with the reason
-- [ ] Gate passes: `npx playwright test tests/login-api.spec.js`
-- [ ] Test count: stated in the commit body
+- [x] The successful login asserts a `POST` to `http://127.0.0.1:8081/auth/login` whose JSON body has `email` and `senha`, and the session equals `{id: 1, nome: 'Ryan Corsino', email: 'ryan@exemplo.com'}`
+- [x] The `?voltar=` redirects, history, pending-button, single-alert and already-signed-in tests keep their assertions
+- [x] Duplicate registration is driven by a `409` answer and shows "Este e-mail já está cadastrado." on the e-mail field
+- [x] Communication failures abort `**/auth/**` on 8081 and show "Não foi possível conectar ao servidor. Tente novamente."
+- [x] The file's test count is unchanged (`grep -c "test("` before and after) except tests that only existed for the mock's two-step e-mail check, each removed one named in the commit body with the reason
+- [x] Gate passes: `npx playwright test tests/login-api.spec.js`
+- [x] Test count: 19 tests pass in the file (20 before; the removed one is the mock-only "duplicate check failing" test)
 
 **Tests**: e2e
 **Gate**: quick
