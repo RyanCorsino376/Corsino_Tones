@@ -122,7 +122,7 @@ No relationships yet. E-mail uniqueness is the repository's rule, on the normali
 | ------- | -------- | ------ | ---------- |
 | Plain passwords in the seed | `mock/db.seed.json` | Mock-only weakness, already recorded in `frontend/servicos/auth.js:3` | Server hashes on load and never writes the seed (SEED-01, SEED-04) |
 | Login timing differs for unknown e-mail (no hash computed) | `AuthService.entrar` | Lets an attacker probe which e-mails exist | Compare against a fixed dummy hash when the e-mail is unknown; covered by a test that the encoder is called in both paths |
-| `NimbusJwtEncoder` secret-key API differs by Spring Security version (`withSecretKey` is documented since 7.0; Boot 3.5 ships 6.5) | `JwtConfig` | Wrong constructor would not compile | Confirm against the 6.5 docs at T16; fallback `new NimbusJwtEncoder(new ImmutableSecret<>(key))`. Flagged uncertain, not assumed |
+| Boot 4.0.9 ships Spring Security 7, where `NimbusJwtEncoder.withSecretKey` is documented (since 7.0); test starters and some test packages were renamed in Boot 4 | `JwtConfig`, tests | A wrong class or package name would not compile | Confirm names against the Boot 4 and Security 7 docs at T5, T8 and T16 |
 | Jackson accepts unknown or duplicate fields silently | DTOs | Extra fields ignored | Accepted: the front end sends only the three fields; not a spec requirement |
 | No test suite exists in `backend/` yet | whole part | none | Created here with the user's go-ahead (spec assumption); user approved the spec |
 
@@ -132,7 +132,7 @@ No relationships yet. E-mail uniqueness is the repository's rule, on the normali
 
 | Decision | Choice | Rationale |
 | -------- | ------ | --------- |
-| Spring Boot line | 3.5.x (latest 3.5 patch from Context7: 3.5.16) | The spec fixes 3.5.x; 4.x exists but the plan and docs were written against 3.x |
+| Spring Boot line | 4.0.9 (changed from 3.5.x during T1) | Initializr only offers 4.x and 3.5 is out of open-source support; Spring Security 7 has `withSecretKey` |
 | Starters | `web`, `validation`, `security`, `test`, `spring-security-test`, plus `spring-security-oauth2-jose` | Security brings BCrypt and the filter chain; oauth2-jose brings the JWT encoder/decoder |
 | Dummy hash for unknown e-mails | Compute one at startup and compare against it | Equalises login time (see Risks) |
 

@@ -81,7 +81,7 @@ T14 -> T15 -> T16 -> T17 -> T18 -> T19
 
 ### T1: Create the Maven project and a smoke test
 
-**What**: Generate `backend/` with the Maven Wrapper, Spring Boot 3.5.x, Java 21 and the starters of the design; port 8081; ignore `backend/target/`.
+**What**: Generate `backend/` with the Maven Wrapper, Spring Boot 4.0.9, Java 21 and the starters of the design; port 8081; ignore `backend/target/`.
 **Where**: `backend/pom.xml`
 **Depends on**: None
 **Reuses**: `.gitignore` conventions
@@ -94,11 +94,11 @@ T14 -> T15 -> T16 -> T17 -> T18 -> T19
 
 **Done when**:
 
-- [ ] `backend/mvnw` exists and `./mvnw -v` prints Java 21
-- [ ] `application.properties` sets `server.port=8081`; `src/test/resources/application.properties` sets a fixed `corsino.jwt.secret` of 32+ characters
-- [ ] A test asserts the context loads and `server.port` is `8081`
-- [ ] Gate passes: `cd backend && ./mvnw -q test`
-- [ ] Test count: 1 test passes
+- [x] `backend/mvnw` exists and `./mvnw -v` prints Java 21
+- [x] `application.properties` sets `server.port=8081`; `application.properties` reads `corsino.jwt.secret` from `CORSINO_JWT_SECRET`, and the Surefire plugin sets a fixed 32+ character value for tests (a test `application.properties` would shadow the main one)
+- [x] A test asserts the context loads and `server.port` is `8081`
+- [x] Gate passes: `cd backend && ./mvnw -q test`
+- [x] Test count: 1 test passes
 
 **Tests**: integration
 **Gate**: full

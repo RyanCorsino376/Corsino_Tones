@@ -35,7 +35,7 @@ This part creates the Spring Boot project in `backend/` and builds the registrat
 | Architecture | MVC as a REST API: `controller` (HTTP only), `service` (rules), `repository` (storage), `model` (entities), `dto` (JSON records); the View is the React app | User: "arquitetura mvc"; plan: Spring MVC REST, no server-side HTML | y |
 | How the mock is used | `UsuarioRepository` interface with an in-memory implementation, seeded at startup from `mock/db.seed.json` | User chose option A | y |
 | Maven | Maven Wrapper (`mvnw`) inside `backend/`, nothing installed system-wide | User approved the download | y |
-| Package and artifact | `com.corsinotones`, artifact `backend`, Spring Boot 3.5.x, Java 21 | JDK 21 is installed; exact version is fixed at design time against the docs | n |
+| Package and artifact | `com.corsinotones`, artifact `backend`, Spring Boot 4.0.9, Java 21 | JDK 21 is installed; Spring Initializr only offers Boot 4.x today and 3.5 is past its open-source support window, so 4.0.9 replaces the 3.5.x first assumed (T1) | y |
 | Seed location | Property `corsino.seed.arquivo`, default `../mock/db.seed.json`; WHEN the file is missing the app starts with no users and logs a warning | Works from `backend/`; tests override it with a fixture | n |
 | Seeded passwords | The seed holds plain text (`teste123`); the loader hashes each with BCrypt before storing | Mock-only weakness recorded in `servicos/auth.js`; the server never keeps plain text | n |
 | Registration rules | Same as the legacy form: name trimmed, at least 2 characters; e-mail trimmed, lower-cased, matching `^[^\s@]+@[^\s@]+\.[^\s@]+$`; password at least 8 characters | Parity with `frontend/paginas/login.js` | n |
