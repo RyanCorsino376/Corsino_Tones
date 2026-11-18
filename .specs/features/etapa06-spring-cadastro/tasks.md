@@ -276,11 +276,11 @@ T14 -> T15 -> T16 -> T17 -> T18 -> T19
 
 **Done when**:
 
-- [ ] A test-only controller (under `src/test`) proves: invalid `@Valid` body -> 400 with `campos` per field; broken JSON -> 400 "Corpo da requisição inválido." and empty `campos`; thrown `EmailEmUso` -> 409; thrown `CredenciaisInvalidas` -> 401 with empty `campos`; thrown `RuntimeException("segredo")` -> 500 "Erro interno do servidor." with no "segredo" or stack trace in the body
-- [ ] Unknown route -> 404 "Rota não encontrada."; wrong method on a known route -> 405 "Método não permitido."
-- [ ] Every body has the keys `status`, `mensagem`, `campos`
-- [ ] Gate passes: `cd backend && ./mvnw -q test`
-- [ ] Test count: 8 new tests pass
+- [x] A test-only controller (under `src/test`) proves: invalid `@Valid` body -> 400 with `campos` per field; broken JSON -> 400 "Corpo da requisição inválido." and empty `campos`; thrown `EmailEmUso` -> 409; thrown `CredenciaisInvalidas` -> 401 with empty `campos`; thrown `RuntimeException("segredo")` -> 500 "Erro interno do servidor." with no "segredo" or stack trace in the body
+- [x] Unknown route -> 404 "Rota não encontrada."; wrong method on a known route -> 405 "Método não permitido."
+- [x] Every body has the keys `status`, `mensagem`, `campos`
+- [x] Gate passes: `cd backend && ./mvnw -q test`
+- [x] Test count: 8 new tests pass
 
 **Tests**: integration
 **Gate**: full
