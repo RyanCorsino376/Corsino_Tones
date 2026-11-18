@@ -304,13 +304,13 @@ T14 -> T15 -> T16 -> T17 -> T18 -> T19
 
 **Done when**:
 
-- [ ] Name: `"A"` and 101 characters invalid; `"Al"` and 100 valid; `"   A  "` invalid (trimmed); `null` invalid, each with the CAD-04 message
-- [ ] E-mail: `"a@b"` , `"a b@c.d"`, 255 characters invalid with the CAD-05 message; `"x@y.z"` valid; `"  Ana@Y.Z "` is stored trimmed; `null` invalid
-- [ ] Password: 7 characters invalid; 8 and 72 valid; 73 invalid; `null` invalid, each with the CAD-06 message
-- [ ] A string embedding a valid e-mail inside invalid text (`"ruim a@b.c ruim"`) is rejected (anchored regex)
-- [ ] All three fields invalid -> three violations, one per field
-- [ ] Gate passes: `cd backend && ./mvnw -q test -Dtest=CadastroRequestTest`
-- [ ] Test count: 12 new tests pass
+- [x] Name: `"A"` and 101 characters invalid; `"Al"` and 100 valid; `"   A  "` invalid (trimmed); `null` invalid, each with the CAD-04 message
+- [x] E-mail: `"a@b"` , `"a b@c.d"`, 255 characters invalid with the CAD-05 message; `"x@y.z"` valid; `"  Ana@Y.Z "` is stored trimmed; `null` invalid
+- [x] Password: 7 characters invalid; 8 and 72 valid; 73 invalid; `null` invalid, each with the CAD-06 message
+- [x] A string embedding a valid e-mail inside invalid text (`"ruim a@b.c ruim"`) is rejected (anchored regex)
+- [x] All three fields invalid -> three violations, one per field
+- [x] Gate passes: `cd backend && ./mvnw -q test -Dtest=CadastroRequestTest`
+- [x] Test count: 12 new tests pass
 
 **Tests**: unit
 **Gate**: quick
