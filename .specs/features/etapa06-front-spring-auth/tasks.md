@@ -110,11 +110,11 @@ T11
 
 **Done when**:
 
-- [ ] With nothing on 8081, `npx playwright test tests/sessao.spec.js` starts Spring (log shows the Spring banner or port 8081 listening) and passes
-- [ ] With Spring already running on 8081, the same command reuses it (no second start)
-- [ ] The secret in the config is a test-only literal of 32+ characters and no real secret is committed
-- [ ] Gate passes: `npx playwright test`
-- [ ] Test count: all baseline tests pass (no silent deletions)
+- [x] With nothing on 8081, `npx playwright test tests/sessao.spec.js` starts Spring (log shows the Spring banner or port 8081 listening) and passes
+- [x] With Spring already running on 8081, the same command reuses it (no second start)
+- [x] The secret in the config is a test-only literal of 32+ characters and no real secret is committed
+- [x] Gate passes: `npx playwright test`
+- [x] Test count: all baseline tests pass (no silent deletions)
 
 **Tests**: none
 **Gate**: full
