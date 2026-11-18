@@ -339,10 +339,10 @@ T11
 
 **Done when**:
 
-- [ ] `grep -rn "usuarios" frontend --include=*.js --include=*.html` finds no import of the module and no request path `/usuarios`
-- [ ] `tests/modulos.spec.js` still passes (it checks the module layering)
-- [ ] Gate passes: `npx playwright test` (full suite) and `cd backend && ./mvnw -q clean test`
-- [ ] Test count: baseline minus the 5 tests of the removed spec, plus the new ones of T3 to T9; the commit body states the total
+- [x] `grep -rn "usuarios" frontend --include=*.js --include=*.html` finds no import of the module and no request path `/usuarios`
+- [x] `tests/modulos.spec.js` still passes (it checks the module layering)
+- [x] Gate passes: `npx playwright test` (full suite) and `cd backend && ./mvnw -q clean test`
+- [x] Test count: 341 Playwright tests pass (327 - 5 removed with `api-usuarios.spec.js` - 1 removed in T7 + 6 in T3 + 8 in T4 + 2 net in T5 + 4 in T6); 76 backend tests pass
 
 **Tests**: none
 **Gate**: build
