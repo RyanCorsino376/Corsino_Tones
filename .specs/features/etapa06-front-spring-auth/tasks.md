@@ -167,13 +167,13 @@ T11
 
 **Done when**:
 
-- [ ] `entrarNoServidor` sends `POST http://127.0.0.1:8081/auth/login` with `Content-Type: application/json` and a body with exactly `email` and `senha`, and resolves with the answer
-- [ ] `cadastrarNoServidor` sends `POST /auth/cadastro` with exactly `nome`, `email`, `senha`
-- [ ] A password `"  espacos  "` and an e-mail `" Ana@X.com "` reach the body unchanged
-- [ ] Neither function calls the mock (no request to port 3000)
-- [ ] A `401`, `409`, `400` and a network abort each reject with an `ErroApi` carrying that status (0 for the abort)
-- [ ] Gate passes: `npx playwright test tests/api-auth.spec.js`
-- [ ] Test count: 8 new tests pass
+- [x] `entrarNoServidor` sends `POST http://127.0.0.1:8081/auth/login` with `Content-Type: application/json` and a body with exactly `email` and `senha`, and resolves with the answer
+- [x] `cadastrarNoServidor` sends `POST /auth/cadastro` with exactly `nome`, `email`, `senha`
+- [x] A password `"  espacos  "` and an e-mail `" Ana@X.com "` reach the body unchanged
+- [x] Neither function calls the mock (no request to port 3000)
+- [x] A `401`, `409`, `400` and a network abort each reject with an `ErroApi` carrying that status (0 for the abort)
+- [x] Gate passes: `npx playwright test tests/api-auth.spec.js`
+- [x] Test count: 8 new tests pass
 
 **Tests**: e2e
 **Gate**: quick
