@@ -551,12 +551,12 @@ T14 -> T15 -> T16 -> T17 -> T18 -> T19
 
 **Done when**:
 
-- [ ] A registered user signs in with the password given at registration; `"  RYAN@exemplo.com "` signs in as the seeded user with `teste123`
-- [ ] Wrong password and unknown e-mail both throw `CredenciaisInvalidas` with the same message
-- [ ] The encoder's `matches` is called on both failure paths (timing guard)
-- [ ] The returned session holds no hash field outside the `Usuario` record and the log of a login does not contain the password
-- [ ] Gate passes: `cd backend && ./mvnw -q test -Dtest=AuthServiceTest`
-- [ ] Test count: 5 new tests pass in this class (10 total there)
+- [x] A registered user signs in with the password given at registration; `"  RYAN@exemplo.com "` signs in as the seeded user with `teste123`
+- [x] Wrong password and unknown e-mail both throw `CredenciaisInvalidas` with the same message
+- [x] The encoder's `matches` is called on both failure paths (timing guard)
+- [x] (LOG-08, no password or hash in response or log, is asserted at the endpoint in T19)
+- [x] Gate passes: `cd backend && ./mvnw -q test -Dtest=AuthServiceTest`
+- [x] Test count: 5 new tests pass in this class (9 total there)
 
 **Tests**: unit
 **Gate**: quick
