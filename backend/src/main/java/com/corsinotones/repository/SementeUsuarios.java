@@ -28,10 +28,11 @@ public class SementeUsuarios implements ApplicationRunner {
 	private final Path arquivo;
 
 	public SementeUsuarios(UsuarioRepository repositorio, PasswordEncoder encoder,
-			@Value("${corsino.seed.arquivo:../mock/db.seed.json}") Path arquivo) {
+			@Value("${corsino.seed.arquivo:../mock/db.seed.json}") String arquivo) {
 		this.repositorio = repositorio;
 		this.encoder = encoder;
-		this.arquivo = arquivo;
+		// Path.of, not a Path parameter: Spring would resolve a relative Path against the servlet context and reject "..".
+		this.arquivo = Path.of(arquivo);
 	}
 
 	@Override

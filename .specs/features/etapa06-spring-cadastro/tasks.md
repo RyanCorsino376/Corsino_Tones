@@ -663,3 +663,9 @@ Execution is strictly sequential. 19 tasks pack into three ~7-task batches: Phas
 ## Requirement Coverage
 
 SRV-01, SRV-02: T1 · SRV-03: T2, T3, T12 · SRV-04: T5 · SRV-05: T7, T8 · CAD-01: T10, T11, T12 · CAD-02: T10, T12 · CAD-03: T11 · CAD-04 to CAD-08: T9, T12 · CAD-09: T8, T12 · CAD-10: T6, T8, T11, T12 · CAD-11: T3, T4, T11 · CAD-12: T4, T11 · LOG-01: T15, T19 · LOG-02: T14, T18, T19 · LOG-03: T18, T19 · LOG-04: T16, T17 · LOG-05: T6, T8, T18, T19 · LOG-06: T14, T19 · LOG-07: T8, T19 · LOG-08: T18, T19 · LOG-09: T16 · SEED-01 to SEED-04: T13.
+
+---
+
+## Fixes found after the last task
+
+- **T13 (seed path)**: found by running the packaged app. The default `../mock/db.seed.json` failed to convert to a `Path` under a real embedded server (the mock web environment of the other tests hid it). Fixed by reading the property as `String` and calling `Path.of`; regression test `SementeUsuariosServidorRealTest` (`RANDOM_PORT`).
