@@ -387,14 +387,14 @@ T14 -> T15 -> T16 -> T17 -> T18 -> T19
 
 **Done when**:
 
-- [ ] Valid body -> 201 with exactly `id`, `nome`, `email` (no `senha` or hash key anywhere in the body)
-- [ ] Each invalid field, all fields invalid, a missing field and a `null` field -> 400 with the documented `campos`
-- [ ] Broken JSON -> 400 "Corpo da requisição inválido."
-- [ ] Repeating an e-mail in another case -> 409 "Este e-mail já está cadastrado."
-- [ ] The captured application log of a registration does not contain the plain password or its hash (CAD-02)
-- [ ] Structure test: the five packages exist under `com.corsinotones`, and `AuthController` has no constructor parameter or field from `repository`
-- [ ] Gate passes: `cd backend && ./mvnw -q test`
-- [ ] Test count: 8 new tests pass
+- [x] Valid body -> 201 with exactly `id`, `nome`, `email` (no `senha` or hash key anywhere in the body)
+- [x] Each invalid field, all fields invalid, a missing field and a `null` field -> 400 with the documented `campos`
+- [x] Broken JSON -> 400 "Corpo da requisição inválido."
+- [x] Repeating an e-mail in another case -> 409 "Este e-mail já está cadastrado."
+- [x] The captured application log of a registration does not contain the plain password or its hash (CAD-02)
+- [x] Structure test: the five packages exist under `com.corsinotones`, and `AuthController` has no constructor parameter or field from `repository`
+- [x] Gate passes: `cd backend && ./mvnw -q test`
+- [x] Test count: 10 new tests pass
 
 **Tests**: integration
 **Gate**: full
