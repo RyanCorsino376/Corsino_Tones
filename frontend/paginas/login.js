@@ -1,6 +1,6 @@
 // Entry module for login.html: card flip, field validation, and sending both
 // forms to the users API (etapa05-auth).
-import { cadastrar, CredenciaisInvalidas, EmailEmUso, entrar } from '../servicos/auth.js';
+import { cadastrar, CredenciaisInvalidas, DadosInvalidos, EmailEmUso, entrar } from '../servicos/auth.js';
 import { abrirSessao, destinoSeguro, usuarioAtual } from '../servicos/sessao.js';
 import { atualizarContadorCarrinho } from '../ui/cabecalho.js';
 
@@ -113,6 +113,27 @@ atualizarContadorCarrinho();
         if (alerta) alerta.remove();
     }
 
+    // Field names of the Spring error body, in the order the fields appear in each form.
+    const CAMPOS_DO_SERVIDOR = {
+        'form-login': { email: 'email', senha: 'senha' },
+        'form-cadastro': { nome: 'cadastro-nome', email: 'cadastro-email', senha: 'cadastro-senha' },
+    };
+
+    /** Shows each server message on its field and focuses the first one. Returns false when none matched a field. */
+    function mostrarErrosDoServidor(form, campos) {
+        const campoPorNome = CAMPOS_DO_SERVIDOR[form.id];
+        const marcados = Object.entries(campoPorNome)
+            .filter(([nome]) => typeof campos[nome] === 'string')
+            .map(([nome, idCampo]) => {
+                const campo = form.querySelector(`#${idCampo}`);
+                mostrarErro(campo, campos[nome]);
+                return campo;
+            });
+        if (marcados.length === 0) return false;
+        marcados[0].focus();
+        return true;
+    }
+
     function tratarFalha(form, erro) {
         if (erro instanceof CredenciaisInvalidas) {
             mostrarAlerta(form, erro.message);
@@ -126,6 +147,7 @@ atualizarContadorCarrinho();
             campo.focus();
             return;
         }
+        if (erro instanceof DadosInvalidos && mostrarErrosDoServidor(form, erro.campos)) return;
         // Anything else is a communication failure, already logged by api/cliente.js.
         mostrarAlerta(form, MSG_CONEXAO);
     }

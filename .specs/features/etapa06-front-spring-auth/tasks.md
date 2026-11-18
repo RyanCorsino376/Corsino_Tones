@@ -228,12 +228,12 @@ T11
 
 **Done when**:
 
-- [ ] Registration with a mocked `400` `{campos: {nome: 'A', senha: 'B'}}` shows "A" on `#cadastro-nome`, "B" on `#cadastro-senha`, nothing on the e-mail field, and focuses `#cadastro-nome`
-- [ ] Login with a mocked `400` `{campos: {email: 'C', senha: 'D'}}` shows "C" on `#email` and "D" on `#senha` and focuses `#email`
-- [ ] The messages are linked through `aria-describedby` like the local ones
-- [ ] A `400` without `campos` shows the connection alert
-- [ ] Gate passes: `npx playwright test tests/login-erros-servidor.spec.js`
-- [ ] Test count: 4 new tests pass in the new file
+- [x] Registration with a mocked `400` `{campos: {nome: 'A', senha: 'B'}}` shows "A" on `#cadastro-nome`, "B" on `#cadastro-senha`, nothing on the e-mail field, and focuses `#cadastro-nome`
+- [x] Login with a mocked `400` `{campos: {email: 'C', senha: 'D'}}` shows "C" on `#email` and "D" on `#senha` and focuses `#email`
+- [x] The messages are linked through `aria-describedby` like the local ones
+- [x] A `400` without `campos` shows the connection alert
+- [x] Gate passes: `npx playwright test tests/login-erros-servidor.spec.js`
+- [x] Test count: 4 new tests pass in the new file
 
 **Tests**: e2e
 **Gate**: quick
