@@ -359,12 +359,12 @@ T14 -> T15 -> T16 -> T17 -> T18 -> T19
 
 **Done when**:
 
-- [ ] The stored user's e-mail is lower-case and its `senhaHash` differs from the plain password and `matches` it
-- [ ] Registering `"  RYAN@Exemplo.com "` when `ryan@exemplo.com` exists throws `EmailEmUso` and the repository still holds one user
-- [ ] Two sequential registrations get consecutive ids
-- [ ] 20 threads registering the same e-mail: exactly one returns a user, 19 throw `EmailEmUso`
-- [ ] Gate passes: `cd backend && ./mvnw -q test -Dtest=AuthServiceTest`
-- [ ] Test count: 5 new tests pass
+- [x] The stored user's e-mail is lower-case and its `senhaHash` differs from the plain password and `matches` it
+- [x] Registering `"  RYAN@Exemplo.com "` when `ryan@exemplo.com` exists throws `EmailEmUso` and the repository still holds one user
+- [x] Two sequential registrations get consecutive ids
+- [x] 20 threads registering the same e-mail: exactly one returns a user, 19 throw `EmailEmUso`
+- [x] Gate passes: `cd backend && ./mvnw -q test -Dtest=AuthServiceTest`
+- [x] Test count: 4 new tests pass
 
 **Tests**: unit
 **Gate**: quick
