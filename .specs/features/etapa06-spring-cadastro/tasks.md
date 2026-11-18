@@ -445,11 +445,11 @@ T14 -> T15 -> T16 -> T17 -> T18 -> T19
 
 **Done when**:
 
-- [ ] Empty, `"   "` (e-mail, after trim) and `null` e-mail invalid with "Informe um e-mail válido, como nome@exemplo.com."
-- [ ] Empty and `null` password invalid with "Informe sua senha."; a 3-character password valid (no length rule on login)
-- [ ] `"  RYAN@Exemplo.com "` kept as the trimmed text (lower-casing is the service's job)
-- [ ] Gate passes: `cd backend && ./mvnw -q test -Dtest=LoginRequestTest`
-- [ ] Test count: 5 new tests pass
+- [x] Empty, `"   "` (e-mail, after trim) and `null` e-mail invalid with "Informe um e-mail válido, como nome@exemplo.com."
+- [x] Empty and `null` password invalid with "Informe sua senha."; a 3-character password valid (no length rule on login)
+- [x] `"  RYAN@Exemplo.com "` kept as the trimmed text (lower-casing is the service's job)
+- [x] Gate passes: `cd backend && ./mvnw -q test -Dtest=LoginRequestTest`
+- [x] Test count: 5 new tests pass
 
 **Tests**: unit
 **Gate**: quick
