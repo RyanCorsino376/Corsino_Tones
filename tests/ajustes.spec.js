@@ -19,7 +19,7 @@ test.describe('etapa05-packs T7 - leftovers from slice 2', () => {
 
   // FIX-02
   test('um botão desativado aparece apagado e com cursor de bloqueio', async ({ page }) => {
-    await page.route('http://127.0.0.1:3000/usuarios**', () => {}); // never answers: the button stays pending
+    await page.route('http://127.0.0.1:8081/auth/**', () => {}); // never answers: the button stays pending
     await page.goto('login.html');
     await page.locator('#email').fill('ryan@exemplo.com');
     await page.locator('#senha').fill('teste123');
@@ -34,7 +34,7 @@ test.describe('etapa05-packs T7 - leftovers from slice 2', () => {
 
   // FIX-02 "any button": the registration button too, in its own form (Verifier gap, M22).
   test('o botão "Cadastrando..." também aparece apagado e com cursor de bloqueio', async ({ page }) => {
-    await page.route('http://127.0.0.1:3000/usuarios**', () => {});
+    await page.route('http://127.0.0.1:8081/auth/**', () => {});
     await page.goto('login.html');
     await page.locator('[data-alvo="cadastro"]').click();
     await page.locator('#cadastro-nome').fill('Ana Teste');

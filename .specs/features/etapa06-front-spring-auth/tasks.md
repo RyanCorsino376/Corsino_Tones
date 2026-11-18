@@ -314,9 +314,9 @@ T11
 
 **Done when**:
 
-- [ ] Both tests hold the request on 8081, the button stays disabled and shows the pending text
-- [ ] Gate passes: `npx playwright test tests/ajustes.spec.js`
-- [ ] Test count: unchanged from the baseline of this file
+- [x] Both tests hold the request on 8081, the button stays disabled and shows the pending text
+- [x] Gate passes: `npx playwright test tests/ajustes.spec.js`
+- [x] Test count: unchanged from the baseline of this file
 
 **Tests**: e2e
 **Gate**: quick
