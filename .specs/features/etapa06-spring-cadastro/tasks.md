@@ -579,13 +579,13 @@ T14 -> T15 -> T16 -> T17 -> T18 -> T19
 
 **Done when**:
 
-- [ ] Register then login -> 200 with `token` and `usuario` (id, nome, email only); the token decodes to that user
-- [ ] Seeded `ryan@exemplo.com` / `teste123` -> 200 with id 1
-- [ ] Wrong password and unknown e-mail -> identical 401 bodies with "E-mail ou senha incorretos." and empty `campos`
-- [ ] Empty e-mail and empty password -> 400 with `campos.email` and `campos.senha` texts; missing fields behave the same; broken JSON -> 400 "Corpo da requisição inválido."
-- [ ] The response and the captured log never contain the password or a hash
-- [ ] Gate passes: `cd backend && ./mvnw -q test`
-- [ ] Test count: 7 new tests pass
+- [x] Register then login -> 200 with `token` and `usuario` (id, nome, email only); the token decodes to that user
+- [x] Seeded `ryan@exemplo.com` / `teste123` -> 200 with id 1
+- [x] Wrong password and unknown e-mail -> identical 401 bodies with "E-mail ou senha incorretos." and empty `campos`
+- [x] Empty e-mail and empty password -> 400 with `campos.email` and `campos.senha` texts; missing fields behave the same; broken JSON -> 400 "Corpo da requisição inválido."
+- [x] The response and the captured log never contain the password or a hash
+- [x] Gate passes: `cd backend && ./mvnw -q test`
+- [x] Test count: 7 new tests pass (72 in the suite)
 
 **Tests**: integration
 **Gate**: full
