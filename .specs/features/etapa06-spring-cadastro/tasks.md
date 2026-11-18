@@ -523,11 +523,11 @@ T14 -> T15 -> T16 -> T17 -> T18 -> T19
 
 **Done when**:
 
-- [ ] With a fixed clock, decoding the token with the secret gives `sub` equal to the id (user id 7, not 1), the user's `nome` and `email`, and `exp - iat` equal to 7200 seconds
-- [ ] The header algorithm is `HS256`
-- [ ] A token decoded with a different secret is rejected
-- [ ] Gate passes: `cd backend && ./mvnw -q test -Dtest=TokenServiceTest`
-- [ ] Test count: 3 new tests pass
+- [x] With a fixed clock, decoding the token with the secret gives `sub` equal to the id (user id 7, not 1), the user's `nome` and `email`, and `exp - iat` equal to 7200 seconds
+- [x] The header algorithm is `HS256`
+- [x] A token decoded with a different secret is rejected
+- [x] Gate passes: `cd backend && ./mvnw -q test -Dtest=TokenServiceTest`
+- [x] Test count: 3 new tests pass
 
 **Tests**: unit
 **Gate**: quick
