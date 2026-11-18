@@ -171,12 +171,12 @@ T14 -> T15 -> T16 -> T17 -> T18 -> T19
 
 **Done when**:
 
-- [ ] First `criar` on an empty repository gets id 1; after `carregar` of ids 1 and 5, the next `criar` gets 6 (differing ids, so a "count + 1" shortcut fails)
-- [ ] `criar` with an existing e-mail returns empty and leaves the stored user unchanged
-- [ ] 20 threads calling `criar` with the same e-mail produce exactly one success
-- [ ] `buscarPorEmail` returns empty for an unknown e-mail
-- [ ] Gate passes: `cd backend && ./mvnw -q test`
-- [ ] Test count: 5 tests pass (no silent deletions)
+- [x] First `criar` on an empty repository gets id 1; after `carregar` of ids 1 and 5, the next `criar` gets 6 (differing ids, so a "count + 1" shortcut fails)
+- [x] `criar` with an existing e-mail returns empty and leaves the stored user unchanged
+- [x] 20 threads calling `criar` with the same e-mail produce exactly one success
+- [x] `buscarPorEmail` returns empty for an unknown e-mail
+- [x] Gate passes: `cd backend && ./mvnw -q test`
+- [x] Test count: 5 tests pass (no silent deletions)
 
 **Tests**: unit
 **Gate**: full
