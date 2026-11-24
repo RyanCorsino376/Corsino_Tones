@@ -98,12 +98,14 @@ T22 → T23 → T24 → T25 → T26 → T27
 
 **Done when**:
 
-- [ ] `pom.xml` has `spring-boot-starter-data-jpa`, `spring-boot-starter-flyway`, `flyway-database-postgresql`, `postgresql`, `spring-boot-starter-security-oauth2-resource-server`, and test `spring-boot-testcontainers`, `testcontainers-postgresql`, `testcontainers-junit-jupiter`
-- [ ] `application.properties` sets the datasource from `CORSINO_DB_*`, `ddl-auto=validate`, `open-in-view=false`
-- [ ] `BancoConfigTest`: blank password fails startup with a message naming `CORSINO_DB_PASSWORD` and the JDBC URL; unreachable host fails startup with a message containing the JDBC URL (DB-09)
-- [ ] A test asserts `spring.jpa.hibernate.ddl-auto` is `validate` (DB-08)
-- [ ] Gate check passes: `cd backend && ./mvnw -q clean test`
-- [ ] Test count: 76 existing + new tests pass (no silent deletions)
+- [x] `pom.xml` has `spring-boot-starter-data-jpa`, `spring-boot-starter-flyway`, `flyway-database-postgresql`, `postgresql`, `spring-boot-starter-security-oauth2-resource-server`, and test `spring-boot-testcontainers`, `testcontainers-postgresql`, `testcontainers-junit-jupiter`
+- [x] `application.properties` sets the datasource from `CORSINO_DB_*`, `ddl-auto=validate`, `open-in-view=false`
+- [x] `BancoConfigTest`: blank password fails startup with a message naming `CORSINO_DB_PASSWORD` and the JDBC URL; unreachable host fails startup with a message containing the JDBC URL (DB-09)
+- [x] A test asserts `spring.jpa.hibernate.ddl-auto` is `validate` (DB-08)
+- [x] Gate check passes: `cd backend && ./mvnw -q clean test`
+- [x] Test count: 76 existing + new tests pass (no silent deletions)
+
+**Status**: ✅ Done
 
 **Tests**: integration
 **Gate**: full
