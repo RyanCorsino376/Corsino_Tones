@@ -362,9 +362,9 @@ Dimensions sweep: input validation (EQP-06, PCK-06 to PCK-10, PRS-07 to PRS-10, 
 | ERR-03 | P1: Access control and errors | Design | Pending |
 | ERR-04 | P1: Access control and errors | Design | Pending |
 | ERR-05 | P1: Access control and errors | Design | Pending |
-| ERR-06 | P1: Access control and errors | Design | Pending |
-| ERR-07 | P1: Access control and errors | Design | Pending |
-| ERR-08 | P1: Access control and errors | Design | Pending |
+| ERR-06 | P1: Access control and errors | Design | Implementing |
+| ERR-07 | P1: Access control and errors | Design | Implementing |
+| ERR-08 | P1: Access control and errors | Design | Implementing |
 | ERR-09 | P1: Access control and errors | Design | Pending |
 | ARQ-01 | P1: Decoupling | Design | Pending |
 | ARQ-02 | P1: Decoupling | Design | Pending |

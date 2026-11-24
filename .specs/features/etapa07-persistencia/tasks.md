@@ -301,10 +301,12 @@ T22 → T23 → T24 → T25 → T26 → T27
 
 **Done when**:
 
-- [ ] `ErroHandlerTest` covers each new exception through a test route with the exact status, `mensagem` and `campos`
-- [ ] With a `BancoIsolado` container stopped, a test route that reads users answers `503` "Serviço temporariamente indisponível. Tente novamente." and the body has no `SQL`, `jdbc` or `Exception` text (ERR-06)
-- [ ] `GET /teste/item/abc` with a `long` path variable answers `400` "Identificador inválido." (ERR-07)
-- [ ] Gate check passes: `cd backend && ./mvnw -q clean test`
+- [x] `ErroHandlerTest` covers each new exception through a test route with the exact status, `mensagem` and `campos`
+- [x] With a `BancoIsolado` container stopped, a test route that reads users answers `503` "Serviço temporariamente indisponível. Tente novamente." and the body has no `SQL`, `jdbc` or `Exception` text (ERR-06)
+- [x] `GET /teste/item/abc` with a `long` path variable answers `400` "Identificador inválido." (ERR-07)
+- [x] Gate check passes: `cd backend && ./mvnw -q clean test`
+
+**Status**: ✅ Done
 
 **Tests**: integration
 **Gate**: full

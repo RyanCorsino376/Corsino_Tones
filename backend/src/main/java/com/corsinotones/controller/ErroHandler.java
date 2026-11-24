@@ -1,19 +1,24 @@
 package com.corsinotones.controller;
 
 import com.corsinotones.dto.ErroResposta;
+import com.corsinotones.service.CampoInvalido;
+import com.corsinotones.service.Conflito;
 import com.corsinotones.service.CredenciaisInvalidas;
-import com.corsinotones.service.EmailEmUso;
+import com.corsinotones.service.NaoEncontrado;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.dao.DataAccessResourceFailureException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.transaction.CannotCreateTransactionException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 /** Turns every error into the single body {status, mensagem, campos} (SRV-05). */
@@ -35,9 +40,34 @@ public class ErroHandler {
 		return resposta(HttpStatus.BAD_REQUEST, "Corpo da requisição inválido.", Map.of());
 	}
 
-	@ExceptionHandler(EmailEmUso.class)
-	ResponseEntity<ErroResposta> emailEmUso(EmailEmUso erro) {
+	// Same message as a Bean Validation failure: the field itself says what is wrong.
+	@ExceptionHandler(CampoInvalido.class)
+	ResponseEntity<ErroResposta> campoInvalido(CampoInvalido erro) {
+		return resposta(HttpStatus.BAD_REQUEST, "Dados inválidos.", Map.of(erro.campo(), erro.getMessage()));
+	}
+
+	// A path id of the wrong type, such as /presets/abc (ERR-07).
+	@ExceptionHandler(MethodArgumentTypeMismatchException.class)
+	ResponseEntity<ErroResposta> identificadorInvalido() {
+		return resposta(HttpStatus.BAD_REQUEST, "Identificador inválido.", Map.of());
+	}
+
+	@ExceptionHandler(NaoEncontrado.class)
+	ResponseEntity<ErroResposta> naoEncontrado(NaoEncontrado erro) {
+		return resposta(HttpStatus.NOT_FOUND, erro.getMessage(), Map.of());
+	}
+
+	// Includes EmailEmUso.
+	@ExceptionHandler(Conflito.class)
+	ResponseEntity<ErroResposta> conflito(Conflito erro) {
 		return resposta(HttpStatus.CONFLICT, erro.getMessage(), Map.of());
+	}
+
+	// The database cannot be reached while the app runs (ERR-06); the cause is logged, never sent.
+	@ExceptionHandler({DataAccessResourceFailureException.class, CannotCreateTransactionException.class})
+	ResponseEntity<ErroResposta> bancoIndisponivel(Exception erro) {
+		log.error("Database unavailable", erro);
+		return resposta(HttpStatus.SERVICE_UNAVAILABLE, "Serviço temporariamente indisponível. Tente novamente.", Map.of());
 	}
 
 	@ExceptionHandler(CredenciaisInvalidas.class)

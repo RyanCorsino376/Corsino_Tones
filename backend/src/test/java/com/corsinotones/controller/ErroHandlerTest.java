@@ -93,6 +93,52 @@ class ErroHandlerTest {
 				.andExpect(jsonPath("$.campos").isEmpty());
 	}
 
+	// T8: the new domain errors keep the same body.
+	@Test
+	void naoEncontradoDevolve404ComAMensagemDoRecurso() throws Exception {
+		enviar("/teste/nao-encontrado", "{}")
+				.andExpect(status().isNotFound())
+				.andExpect(jsonPath("$.status").value(404))
+				.andExpect(jsonPath("$.mensagem").value("Equipamento não encontrado."))
+				.andExpect(jsonPath("$.campos").isEmpty());
+	}
+
+	@Test
+	void conflitoDevolve409ComAMensagemDaRegra() throws Exception {
+		enviar("/teste/conflito", "{}")
+				.andExpect(status().isConflict())
+				.andExpect(jsonPath("$.status").value(409))
+				.andExpect(jsonPath("$.mensagem").value("Este equipamento já está cadastrado."))
+				.andExpect(jsonPath("$.campos").isEmpty());
+	}
+
+	@Test
+	void campoInvalidoDevolve400ComOCampoESuaMensagem() throws Exception {
+		enviar("/teste/campo-invalido", "{}")
+				.andExpect(status().isBadRequest())
+				.andExpect(jsonPath("$.status").value(400))
+				.andExpect(jsonPath("$.mensagem").value("Dados inválidos."))
+				.andExpect(jsonPath("$.campos.length()").value(1))
+				.andExpect(jsonPath("$.campos.equipamentoId").value("Equipamento não encontrado."));
+	}
+
+	// ERR-07: a path id of the wrong type.
+	@Test
+	void identificadorDeTipoErradoDevolve400() throws Exception {
+		mvc.perform(get("/teste/item/abc"))
+				.andExpect(status().isBadRequest())
+				.andExpect(jsonPath("$.status").value(400))
+				.andExpect(jsonPath("$.mensagem").value("Identificador inválido."))
+				.andExpect(jsonPath("$.campos").isEmpty());
+	}
+
+	@Test
+	void identificadorNumericoChegaARota() throws Exception {
+		mvc.perform(get("/teste/item/7"))
+				.andExpect(status().isOk())
+				.andExpect(content().string("item 7"));
+	}
+
 	@Test
 	void todoCorpoDeErroTemAsTresChaves() throws Exception {
 		mvc.perform(get("/nao-existe"))
