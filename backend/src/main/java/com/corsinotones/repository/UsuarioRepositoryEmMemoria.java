@@ -1,5 +1,6 @@
 package com.corsinotones.repository;
 
+import com.corsinotones.model.Perfil;
 import com.corsinotones.model.Usuario;
 import java.util.Map;
 import java.util.Optional;
@@ -24,7 +25,7 @@ public class UsuarioRepositoryEmMemoria implements UsuarioRepository {
 			return Optional.empty();
 		}
 		long proximoId = porEmail.values().stream().mapToLong(Usuario::id).max().orElse(0L) + 1;
-		Usuario usuario = new Usuario(proximoId, nome, email, senhaHash);
+		Usuario usuario = new Usuario(proximoId, nome, email, senhaHash, Perfil.COMUM);
 		porEmail.put(email, usuario);
 		return Optional.of(usuario);
 	}

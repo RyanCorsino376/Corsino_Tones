@@ -2,6 +2,7 @@ package com.corsinotones.repository;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.corsinotones.model.Perfil;
 import com.corsinotones.model.Usuario;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
@@ -27,8 +28,8 @@ class UsuarioRepositoryEmMemoriaTest {
 	// CAD-11: id = largest existing id + 1, not a count (ids 1 and 5 loaded -> next is 6).
 	@Test
 	void novoIdEMaiorIdMaisUm() {
-		repositorio.carregar(new Usuario(1, "A", "a@x.com", "h"));
-		repositorio.carregar(new Usuario(5, "B", "b@x.com", "h"));
+		repositorio.carregar(new Usuario(1, "A", "a@x.com", "h", Perfil.COMUM));
+		repositorio.carregar(new Usuario(5, "B", "b@x.com", "h", Perfil.COMUM));
 
 		Usuario criado = repositorio.criar("C", "c@x.com", "h").orElseThrow();
 

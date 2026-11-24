@@ -1,5 +1,6 @@
 package com.corsinotones.repository;
 
+import com.corsinotones.model.Perfil;
 import com.corsinotones.model.Usuario;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -45,7 +46,7 @@ public class SementeUsuarios implements ApplicationRunner {
 		for (JsonNode u : raiz.path("usuarios")) {
 			String email = u.path("email").asString().trim().toLowerCase(Locale.ROOT);
 			repositorio.carregar(new Usuario(u.path("id").asLong(), u.path("nome").asString(), email,
-					encoder.encode(u.path("senha").asString())));
+					encoder.encode(u.path("senha").asString()), Perfil.COMUM));
 		}
 		log.info("Seed loaded from {}", arquivo);
 	}

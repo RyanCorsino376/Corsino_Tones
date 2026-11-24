@@ -214,9 +214,11 @@ T22 → T23 → T24 → T25 → T26 → T27
 
 **Done when**:
 
-- [ ] `TokenServiceTest` asserts the claim `perfil` is `ADMIN` for an admin user and `COMUM` for a common one
-- [ ] Existing tests compile with the new record component
-- [ ] Gate check passes: `cd backend && ./mvnw -q test -Dtest='*ServiceTest'`
+- [x] `TokenServiceTest` asserts the claim `perfil` is `ADMIN` for an admin user and `COMUM` for a common one
+- [x] Existing tests compile with the new record component
+- [x] Gate check passes: `cd backend && ./mvnw -q test -Dtest='*ServiceTest'`
+
+**Status**: ✅ Done
 
 **Tests**: unit
 **Gate**: quick

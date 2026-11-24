@@ -24,13 +24,14 @@ public class TokenService {
 		this.relogio = relogio;
 	}
 
-	/** Signs an HS256 JWT for the user: sub = id, plus nome and email, valid for 2 hours. */
+	/** Signs an HS256 JWT for the user: sub = id, plus nome, email and perfil, valid for 2 hours. */
 	public String gerar(Usuario usuario) {
 		Instant agora = relogio.instant();
 		JwtClaimsSet claims = JwtClaimsSet.builder()
 				.subject(String.valueOf(usuario.id()))
 				.claim("nome", usuario.nome())
 				.claim("email", usuario.email())
+				.claim("perfil", usuario.perfil().name())
 				.issuedAt(agora)
 				.expiresAt(agora.plus(VALIDADE))
 				.build();

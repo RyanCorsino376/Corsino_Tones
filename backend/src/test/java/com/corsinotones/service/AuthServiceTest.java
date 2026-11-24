@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.corsinotones.dto.CadastroRequest;
 import com.corsinotones.dto.LoginRequest;
+import com.corsinotones.model.Perfil;
 import com.corsinotones.model.Usuario;
 import com.corsinotones.repository.UsuarioRepositoryEmMemoria;
 import java.nio.charset.StandardCharsets;
@@ -111,7 +112,7 @@ class AuthServiceTest {
 	// LOG-02, LOG-03: a seeded user (plain password hashed at load) signs in with mixed case and spaces in the e-mail.
 	@Test
 	void usuarioDaSementeEntraComEmailEmOutraCaixa() {
-		repositorio.carregar(new Usuario(1, "Ryan Corsino", "ryan@exemplo.com", encoder.encode("teste123")));
+		repositorio.carregar(new Usuario(1, "Ryan Corsino", "ryan@exemplo.com", encoder.encode("teste123"), Perfil.COMUM));
 
 		AuthService.Sessao sessao = servico.entrar(new LoginRequest("RYAN@exemplo.com", "teste123"));
 
@@ -155,7 +156,7 @@ class AuthServiceTest {
 				NimbusJwtEncoder.withSecretKey(new SecretKeySpec("a-secret-with-at-least-32-characters!!".getBytes(StandardCharsets.UTF_8), "HmacSHA256"))
 						.algorithm(MacAlgorithm.HS256).build(),
 				Clock.systemUTC()));
-		repositorio.carregar(new Usuario(1, "Ana", "ana@x.com", encoder.encode("senha-longa-1")));
+		repositorio.carregar(new Usuario(1, "Ana", "ana@x.com", encoder.encode("senha-longa-1"), Perfil.COMUM));
 
 		assertThatThrownBy(() -> comContador.entrar(new LoginRequest("ana@x.com", "errada"))).isInstanceOf(CredenciaisInvalidas.class);
 		int aposSenhaErrada = chamadas[0];

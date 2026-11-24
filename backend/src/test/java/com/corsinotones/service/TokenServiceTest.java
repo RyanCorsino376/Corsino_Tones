@@ -3,6 +3,7 @@ package com.corsinotones.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import com.corsinotones.model.Perfil;
 import com.corsinotones.model.Usuario;
 import java.nio.charset.StandardCharsets;
 import java.time.Clock;
@@ -28,7 +29,7 @@ class TokenServiceTest {
 	private final JwtDecoder decoder = NimbusJwtDecoder.withSecretKey(CHAVE).macAlgorithm(MacAlgorithm.HS256).build();
 	private final TokenService servico = new TokenService(
 			NimbusJwtEncoder.withSecretKey(CHAVE).algorithm(MacAlgorithm.HS256).build(), Clock.fixed(AGORA, ZoneOffset.UTC));
-	private final Usuario usuario = new Usuario(7, "Davi", "davi@exemplo.com", "hash");
+	private final Usuario usuario = new Usuario(7, "Davi", "davi@exemplo.com", "hash", Perfil.COMUM);
 
 	@Test
 	void tokenCarregaIdNomeEmailEExpiraEmDuasHoras() {
@@ -39,6 +40,15 @@ class TokenServiceTest {
 		assertThat(jwt.<String>getClaim("email")).isEqualTo("davi@exemplo.com");
 		assertThat(jwt.getIssuedAt()).isEqualTo(AGORA);
 		assertThat(jwt.getExpiresAt()).isEqualTo(AGORA.plusSeconds(7200));
+	}
+
+	// USR-06: the token carries the user's profile, read by the resource server as the role.
+	@Test
+	void tokenCarregaOPerfilDoUsuario() {
+		Usuario admin = new Usuario(1, "Ryan", "ryan@exemplo.com", "hash", Perfil.ADMIN);
+
+		assertThat(decoder.decode(servico.gerar(admin)).<String>getClaim("perfil")).isEqualTo("ADMIN");
+		assertThat(decoder.decode(servico.gerar(usuario)).<String>getClaim("perfil")).isEqualTo("COMUM");
 	}
 
 	@Test
