@@ -387,8 +387,10 @@ T22 → T23 → T24 → T25 → T26 → T27
 
 **Done when**:
 
-- [ ] Unit tests with a fake: `"  BOSS "` stored as `boss`; duplicate pair (pre-check and fake throwing `Duplicado`) → `Conflito` "Este equipamento já está cadastrado."; delete with packs (pre-check and `EmUso`) → `Conflito` "Este equipamento tem packs e não pode ser excluído."; unknown id → `NaoEncontrado` "Equipamento não encontrado."; `PUT` to its own pair is not a duplicate
-- [ ] Gate check passes: `cd backend && ./mvnw -q test -Dtest='*ServiceTest'`
+- [x] Unit tests with a fake: `"  BOSS "` stored as `boss`; duplicate pair (pre-check and fake throwing `Duplicado`) → `Conflito` "Este equipamento já está cadastrado."; delete with packs (pre-check and `EmUso`) → `Conflito` "Este equipamento tem packs e não pode ser excluído."; unknown id → `NaoEncontrado` "Equipamento não encontrado."; `PUT` to its own pair is not a duplicate
+- [x] Gate check passes: `cd backend && ./mvnw -q test -Dtest='*ServiceTest'`
+
+**Status**: ✅ Done
 
 **Tests**: unit
 **Gate**: quick
