@@ -186,9 +186,11 @@ T22 → T23 → T24 → T25 → T26 → T27
 
 **Done when**:
 
-- [ ] `ArquivosDeAmbienteTest` asserts the compose service image `postgres:16`, port `5433:5432`, `POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}` reference, `.env.example` present without a real secret, and `.env` listed in `.gitignore`
-- [ ] `docker compose up -d` starts the database and the app starts against it with `CORSINO_DB_PASSWORD` from `.env` (manual check, output pasted in the commit body)
-- [ ] Gate check passes: `cd backend && ./mvnw -q clean test`
+- [x] `ArquivosDeAmbienteTest` asserts the compose service image `postgres:16`, port `5433:5432`, `POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}` reference, `.env.example` present without a real secret, and `.env` listed in `.gitignore`
+- [x] `docker compose up -d` starts the database and the app starts against it with `CORSINO_DB_PASSWORD` from `.env` (manual check, output pasted in the commit body)
+- [x] Gate check passes: `cd backend && ./mvnw -q clean test`
+
+**Status**: ✅ Done
 
 **Tests**: unit
 **Gate**: full
