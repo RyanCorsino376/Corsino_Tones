@@ -327,10 +327,10 @@ Dimensions sweep: input validation (EQP-06, PCK-06 to PCK-10, PRS-07 to PRS-10, 
 | PCK-03 | P1: Pack CRUD | Design | Implementing |
 | PCK-04 | P1: Pack CRUD | Design | Implementing |
 | PCK-05 | P1: Pack CRUD | Design | Implementing |
-| PCK-06 | P1: Pack CRUD | Design | Pending |
-| PCK-07 | P1: Pack CRUD | Design | Pending |
-| PCK-08 | P1: Pack CRUD | Design | Pending |
-| PCK-09 | P1: Pack CRUD | Design | Pending |
+| PCK-06 | P1: Pack CRUD | Design | Implementing |
+| PCK-07 | P1: Pack CRUD | Design | Implementing |
+| PCK-08 | P1: Pack CRUD | Design | Implementing |
+| PCK-09 | P1: Pack CRUD | Design | Implementing |
 | PCK-10 | P1: Pack CRUD | Design | Implementing |
 | PCK-11 | P1: Pack CRUD | Design | Implementing |
 | PCK-12 | P1: Pack CRUD | Design | Implementing |

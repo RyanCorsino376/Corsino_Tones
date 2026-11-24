@@ -497,8 +497,10 @@ T22 → T23 → T24 → T25 → T26 → T27
 
 **Done when**:
 
-- [ ] MockMvc tests: each PCK criterion with exact status and message; price 0 and 1000000 accepted, -1, 1000001 and 49.5 rejected; `"precoCentavos": "abc"` → ERR-08 body; nome 2/120 and 1/121, estilo 2/30 and 1/31, descricao 500/501 boundaries
-- [ ] Gate check passes: `cd backend && ./mvnw -q clean test`
+- [x] MockMvc tests: each PCK criterion with exact status and message; price 0 and 1000000 accepted, -1, 1000001 and 49.5 rejected; `"precoCentavos": "abc"` → ERR-08 body; nome 2/120 and 1/121, estilo 2/30 and 1/31, descricao 500/501 boundaries
+- [x] Gate check passes: `cd backend && ./mvnw -q clean test`
+
+**Status**: ✅ Done
 
 **Tests**: integration
 **Gate**: full
