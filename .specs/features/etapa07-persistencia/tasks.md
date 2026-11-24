@@ -524,9 +524,11 @@ T22 → T23 → T24 → T25 → T26 → T27
 
 **Done when**:
 
-- [ ] Adapter test: `buscar(1)` equals the seed; `listarPorPack("metal-nux-mg-30")` returns exactly the seed's ids for that pack; unknown pack → empty; order by `data` desc then `id` asc, with fixture dates that differ per item (lesson L-014)
-- [ ] `arquivo_chave` stays NULL after `criar` and `atualizar`
-- [ ] Gate check passes: `cd backend && ./mvnw -q clean test`
+- [x] Adapter test: `buscar(1)` equals the seed; `listarPorPack("metal-nux-mg-30")` returns exactly the seed's ids for that pack; unknown pack → empty; order by `data` desc then `id` asc, with fixture dates that differ per item (lesson L-014)
+- [x] `arquivo_chave` stays NULL after `criar` and `atualizar`
+- [x] Gate check passes: `cd backend && ./mvnw -q clean test`
+
+**Status**: ✅ Done
 
 **Tests**: integration
 **Gate**: full
