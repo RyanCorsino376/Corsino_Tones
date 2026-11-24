@@ -23,6 +23,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
+import org.springframework.test.json.JsonCompareMode;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
@@ -115,7 +116,7 @@ class EquipamentoControllerTest {
 	void buscarDevolveOEquipamento() throws Exception {
 		mvc.perform(get("/equipamentos/3"))
 				.andExpect(status().isOk())
-				.andExpect(content().json("{\"id\":3,\"marca\":\"nux\",\"modelo\":\"MG-30\"}", true));
+				.andExpect(content().json("{\"id\":3,\"marca\":\"nux\",\"modelo\":\"MG-30\"}", JsonCompareMode.STRICT));
 	}
 
 	// EQP-03
@@ -137,7 +138,7 @@ class EquipamentoControllerTest {
 
 		atualizar(id, corpo(nova, "Novo"))
 				.andExpect(status().isOk())
-				.andExpect(content().json("{\"id\":" + id + ",\"marca\":\"" + nova + "\",\"modelo\":\"Novo\"}", true));
+				.andExpect(content().json("{\"id\":" + id + ",\"marca\":\"" + nova + "\",\"modelo\":\"Novo\"}", JsonCompareMode.STRICT));
 		mvc.perform(get("/equipamentos/" + id)).andExpect(jsonPath("$.modelo").value("Novo"));
 	}
 
@@ -224,7 +225,7 @@ class EquipamentoControllerTest {
 				.andExpect(status().isConflict())
 				.andExpect(jsonPath("$.mensagem").value("Este equipamento já está cadastrado."));
 		mvc.perform(get("/equipamentos/" + id))
-				.andExpect(content().json("{\"id\":" + id + ",\"marca\":\"" + marca + "\",\"modelo\":\"Original\"}", true));
+				.andExpect(content().json("{\"id\":" + id + ",\"marca\":\"" + marca + "\",\"modelo\":\"Original\"}", JsonCompareMode.STRICT));
 	}
 
 	@Test
