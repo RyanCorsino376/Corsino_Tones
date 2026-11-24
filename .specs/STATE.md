@@ -78,6 +78,30 @@ We will keep two API base URLs in `frontend/api/cliente.js`: `BASE_URL` (json-se
 
 Extends AD-008 (which assumed one switch of `BASE_URL`): the migration is gradual, so both servers must coexist. Rejected: a proxy in front of both, which adds a process for a temporary state. Feature: `etapa06-front-spring-auth`.
 
+### AD-013: PostgreSQL holds the server data, and Flyway owns the schema
+
+We will store users, equipments, packs, presets and orders in PostgreSQL 16. Versioned SQL migrations in `backend/src/main/resources/db/migration/` create and change every table; Hibernate runs with `ddl-auto=validate` and never alters the schema. Connection settings come from `CORSINO_DB_URL`, `CORSINO_DB_USER` and `CORSINO_DB_PASSWORD`; development uses the repo-root `docker-compose.yml`. Preset files will live in MinIO, with only their key in `preset.arquivo_chave`.
+
+Extends AD-010, whose in-memory store this replaces. Rejected: `ddl-auto=update` (unreviewed schema changes), a NoSQL store (the data is relational, with foreign keys between all six tables) and file contents in the database (`bytea` bloats backups). Feature: `etapa07-persistencia`.
+
+### AD-014: The model stays plain records; JPA lives only in `repository/jpa`
+
+We will keep `model` as Java records without persistence annotations. Each repository interface in `repository` gets one adapter in `repository/jpa`, which owns the `@Entity` class, a package-private Spring Data interface and the conversion. Adapters flush writes and translate named constraint violations into `Duplicado` and `EmUso`. Classes in `controller` and `service` never import `jakarta.persistence`, `org.springframework.data` or `org.hibernate`.
+
+Rejected: annotating the model as entities, which lets lazy proxies and open sessions reach the services. Feature: `etapa07-persistencia`.
+
+### AD-015: Protected routes use the Spring Security resource server with a `perfil` claim
+
+We will validate bearer tokens with `spring-boot-starter-security-oauth2-resource-server` and the `JwtDecoder` of AD-011. The token's `perfil` claim (`COMUM` or `ADMIN`) becomes the role. Catalogue reads are public, catalogue writes need `ADMIN`, orders need any signed-in user. Registration always creates `COMUM`; only the seeder grants `ADMIN`.
+
+Rejected: a hand-written token filter. Feature: `etapa07-persistencia`.
+
+### AD-016: Backend tests run on PostgreSQL through Testcontainers
+
+We will run `./mvnw test` against a real `postgres:16-alpine` container started by Testcontainers and wired with `@ServiceConnection`. The Docker daemon must be running. Tests that need an empty database use their own container.
+
+Rejected: H2, which hides PostgreSQL-specific SQL and constraint behaviour. Feature: `etapa07-persistencia`.
+
 ---
 
 ## Handoff
