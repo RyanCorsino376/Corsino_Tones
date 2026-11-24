@@ -17,4 +17,7 @@ public interface UsuarioRepository {
 
 	/** Stores an already built user with its own id (used by the seed). Replaces one with the same e-mail. */
 	void carregar(Usuario usuario);
+
+	/** True when no user is stored yet (the seed only loads into an empty store, USR-05). */
+	boolean vazio();
 }

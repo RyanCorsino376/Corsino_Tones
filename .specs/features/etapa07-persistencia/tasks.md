@@ -272,10 +272,12 @@ T22 → T23 → T24 → T25 → T26 → T27
 
 **Done when**:
 
-- [ ] Seed tests run on `BancoIsolado`; `ryan@exemplo.com` is `ADMIN` with the default property and `COMUM` when the property lists another e-mail (USR-04)
-- [ ] Starting a second context on a database that already has users inserts nothing and keeps the existing hash (USR-05)
-- [ ] SEED-01 to SEED-04 tests still pass
-- [ ] Gate check passes: `cd backend && ./mvnw -q clean test`
+- [x] Seed tests run on `BancoIsolado`; `ryan@exemplo.com` is `ADMIN` with the default property and `COMUM` when the property lists another e-mail (USR-04)
+- [x] Starting a second context on a database that already has users inserts nothing and keeps the existing hash (USR-05)
+- [x] SEED-01 to SEED-04 tests still pass
+- [x] Gate check passes: `cd backend && ./mvnw -q clean test`
+
+**Status**: ✅ Done
 
 **Tests**: integration
 **Gate**: full

@@ -1,10 +1,12 @@
 package com.corsinotones.repository;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.corsinotones.BancoIsolado;
+import com.corsinotones.model.Perfil;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -25,6 +27,8 @@ class SementeUsuariosPadraoTest {
 
 	@Autowired
 	private MockMvc mvc;
+	@Autowired
+	private UsuarioRepository repositorio;
 
 	private ResultActions cadastrar(String email) throws Exception {
 		return mvc.perform(post("/auth/cadastro").contentType(MediaType.APPLICATION_JSON)
@@ -40,5 +44,11 @@ class SementeUsuariosPadraoTest {
 		cadastrar("novo@exemplo.com")
 				.andExpect(status().isCreated())
 				.andExpect(jsonPath("$.id").value(2));
+	}
+
+	// USR-04: with the default corsino.seed.admins the mock's user is the administrator.
+	@Test
+	void usuarioDoMockEAdminComAPropriedadePadrao() {
+		assertThat(repositorio.buscarPorEmail("ryan@exemplo.com").orElseThrow().perfil()).isEqualTo(Perfil.ADMIN);
 	}
 }

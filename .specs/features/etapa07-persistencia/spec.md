@@ -308,8 +308,8 @@ Dimensions sweep: input validation (EQP-06, PCK-06 to PCK-10, PRS-07 to PRS-10, 
 | USR-01 | P1: Users in the database | Design | Implementing |
 | USR-02 | P1: Users in the database | Design | Implementing |
 | USR-03 | P1: Users in the database | Design | Implementing |
-| USR-04 | P1: Users in the database | Design | Pending |
-| USR-05 | P1: Users in the database | Design | Pending |
+| USR-04 | P1: Users in the database | Design | Implementing |
+| USR-05 | P1: Users in the database | Design | Implementing |
 | USR-06 | P1: Users in the database | Design | Implementing |
 | USR-07 | P1: Users in the database | Design | Implementing |
 | USR-08 | P1: Users in the database | Design | Implementing |

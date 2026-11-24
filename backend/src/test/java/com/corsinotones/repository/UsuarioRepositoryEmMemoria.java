@@ -32,4 +32,9 @@ public class UsuarioRepositoryEmMemoria implements UsuarioRepository {
 	public synchronized void carregar(Usuario usuario) {
 		porEmail.put(usuario.email(), usuario);
 	}
+
+	@Override
+	public boolean vazio() {
+		return porEmail.isEmpty();
+	}
 }

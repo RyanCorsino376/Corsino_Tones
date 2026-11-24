@@ -47,4 +47,9 @@ public class UsuarioRepositoryJpa implements UsuarioRepository {
 		jpa.inserirComId(usuario.id(), usuario.nome(), usuario.email(), usuario.senhaHash(), usuario.perfil().name());
 		jpa.avancarIdentidade();
 	}
+
+	@Override
+	public boolean vazio() {
+		return jpa.count() == 0;
+	}
 }
