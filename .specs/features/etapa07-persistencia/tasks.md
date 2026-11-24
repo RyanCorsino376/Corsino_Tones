@@ -414,8 +414,10 @@ T22 → T23 → T24 → T25 → T26 → T27
 
 **Done when**:
 
-- [ ] MockMvc tests on PostgreSQL: each EQP criterion with its exact status and message; boundary 50/51 characters for `marca` and `modelo`; both fields invalid listed together
-- [ ] Gate check passes: `cd backend && ./mvnw -q clean test`
+- [x] MockMvc tests on PostgreSQL: each EQP criterion with its exact status and message; boundary 50/51 characters for `marca` and `modelo`; both fields invalid listed together
+- [x] Gate check passes: `cd backend && ./mvnw -q clean test`
+
+**Status**: ✅ Done
 
 **Tests**: integration
 **Gate**: full

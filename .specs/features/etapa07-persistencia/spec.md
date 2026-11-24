@@ -314,11 +314,11 @@ Dimensions sweep: input validation (EQP-06, PCK-06 to PCK-10, PRS-07 to PRS-10, 
 | USR-07 | P1: Users in the database | Design | Implementing |
 | USR-08 | P1: Users in the database | Design | Implementing |
 | EQP-01 | P1: Equipment CRUD | Design | Implementing |
-| EQP-02 | P1: Equipment CRUD | Design | Pending |
+| EQP-02 | P1: Equipment CRUD | Design | Implementing |
 | EQP-03 | P1: Equipment CRUD | Design | Implementing |
 | EQP-04 | P1: Equipment CRUD | Design | Implementing |
 | EQP-05 | P1: Equipment CRUD | Design | Implementing |
-| EQP-06 | P1: Equipment CRUD | Design | Pending |
+| EQP-06 | P1: Equipment CRUD | Design | Implementing |
 | EQP-07 | P1: Equipment CRUD | Design | Implementing |
 | EQP-08 | P1: Equipment CRUD | Design | Implementing |
 | EQP-09 | P1: Equipment CRUD | Design | Implementing |
