@@ -5,7 +5,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.corsinotones.BancoDeTeste;
+import com.corsinotones.BancoIsolado;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,11 +15,13 @@ import org.springframework.boot.test.system.OutputCaptureExtension;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 
 // SEED-03: a missing seed file starts the app with no users and logs a warning.
 @SpringBootTest(properties = "corsino.seed.arquivo=nao-existe/semente.json")
-@Import(BancoDeTeste.class)
+@Import(BancoIsolado.class)
+@DirtiesContext
 @AutoConfigureMockMvc
 @ExtendWith(OutputCaptureExtension.class)
 class SementeUsuariosAusenteTest {

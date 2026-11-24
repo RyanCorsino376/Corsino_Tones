@@ -5,10 +5,8 @@ import com.corsinotones.model.Usuario;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
-import org.springframework.stereotype.Repository;
 
-/** Keeps users in memory, keyed by e-mail. Everything is lost on restart (the database replaces this class later). */
-@Repository
+/** Test fake: keeps users in memory, keyed by e-mail. Not a Spring bean; the runtime uses UsuarioRepositoryJpa (USR-08). */
 public class UsuarioRepositoryEmMemoria implements UsuarioRepository {
 
 	private final Map<String, Usuario> porEmail = new ConcurrentHashMap<>();

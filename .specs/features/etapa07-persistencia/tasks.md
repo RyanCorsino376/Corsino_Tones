@@ -242,11 +242,13 @@ T22 → T23 → T24 → T25 → T26 → T27
 
 **Done when**:
 
-- [ ] Every existing auth controller test passes against PostgreSQL (USR-01); CAD-11 tests are rewritten to USR-02 on `BancoIsolado` (ids 2 then 3)
-- [ ] A registered user's row has `perfil = 'COMUM'` (USR-03)
-- [ ] Two concurrent registrations of one e-mail give exactly one `201` and one `409` "Este e-mail já está cadastrado." even when the pre-check is bypassed (USR-07)
-- [ ] The application context has exactly one `UsuarioRepository` bean, of type `UsuarioRepositoryJpa` (USR-08); `AuthService.java` has no diff
-- [ ] Gate check passes: `cd backend && ./mvnw -q clean test`
+- [x] Every existing auth controller test passes against PostgreSQL (USR-01); CAD-11 tests are rewritten to USR-02 on `BancoIsolado` (ids 2 then 3)
+- [x] A registered user's row has `perfil = 'COMUM'` (USR-03)
+- [x] Two concurrent registrations of one e-mail give exactly one `201` and one `409` "Este e-mail já está cadastrado." even when the pre-check is bypassed (USR-07)
+- [x] The application context has exactly one `UsuarioRepository` bean, of type `UsuarioRepositoryJpa` (USR-08); `AuthService.java` has no diff
+- [x] Gate check passes: `cd backend && ./mvnw -q clean test`
+
+**Status**: ✅ Done
 
 **Tests**: integration
 **Gate**: full

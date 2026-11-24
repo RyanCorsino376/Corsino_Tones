@@ -4,7 +4,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.corsinotones.BancoDeTeste;
+import com.corsinotones.BancoIsolado;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -17,9 +17,10 @@ import org.springframework.test.web.servlet.ResultActions;
 
 // SEED-02: with the default seed (../mock/db.seed.json) the mock's user already exists and ids continue from it.
 @SpringBootTest
-@Import(BancoDeTeste.class)
+@Import(BancoIsolado.class)
 @AutoConfigureMockMvc
-@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
+// Closed after the class, so no later class with the same configuration reuses this database.
+@DirtiesContext
 class SementeUsuariosPadraoTest {
 
 	@Autowired
