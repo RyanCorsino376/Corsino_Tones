@@ -469,9 +469,11 @@ T22 → T23 → T24 → T25 → T26 → T27
 
 **Done when**:
 
-- [ ] Slug tests: `clean`/`line6`/`HX Stomp` → `clean-line6-hx-stomp`; `clássico` → `classico`; `"  Rock!! "` → no leading/trailing `-`; a rejection sample with a valid slug embedded in invalid text (lesson L-002)
-- [ ] `PUT` keeps the id when `estilo` changes; unknown `equipamentoId` → `CampoInvalido("equipamentoId", "Equipamento não encontrado.")`; duplicate and delete guards with their exact messages
-- [ ] Gate check passes: `cd backend && ./mvnw -q test -Dtest='*ServiceTest'`
+- [x] Slug tests: `clean`/`line6`/`HX Stomp` → `clean-line6-hx-stomp`; `clássico` → `classico`; `"  Rock!! "` → no leading/trailing `-`; a rejection sample with a valid slug embedded in invalid text (lesson L-002)
+- [x] `PUT` keeps the id when `estilo` changes; unknown `equipamentoId` → `CampoInvalido("equipamentoId", "Equipamento não encontrado.")`; duplicate and delete guards with their exact messages
+- [x] Gate check passes: `cd backend && ./mvnw -q test -Dtest='*ServiceTest'`
+
+**Status**: ✅ Done
 
 **Tests**: unit
 **Gate**: quick
