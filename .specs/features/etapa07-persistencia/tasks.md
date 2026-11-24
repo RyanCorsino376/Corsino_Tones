@@ -552,8 +552,10 @@ T22 → T23 → T24 → T25 → T26 → T27
 
 **Done when**:
 
-- [ ] Unit tests: unknown `packId` → `CampoInvalido("packId", "Pack não encontrado.")`; `PUT` moves the preset to another pack; unknown id → `NaoEncontrado` "Preset não encontrado."
-- [ ] Gate check passes: `cd backend && ./mvnw -q test -Dtest='*ServiceTest'`
+- [x] Unit tests: unknown `packId` → `CampoInvalido("packId", "Pack não encontrado.")`; `PUT` moves the preset to another pack; unknown id → `NaoEncontrado` "Preset não encontrado."
+- [x] Gate check passes: `cd backend && ./mvnw -q test -Dtest='*ServiceTest'`
+
+**Status**: ✅ Done
 
 **Tests**: unit
 **Gate**: quick
