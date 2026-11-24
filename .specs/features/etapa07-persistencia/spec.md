@@ -322,8 +322,8 @@ Dimensions sweep: input validation (EQP-06, PCK-06 to PCK-10, PRS-07 to PRS-10, 
 | EQP-07 | P1: Equipment CRUD | Design | Implementing |
 | EQP-08 | P1: Equipment CRUD | Design | Implementing |
 | EQP-09 | P1: Equipment CRUD | Design | Implementing |
-| PCK-01 | P1: Pack CRUD | Design | Pending |
-| PCK-02 | P1: Pack CRUD | Design | Pending |
+| PCK-01 | P1: Pack CRUD | Design | Implementing |
+| PCK-02 | P1: Pack CRUD | Design | Implementing |
 | PCK-03 | P1: Pack CRUD | Design | Pending |
 | PCK-04 | P1: Pack CRUD | Design | Pending |
 | PCK-05 | P1: Pack CRUD | Design | Pending |
@@ -332,8 +332,8 @@ Dimensions sweep: input validation (EQP-06, PCK-06 to PCK-10, PRS-07 to PRS-10, 
 | PCK-08 | P1: Pack CRUD | Design | Pending |
 | PCK-09 | P1: Pack CRUD | Design | Pending |
 | PCK-10 | P1: Pack CRUD | Design | Pending |
-| PCK-11 | P1: Pack CRUD | Design | Pending |
-| PCK-12 | P1: Pack CRUD | Design | Pending |
+| PCK-11 | P1: Pack CRUD | Design | Implementing |
+| PCK-12 | P1: Pack CRUD | Design | Implementing |
 | PCK-13 | P1: Pack CRUD | Design | Pending |
 | PRS-01 | P1: Preset CRUD | Design | Pending |
 | PRS-02 | P1: Preset CRUD | Design | Pending |

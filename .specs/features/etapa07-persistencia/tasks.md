@@ -441,9 +441,11 @@ T22 → T23 → T24 → T25 → T26 → T27
 
 **Done when**:
 
-- [ ] Adapter test: `buscar("rock-boss-gt-1000")` returns the seeded values with its equipment; `listar` ordered by id; `buscarVarios` returns only existing ids; duplicate style per equipment → `Duplicado("uk_pack_estilo_equipamento")`; delete of a pack with presets → `EmUso("fk_preset_pack")`
-- [ ] Listing 9 packs issues one SQL query (Hibernate statistics), not 1 + N
-- [ ] Gate check passes: `cd backend && ./mvnw -q clean test`
+- [x] Adapter test: `buscar("rock-boss-gt-1000")` returns the seeded values with its equipment; `listar` ordered by id; `buscarVarios` returns only existing ids; duplicate style per equipment → `Duplicado("uk_pack_estilo_equipamento")`; delete of a pack with presets → `EmUso("fk_preset_pack")`
+- [x] Listing 9 packs issues one SQL query (Hibernate statistics), not 1 + N
+- [x] Gate check passes: `cd backend && ./mvnw -q clean test`
+
+**Status**: ✅ Done
 
 **Tests**: integration
 **Gate**: full
