@@ -579,8 +579,10 @@ T22 → T23 → T24 → T25 → T26 → T27
 
 **Done when**:
 
-- [ ] MockMvc tests: each PRS criterion with exact status and message; `2026-02-30`, `2026-2-3` and `25/06/2026` rejected; `GET /presets/abc` → 400 "Identificador inválido."; no response contains `arquivoChave` and a body with `arquivoChave` does not set the column (PRS-12)
-- [ ] Gate check passes: `cd backend && ./mvnw -q clean test`
+- [x] MockMvc tests: each PRS criterion with exact status and message; `2026-02-30`, `2026-2-3` and `25/06/2026` rejected; `GET /presets/abc` → 400 "Identificador inválido."; no response contains `arquivoChave` and a body with `arquivoChave` does not set the column (PRS-12)
+- [x] Gate check passes: `cd backend && ./mvnw -q clean test`
+
+**Status**: ✅ Done
 
 **Tests**: integration
 **Gate**: full
