@@ -633,8 +633,10 @@ T22 → T23 → T24 → T25 → T26 → T27
 
 **Done when**:
 
-- [ ] Unit tests: total equals the sum of the fake packs' prices (packs with different prices, lesson L-014); status `PAGO`; `criadoEm` from a fixed `Clock`; empty list, repeated id and the first unknown id in request order each give their exact `CampoInvalido`; nothing stored on error
-- [ ] Gate check passes: `cd backend && ./mvnw -q test -Dtest='*ServiceTest'`
+- [x] Unit tests: total equals the sum of the fake packs' prices (packs with different prices, lesson L-014); status `PAGO`; `criadoEm` from a fixed `Clock`; empty list, repeated id and the first unknown id in request order each give their exact `CampoInvalido`; nothing stored on error
+- [x] Gate check passes: `cd backend && ./mvnw -q test -Dtest='*ServiceTest'`
+
+**Status**: ✅ Done
 
 **Tests**: unit
 **Gate**: quick
