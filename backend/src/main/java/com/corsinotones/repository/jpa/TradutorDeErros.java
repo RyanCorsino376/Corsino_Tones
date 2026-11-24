@@ -1,6 +1,7 @@
 package com.corsinotones.repository.jpa;
 
 import com.corsinotones.repository.Duplicado;
+import com.corsinotones.repository.EmUso;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.dao.DataIntegrityViolationException;
 
@@ -10,11 +11,17 @@ final class TradutorDeErros {
 	private TradutorDeErros() {
 	}
 
-	/** {@link Duplicado} for a unique key ({@code uk_*}); the original exception for anything else. */
+	/**
+	 * {@link Duplicado} for a unique key ({@code uk_*}), {@link EmUso} for a foreign key ({@code fk_*});
+	 * the original exception for anything else.
+	 */
 	static RuntimeException traduzir(DataIntegrityViolationException erro) {
 		String restricao = nomeDaRestricao(erro);
 		if (restricao != null && restricao.startsWith("uk_")) {
 			return new Duplicado(restricao);
+		}
+		if (restricao != null && restricao.startsWith("fk_")) {
+			return new EmUso(restricao);
 		}
 		return erro;
 	}

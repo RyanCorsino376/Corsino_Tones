@@ -360,8 +360,10 @@ T22 → T23 → T24 → T25 → T26 → T27
 
 **Done when**:
 
-- [ ] Adapter test: `listar` ordered by marca then modelo; `criar` of an existing pair throws `Duplicado("uk_equipamento_marca_modelo")`; `excluir` of an equipment with packs throws `EmUso("fk_pack_equipamento")`; `temPacks` true for a seeded equipment
-- [ ] Gate check passes: `cd backend && ./mvnw -q clean test`
+- [x] Adapter test: `listar` ordered by marca then modelo; `criar` of an existing pair throws `Duplicado("uk_equipamento_marca_modelo")`; `excluir` of an equipment with packs throws `EmUso("fk_pack_equipamento")`; `temPacks` true for a seeded equipment
+- [x] Gate check passes: `cd backend && ./mvnw -q clean test`
+
+**Status**: ✅ Done
 
 **Tests**: integration
 **Gate**: full
