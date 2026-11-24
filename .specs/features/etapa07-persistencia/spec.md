@@ -298,8 +298,8 @@ Dimensions sweep: input validation (EQP-06, PCK-06 to PCK-10, PRS-07 to PRS-10, 
 | DB-01 | P1: Database | Design | Implementing |
 | DB-02 | P1: Database | Design | Implementing |
 | DB-03 | P1: Database | Design | Implementing |
-| DB-04 | P1: Database | Design | Pending |
-| DB-05 | P1: Database | Design | Pending |
+| DB-04 | P1: Database | Design | Implementing |
+| DB-05 | P1: Database | Design | Implementing |
 | DB-06 | P1: Database | Design | Pending |
 | DB-07 | P1: Database | Design | Implementing |
 | DB-08 | P1: Database | Design | Implementing |

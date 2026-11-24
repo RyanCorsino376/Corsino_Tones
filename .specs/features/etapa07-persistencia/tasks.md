@@ -158,9 +158,11 @@ T22 → T23 → T24 → T25 → T26 → T27
 
 **Done when**:
 
-- [ ] `MigracoesCatalogoTest` reads `mock/db.seed.json` and asserts every pack and preset field equals the database row (per-item values, lesson L-014), counts 4/9/21, and `flyway_schema_history` has V1 and V2
-- [ ] Inserting a preset after V2 gets id 22 (DB-05); a second `migrate()` keeps 9 packs (DB-07)
-- [ ] Gate check passes: `cd backend && ./mvnw -q clean test`
+- [x] `MigracoesCatalogoTest` reads `mock/db.seed.json` and asserts every pack and preset field equals the database row (per-item values, lesson L-014), counts 4/9/21, and `flyway_schema_history` has V1 and V2
+- [x] Inserting a preset after V2 gets id 22 (DB-05); a second `migrate()` keeps 9 packs (DB-07)
+- [x] Gate check passes: `cd backend && ./mvnw -q clean test`
+
+**Status**: ✅ Done
 
 **Tests**: integration
 **Gate**: full
