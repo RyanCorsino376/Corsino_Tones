@@ -330,11 +330,13 @@ T22 → T23 → T24 → T25 → T26 → T27
 
 **Done when**:
 
-- [ ] `DELETE /packs/x` without a token, with a malformed token and with an expired token each answer `401` "Faça login para continuar." (ERR-02)
-- [ ] The same call with a `COMUM` token answers `403` "Acesso restrito ao administrador." (ERR-03); with an `ADMIN` token it passes security (`404` until T15)
-- [ ] `GET /packs` without a token and with a valid `COMUM` token does not answer `401`/`403` (ERR-01); `/auth/*` still public
-- [ ] Preflight from `http://localhost:5173` for `PUT` with `Authorization` is allowed; from `http://evil.example` it is not (ERR-09); SRV-04 tests still pass
-- [ ] Gate check passes: `cd backend && ./mvnw -q clean test`
+- [x] `DELETE /packs/x` without a token, with a malformed token and with an expired token each answer `401` "Faça login para continuar." (ERR-02)
+- [x] The same call with a `COMUM` token answers `403` "Acesso restrito ao administrador." (ERR-03); with an `ADMIN` token it passes security (`404` until T15)
+- [x] `GET /packs` without a token and with a valid `COMUM` token does not answer `401`/`403` (ERR-01); `/auth/*` still public
+- [x] Preflight from `http://localhost:5173` for `PUT` with `Authorization` is allowed; from `http://evil.example` it is not (ERR-09); SRV-04 tests still pass
+- [x] Gate check passes: `cd backend && ./mvnw -q clean test`
+
+**Status**: ✅ Done
 
 **Tests**: integration
 **Gate**: full
