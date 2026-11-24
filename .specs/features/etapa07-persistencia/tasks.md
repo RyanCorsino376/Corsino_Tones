@@ -606,8 +606,10 @@ T22 → T23 → T24 → T25 → T26 → T27
 
 **Done when**:
 
-- [ ] Adapter test: `criar` stores the order and its items with their prices; `listarDoUsuario` returns only that user's orders, newest first, filtered by status; `buscarDoUsuario` of another user's order is empty; status stored as `pago`
-- [ ] Gate check passes: `cd backend && ./mvnw -q clean test`
+- [x] Adapter test: `criar` stores the order and its items with their prices; `listarDoUsuario` returns only that user's orders, newest first, filtered by status; `buscarDoUsuario` of another user's order is empty; status stored as `pago`
+- [x] Gate check passes: `cd backend && ./mvnw -q clean test`
+
+**Status**: ✅ Done
 
 **Tests**: integration
 **Gate**: full

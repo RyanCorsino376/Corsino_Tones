@@ -348,11 +348,11 @@ Dimensions sweep: input validation (EQP-06, PCK-06 to PCK-10, PRS-07 to PRS-10, 
 | PRS-11 | P1: Preset CRUD | Design | Implementing |
 | PRS-12 | P1: Preset CRUD | Design | Implementing |
 | PED-01 | P1: Orders | Design | Pending |
-| PED-02 | P1: Orders | Design | Pending |
+| PED-02 | P1: Orders | Design | Implementing |
 | PED-03 | P1: Orders | Design | Pending |
-| PED-04 | P1: Orders | Design | Pending |
-| PED-05 | P1: Orders | Design | Pending |
-| PED-06 | P1: Orders | Design | Pending |
+| PED-04 | P1: Orders | Design | Implementing |
+| PED-05 | P1: Orders | Design | Implementing |
+| PED-06 | P1: Orders | Design | Implementing |
 | PED-07 | P1: Orders | Design | Pending |
 | PED-08 | P1: Orders | Design | Pending |
 | PED-09 | P1: Orders | Design | Pending |
