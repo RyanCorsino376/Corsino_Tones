@@ -295,13 +295,13 @@ Dimensions sweep: input validation (EQP-06, PCK-06 to PCK-10, PRS-07 to PRS-10, 
 
 | Requirement ID | Story | Phase | Status |
 | -------------- | ----- | ----- | ------ |
-| DB-01 | P1: Database | Design | Pending |
-| DB-02 | P1: Database | Design | Pending |
-| DB-03 | P1: Database | Design | Pending |
+| DB-01 | P1: Database | Design | Implementing |
+| DB-02 | P1: Database | Design | Implementing |
+| DB-03 | P1: Database | Design | Implementing |
 | DB-04 | P1: Database | Design | Pending |
 | DB-05 | P1: Database | Design | Pending |
 | DB-06 | P1: Database | Design | Pending |
-| DB-07 | P1: Database | Design | Pending |
+| DB-07 | P1: Database | Design | Implementing |
 | DB-08 | P1: Database | Design | Implementing |
 | DB-09 | P1: Database | Design | Implementing |
 | DB-10 | P1: Database | Design | Pending |
@@ -346,7 +346,7 @@ Dimensions sweep: input validation (EQP-06, PCK-06 to PCK-10, PRS-07 to PRS-10, 
 | PRS-09 | P1: Preset CRUD | Design | Pending |
 | PRS-10 | P1: Preset CRUD | Design | Pending |
 | PRS-11 | P1: Preset CRUD | Design | Pending |
-| PRS-12 | P1: Preset CRUD | Design | Pending |
+| PRS-12 | P1: Preset CRUD | Design | Implementing |
 | PED-01 | P1: Orders | Design | Pending |
 | PED-02 | P1: Orders | Design | Pending |
 | PED-03 | P1: Orders | Design | Pending |

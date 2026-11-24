@@ -129,10 +129,12 @@ T22 → T23 → T24 → T25 → T26 → T27
 
 **Done when**:
 
-- [ ] `MigracoesTest` (Flyway API on its own container) asserts the six tables, each foreign key of DB-02 by name and target, each unique and check constraint of DB-03, and `preset.arquivo_chave` nullable
-- [ ] Inserting a negative `preco_centavos` and a duplicate `usuario.email` each fails (DB-03 behaviour, not only metadata)
-- [ ] Running `migrate()` a second time applies 0 migrations (DB-07)
-- [ ] Gate check passes: `cd backend && ./mvnw -q clean test`
+- [x] `MigracoesTest` (Flyway API on its own container) asserts the six tables, each foreign key of DB-02 by name and target, each unique and check constraint of DB-03, and `preset.arquivo_chave` nullable
+- [x] Inserting a negative `preco_centavos` and a duplicate `usuario.email` each fails (DB-03 behaviour, not only metadata)
+- [x] Running `migrate()` a second time applies 0 migrations (DB-07)
+- [x] Gate check passes: `cd backend && ./mvnw -q clean test`
+
+**Status**: ✅ Done
 
 **Tests**: integration
 **Gate**: full
