@@ -660,9 +660,11 @@ T22 → T23 → T24 → T25 → T26 → T27
 
 **Done when**:
 
-- [ ] MockMvc tests: each PED criterion; a body with another `usuarioId`, `totalCentavos: 1` and `status: "pendente"` is ignored (PED-03); a later pack price change leaves the order total and items unchanged (PED-02)
-- [ ] PED-10 on `BancoIsolado`: a test-only trigger that raises on `item_pedido` insert for one pack makes `POST /pedidos` answer `500` and leaves no `pedido` row for that user
-- [ ] Gate check passes: `cd backend && ./mvnw -q clean test`
+- [x] MockMvc tests: each PED criterion; a body with another `usuarioId`, `totalCentavos: 1` and `status: "pendente"` is ignored (PED-03); a later pack price change leaves the order total and items unchanged (PED-02)
+- [x] PED-10 on `BancoIsolado`: a test-only trigger that raises on `item_pedido` insert for one pack makes `POST /pedidos` answer `500` and leaves no `pedido` row for that user
+- [x] Gate check passes: `cd backend && ./mvnw -q clean test`
+
+**Status**: ✅ Done
 
 **Tests**: integration
 **Gate**: full
@@ -686,8 +688,10 @@ T22 → T23 → T24 → T25 → T26 → T27
 
 **Done when**:
 
-- [ ] Fails if any `controller` or `service` file imports `jakarta.persistence`, `org.springframework.data` or `org.hibernate` (ARQ-01), if a controller method returns an `@Entity` type (ARQ-02), or if a service constructor takes a Spring Data type (ARQ-03); a planted bad import in a temp copy makes it fail
-- [ ] Gate check passes: `cd backend && ./mvnw -q test -Dtest='ArquiteturaTest'`
+- [x] Fails if any `controller` or `service` file imports `jakarta.persistence`, `org.springframework.data` or `org.hibernate` (ARQ-01), if a controller method returns an `@Entity` type (ARQ-02), or if a service constructor takes a Spring Data type (ARQ-03); a planted bad import in a temp copy makes it fail
+- [x] Gate check passes: `cd backend && ./mvnw -q test -Dtest='ArquiteturaTest'`
+
+**Status**: ✅ Done
 
 **Tests**: unit
 **Gate**: quick
@@ -711,8 +715,10 @@ T22 → T23 → T24 → T25 → T26 → T27
 
 **Done when**:
 
-- [ ] After the restart `GET /equipamentos/{id}` returns the same body and the user signs in; the catalogue still has 9 seeded packs
-- [ ] Gate check passes: `cd backend && ./mvnw -q clean test`
+- [x] After the restart `GET /equipamentos/{id}` returns the same body and the user signs in; the catalogue still has 9 seeded packs
+- [x] Gate check passes: `cd backend && ./mvnw -q clean test`
+
+**Status**: ✅ Done
 
 **Tests**: integration
 **Gate**: full
@@ -736,8 +742,10 @@ T22 → T23 → T24 → T25 → T26 → T27
 
 **Done when**:
 
-- [ ] With `docker compose up -d` and `CORSINO_DB_PASSWORD` exported, `npx playwright test` passes 354 tests
-- [ ] Gate check passes: build gate
+- [x] With `docker compose up -d` and `CORSINO_DB_PASSWORD` exported, `npx playwright test` passes 354 tests
+- [x] Gate check passes: build gate
+
+**Status**: ✅ Done
 
 **Tests**: e2e
 **Gate**: build
@@ -761,8 +769,10 @@ T22 → T23 → T24 → T25 → T26 → T27
 
 **Done when**:
 
-- [ ] Every curl example was run against `docker compose up -d` and its pasted response matches
-- [ ] Gate check passes: build gate
+- [x] Every curl example was run against `docker compose up -d` and its pasted response matches
+- [x] Gate check passes: build gate
+
+**Status**: ✅ Done
 
 **Tests**: none
 **Gate**: build
@@ -786,8 +796,10 @@ T22 → T23 → T24 → T25 → T26 → T27
 
 **Done when**:
 
-- [ ] Following the README on a clean checkout starts the database, the API and the front end
-- [ ] Gate check passes: build gate
+- [x] Following the README on a clean checkout starts the database, the API and the front end
+- [x] Gate check passes: build gate
+
+**Status**: ✅ Done
 
 **Tests**: none
 **Gate**: build
@@ -811,8 +823,10 @@ T22 → T23 → T24 → T25 → T26 → T27
 
 **Done when**:
 
-- [ ] `grep -i "parâmetro" docs/proposta.md` finds nothing; the six entities and MinIO are listed
-- [ ] Gate check passes: build gate
+- [x] `grep -i "parâmetro" docs/proposta.md` finds nothing; the six entities and MinIO are listed
+- [x] Gate check passes: build gate
+
+**Status**: ✅ Done
 
 **Tests**: none
 **Gate**: build

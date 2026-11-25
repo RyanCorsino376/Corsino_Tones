@@ -106,16 +106,13 @@ Rejected: H2, which hides PostgreSQL-specific SQL and constraint behaviour. Feat
 
 ## Handoff
 
-**Feature**: stage 06, server part: `etapa06-spring-cadastro` and `etapa06-front-spring-auth` (both implemented)
-**Branch**: `feat/etapa06-spring-cadastro`, not pushed, no PR
-**Phase**: both features done and Verifier PASS (`validation.md` in each folder). `etapa06-front-spring-auth` passed on iteration 2 after test-only fixes.
-
-**Gate**: `npx playwright test` = 354 passed; `cd backend && ./mvnw -q clean test` = 76 passed (2026-11-18). Node is not on PATH in this WSL shell: run `export NVM_DIR="$HOME/.nvm"; . "$NVM_DIR/nvm.sh"` first.
-
-**Next step**: open the PR for the branch, then start the next slice (packs and presets endpoints on Spring, then orders). The React part (`etapa06-react-catalogo`) has a spec only and no code.
-
-**Open gaps (deferred by the user)**: non-blocking gaps of `etapa06-spring-cadastro/validation.md`: SRV-02 (port asserted by property only), SRV-03 (layer rule only checks the controller), LOG-09 (absent secret tested as empty), SEED-04 (seed file read-only check), M8 (dummy hash validity).
-
-**Uncommitted**: `.specs/LESSONS.md` and `.specs/lessons.json` (user's earlier edits mixed with lessons L-023 to L-031 from the Verifiers; decide before committing), `.specs/features/etapa06-react-catalogo/` (untracked).
-
-**Dev servers**: not running. Start order and commands: README, section "Como executar". Spring needs `CORSINO_JWT_SECRET` (32+ characters).
+- **Feature**: `etapa07-persistencia` (`.specs/features/etapa07-persistencia/`)
+- **Phase / Task**: all 27 tasks implemented (T21-T27 finished on 2026-11-25). Next: the independent Verifier (fresh sub-agent, writes `validation.md`), then `validate_state.py`.
+- **Completed**: T1-T20 committed (7917fa5..c7cf0a9, plus 4269a43). T21-T27 are done on disk but **not committed**: gate green, 267 backend tests, 354 Playwright tests.
+- **In-progress** (file:line): none.
+- **Next step**: commit T21-T27 as separate atomic commits when the user asks (messages are in `tasks.md`), then run the Verifier. Open assumption to log: an unknown `?status=` on `GET /pedidos` answers `[]` (no spec AC, no test).
+- **Blockers**: none. Port 8081 is free now; never touch the `pedalpacks-*` containers.
+- **Environment**: dev database `corsino_tones-postgres-1` on host port 5433 (`docker compose up -d`); `.env` holds its password (git-ignored). Docker must be running for `./mvnw test`. Node needs `export NVM_DIR="$HOME/.nvm"; . "$NVM_DIR/nvm.sh"`. The dev database now holds one extra order and the pack `funk-boss-gt-1000` from the T25 curl examples.
+- **Uncommitted files**: T21-T27 work (`PedidoController`, `PedidoRequest`, `PedidoResponse`, `PedidoControllerTest`, `PedidoControllerFalhaTest`, `ArquiteturaTest`, `plantado/Plantados.java`, `PersistenciaAposReinicioTest`, `playwright.config.js`, `docs/etapa-07.md`, `README.md`, `docs/proposta.md`, `tasks.md`) plus the user's own pending files (`.specs/LESSONS.md`, `.specs/lessons.json`, `AuthControllerCadastroTest.java`, `frontend/servicos/carrinho.js`, `.specs/features/etapa06-react-catalogo/`).
+- **Branch**: `feat/etapa07-persistencia`, not pushed, no PR.
+- **Carried over from stage 06**: non-blocking gaps of `etapa06-spring-cadastro/validation.md` (SRV-02, SRV-03, LOG-09, SEED-04, M8), deferred by the user; `etapa06-react-catalogo` has a spec only.

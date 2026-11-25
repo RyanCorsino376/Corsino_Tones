@@ -11,27 +11,28 @@
 
 ## Funcionalidades ##
 - Cadastro e login de usuários, com autenticação por e-mail e senha.
-- Publicação de presets pelo administrador, informando nome, equipamento de origem, estilo musical, descrição e os valores de cada parâmetro (ganho, equalização, efeitos, nível, etc.).
+- Publicação de presets pelo administrador, informando nome, equipamento de origem, estilo musical, descrição e o arquivo do preset, que o comprador carrega no equipamento.
 - Listagem dos presets do mais recente para o mais antigo, com paginação, busca por texto e filtros por equipamento e estilo musical.
-- Página de detalhe do preset, exibindo todos os parâmetros em formato de tabela e um passo a passo de como aplicá-los no equipamento.
+- Página de detalhe do preset, exibindo a descrição, o pack a que pertence e um passo a passo de como aplicá-los no equipamento.
 - Favoritar presets, com uma lista pessoal de presets salvos por usuário.
 - Comentários em cada preset, para retorno de quem testou.
 - Área administrativa restrita ao administrador, para criar, editar e remover presets e apagar comentários indevidos.
 
 ## Descrição de telas ##
 1. **Tela inicial (listagem de presets)** — Apresenta os presets mais recentes em cartões, cada um com nome, equipamento e estilo musical. No topo ficam o menu de navegação e a barra de busca; ao lado da lista, um painel de filtros por equipamento e estilo, que atualiza o resultado sem recarregar a página.
-2. **Tela de detalhe do preset** — Mostra a descrição, a tabela com o valor de cada parâmetro, o passo a passo de configuração e o botão de favoritar. Abaixo ficam a lista de comentários dos outros usuários e o campo para comentar; para o autor, cada comentário traz também a opção de apagar.
+2. **Tela de detalhe do preset** — Mostra a descrição, o pack a que pertence, o passo a passo de configuração e o botão de favoritar. Abaixo ficam a lista de comentários dos outros usuários e o campo para comentar; para o autor, cada comentário traz também a opção de apagar.
 3. **Tela de login e cadastro** — Formulário único com alternância entre entrar e criar conta, validação dos campos no próprio navegador e mensagens de erro devolvidas pelo servidor (e-mail já usado, senha inválida).
 4. **Tela de perfil do usuário** — Reúne os dados da conta e a lista de presets favoritados, com opção de removê-los da lista.
 5. **Painel administrativo** — Visível apenas para o autor. Contém o formulário de criação e edição de presets e a listagem dos presets publicados, com as ações de editar e excluir.
 
 ## Modelo de dados ##
-- **Usuário** — nome, e-mail, senha (armazenada como hash) e perfil de acesso (comum ou administrador).
-- **Equipamento** — marca e modelo do pedal ou pedaleira; um equipamento reúne vários presets.
-- **Preset** — nome, descrição, estilo musical e data de publicação; pertence a um equipamento e a um usuário autor.
-- **Parâmetro** — nome do ajuste (ganho, grave, médio, agudo, nível, etc.) e o valor correspondente; cada preset tem vários. Fica em entidade própria porque cada equipamento tem um conjunto diferente de ajustes, o que impede fixar essas colunas na tabela de presets.
-- **Comentário** — texto e data; liga um usuário a um preset.
-- **Favorito** — vínculo entre um usuário e um preset, sem repetição do mesmo par.
+O banco tem seis tabelas (diagrama e detalhes em [`docs/etapa-07.md`](etapa-07.md)):
+- **usuario** — nome, e-mail, senha (armazenada como hash) e perfil de acesso (comum ou administrador).
+- **equipamento** — marca e modelo do pedal ou pedaleira; um equipamento tem vários packs.
+- **pack** — conjunto de presets de um estilo musical para um único equipamento, com nome, descrição e preço em centavos.
+- **preset** — nome, descrição e data de publicação; pertence a um pack. O arquivo do preset fica no **MinIO** (armazenamento de arquivos compatível com o S3 da Amazon), e a tabela guarda só a chave dele, sem o conteúdo.
+- **pedido** — compra de um usuário, com status e total calculado pelo servidor.
+- **item_pedido** — um pack dentro de um pedido, com o preço da hora da compra.
 
 ## Tecnologias lado do cliente ##
 - **React com TypeScript** para a construção das telas em componentes reutilizáveis. O TypeScript foi escolhido por verificar os tipos ainda em tempo de escrita do código, o que reduz erros na integração com a API.
@@ -47,7 +48,7 @@
 - **Maven** para o gerenciamento de dependências e o empacotamento da aplicação.
 
 ## Tecnologia de persistência ##
-- **PostgreSQL** como banco de dados relacional. A escolha se deve ao formato dos dados da aplicação, que é bem definido e tem muitas relações entre as entidades (usuário, preset, parâmetro, equipamento, comentário e favorito) — situação em que o modelo relacional evita repetição de informação e garante a integridade dos vínculos.
+- **PostgreSQL** como banco de dados relacional. A escolha se deve ao formato dos dados da aplicação, que é bem definido e tem muitas relações entre as entidades (usuário, equipamento, pack, preset, pedido e item do pedido) — situação em que o modelo relacional evita repetição de informação e garante a integridade dos vínculos.
 - O esquema do banco é criado por scripts SQL versionados junto ao código, para que o histórico das alterações de tabelas acompanhe o projeto.
 
 ## Requisitos não funcionais ##
