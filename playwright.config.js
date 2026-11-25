@@ -39,7 +39,7 @@ module.exports = defineConfig({
     },
     {
       // Spring Boot API for registration and login (etapa06-front-spring-auth).
-      // Users live in memory and are shared by every test, so tests that register
+      // Users are shared by every test, so tests that register
       // must use unique e-mails. The secret below is for tests only; real runs read
       // CORSINO_JWT_SECRET from the environment. The first start compiles the
       // project, hence the long timeout.
@@ -47,7 +47,12 @@ module.exports = defineConfig({
       port: 8081,
       timeout: 120_000,
       reuseExistingServer: !process.env.CI,
-      env: { CORSINO_JWT_SECRET: 'test-only-secret-for-playwright-0123456789' },
+      // The users now live in PostgreSQL (docker compose up -d), so the password
+      // of the development database must be exported before running the suite.
+      env: {
+        CORSINO_JWT_SECRET: 'test-only-secret-for-playwright-0123456789',
+        CORSINO_DB_PASSWORD: process.env.CORSINO_DB_PASSWORD ?? '',
+      },
     },
   ],
 
