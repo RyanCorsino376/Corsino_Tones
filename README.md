@@ -11,13 +11,14 @@ depois dela, está em [`.specs/features/etapa05-loja/plano.md`](.specs/features/
 
 ## Estado atual
 
-O projeto está na **etapa 06: servidor com Spring Boot**. O front-end é JavaScript
-puro organizado em módulos ES. O **cadastro e o login** já passam por uma API
-Spring Boot (porta 8081, senhas com BCrypt, token JWT); packs, presets, carrinho e
-pedidos ainda vêm de uma API simulada pelo
-[json-server](https://github.com/typicode/json-server). Os usuários do Spring ficam
-**só em memória** (o banco PostgreSQL vem depois) e são carregados de
-`mock/db.seed.json` ao iniciar. Descrição da etapa 05, evidências e roteiro de
+O projeto está na **etapa 07: persistência com PostgreSQL**. O front-end é JavaScript
+puro organizado em módulos ES. A API Spring Boot (porta 8081, senhas com BCrypt,
+token JWT) agora guarda usuários, equipamentos, packs, presets e pedidos em um
+**PostgreSQL 16** (Docker), e os dados sobrevivem a reiniciar a aplicação. O
+catálogo inicial é criado pelas migrações do Flyway. O site ainda lê packs e presets
+da API simulada ([json-server](https://github.com/typicode/json-server)); só o
+cadastro e o login usam o Spring. Modelo de dados, exemplos de `curl` e a escolha do
+PostgreSQL: [`docs/etapa-07.md`](docs/etapa-07.md). Etapa 05, evidências e roteiro de
 teste: [`docs/etapa-05.md`](docs/etapa-05.md).
 
 | Tela | Arquivo | O que faz |
@@ -48,19 +49,30 @@ docs/         proposta, descrição das etapas e capturas de tela
 
 ## Como executar
 
-Requer Node.js, Python 3 e JDK 21 (o Maven vem junto, pelo `mvnw`). Na pasta do projeto:
+Requer Node.js, Python 3, JDK 21 (o Maven vem junto, pelo `mvnw`) e **Docker**, que
+roda o PostgreSQL. Na pasta do projeto:
 
 ```bash
 npm install
+cp .env.example .env
+```
+
+Troque `POSTGRES_PASSWORD` no `.env` (ele não vai para o git) e suba o banco, na
+porta 5433:
+
+```bash
+docker compose up -d
 ```
 
 Em um terminal, a API Spring Boot (porta 8081). Ela exige o segredo que assina os
-tokens de login, com pelo menos 32 caracteres, definido por variável de ambiente
-(sem ele o app não inicia). Nunca coloque o segredo no git:
+tokens de login, com pelo menos 32 caracteres, e a senha do banco, definidos por
+variáveis de ambiente (sem elas o app não inicia). Nunca coloque os valores no git.
+`CORSINO_DB_URL` e `CORSINO_DB_USER` têm padrão e só precisam mudar para outro banco:
 
 ```bash
 cd backend
 export CORSINO_JWT_SECRET="um-segredo-local-com-pelo-menos-32-caracteres"
+export CORSINO_DB_PASSWORD="<a senha do .env>"
 ./mvnw spring-boot:run
 ```
 
@@ -83,8 +95,8 @@ Depois abra <http://127.0.0.1:8080/frontend/index.html>.
 **Conta de teste:** `ryan@exemplo.com`, senha `teste123` (existe no Spring e no mock).
 
 Use `127.0.0.1` no navegador, e não `localhost`: as duas origens são aceitas pelo
-Spring, mas o mock e os testes usam `127.0.0.1`. As contas criadas no Spring somem
-quando ele é reiniciado.
+Spring, mas o mock e os testes usam `127.0.0.1`. As contas criadas no Spring ficam
+no PostgreSQL e continuam lá depois de reiniciar a API.
 
 Os dados ficam em `mock/db.json`, criado a partir de `mock/db.seed.json` na
 primeira execução. Para apagar as contas criadas e voltar aos dados originais:
@@ -104,9 +116,11 @@ npm test
 ```
 
 O Playwright sobe sozinho o site, a API simulada e o Spring durante os testes
-(configuração em `playwright.config.js`; a primeira execução compila o Spring e
+(configuração em `playwright.config.js`; o banco precisa estar ligado
+(`docker compose up -d`) e `CORSINO_DB_PASSWORD` exportada; a primeira execução compila o Spring e
 demora mais). Se algum deles já estiver ligado, ele é reaproveitado. Os testes do
-back-end rodam separados, com JUnit e MockMvc:
+back-end rodam separados, com JUnit e MockMvc, contra um PostgreSQL criado pelo
+Testcontainers (o Docker precisa estar ligado):
 
 ```bash
 cd backend
@@ -117,7 +131,7 @@ cd backend
 
 - Carrinho, compra simulada e biblioteca com download (fatias 4 a 6 do plano).
 - Avaliar a migração do cliente para React com TypeScript, depois da loja.
-- Mover packs, presets, pedidos e biblioteca para o Spring Boot, e então ligar o
-  PostgreSQL no lugar do armazenamento em memória.
+- Mover packs, presets, pedidos e biblioteca do site para o Spring Boot, que já os
+  guarda no PostgreSQL, e guardar os arquivos dos presets no MinIO.
 - Reescrever o cliente em React com TypeScript (especificação em
   `.specs/features/etapa06-react-catalogo/`).
