@@ -3,8 +3,9 @@
 //
 // The server checks the password, trims and lower-cases the e-mail and enforces the
 // field rules; this module only maps the answer onto error classes the page knows.
-// Both functions resolve with { id, nome, email }: the token is discarded because
-// nothing uses it yet.
+// Both functions resolve with { id, nome, email, token }: the token goes into the
+// session, because the order calls need it (AD-019). Registration answers no token,
+// so cadastrar signs in right after creating the account.
 import { cadastrarNoServidor, entrarNoServidor } from '../api/auth.js';
 import { ErroApi } from '../api/cliente.js';
 
@@ -44,11 +45,11 @@ function usuarioDe({ id, nome, email }) {
     return { id, nome, email };
 }
 
-/** Resolves with the user, or rejects with CredenciaisInvalidas, DadosInvalidos or ErroApi. */
+/** Resolves with the user and token, or rejects with CredenciaisInvalidas, DadosInvalidos or ErroApi. */
 export async function entrar(email, senha) {
     try {
-        const { usuario } = await entrarNoServidor({ email, senha });
-        return usuarioDe(usuario);
+        const { token, usuario } = await entrarNoServidor({ email, senha });
+        return { ...usuarioDe(usuario), token };
     } catch (erro) {
         if (!(erro instanceof ErroApi)) throw erro;
         if (erro.status === 401) throw new CredenciaisInvalidas();
@@ -56,13 +57,21 @@ export async function entrar(email, senha) {
     }
 }
 
-/** Resolves with the created user, or rejects with EmailEmUso, DadosInvalidos or ErroApi. */
+/**
+ * Creates the account, then signs in with the same e-mail and password to get a token.
+ * Resolves with the created user and token, or rejects with EmailEmUso, DadosInvalidos or ErroApi.
+ * A failure of the sign-in step is an ErroApi: the account exists, so the page reports a
+ * communication problem rather than a field error.
+ */
 export async function cadastrar({ nome, email, senha }) {
+    let criado;
     try {
-        return usuarioDe(await cadastrarNoServidor({ nome, email, senha }));
+        criado = usuarioDe(await cadastrarNoServidor({ nome, email, senha }));
     } catch (erro) {
         if (!(erro instanceof ErroApi)) throw erro;
         if (erro.status === 409) throw new EmailEmUso();
         throw interpretar400(erro);
     }
+    const { token } = await entrarNoServidor({ email, senha });
+    return { ...criado, token };
 }

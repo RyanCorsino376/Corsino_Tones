@@ -8,6 +8,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.corsinotones.BancoDeTeste;
+import com.corsinotones.dto.LoginRequest;
+import com.corsinotones.model.Usuario;
+import com.corsinotones.repository.UsuarioRepository;
+import com.corsinotones.service.AuthService;
 import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -140,9 +144,13 @@ class AuthControllerCadastroTest {
 	// SRV-03: the five layer packages exist and the controller never reaches the repository.
 	@Test
 	void controllerDependeSoDoServico() throws Exception {
-		for (String camada : new String[] {"controller", "service", "repository", "model", "dto"}) {
-			assertThat(Package.getPackage("com.corsinotones." + camada)).as(camada).isNotNull();
-		}
+		// One representative class per layer: if the package is missing, this stops compiling.
+		// (Package.getPackage is deprecated and returns null for packages not yet loaded.)
+		assertThat(AuthController.class.getPackageName()).isEqualTo("com.corsinotones.controller");
+		assertThat(AuthService.class.getPackageName()).isEqualTo("com.corsinotones.service");
+		assertThat(UsuarioRepository.class.getPackageName()).isEqualTo("com.corsinotones.repository");
+		assertThat(Usuario.class.getPackageName()).isEqualTo("com.corsinotones.model");
+		assertThat(LoginRequest.class.getPackageName()).isEqualTo("com.corsinotones.dto");
 		Class<?> controller = AuthController.class;
 		for (Class<?> tipo : controller.getConstructors()[0].getParameterTypes()) {
 			assertThat(tipo.getPackageName()).isNotEqualTo("com.corsinotones.repository");

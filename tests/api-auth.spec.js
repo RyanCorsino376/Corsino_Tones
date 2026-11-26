@@ -72,16 +72,16 @@ test.describe('etapa06-front-spring-auth T4 - auth API module', () => {
     ]);
   });
 
-  // WEB-01, WEB-07: the mock is never called.
-  test('nenhuma das duas funções chama o mock na porta 3000', async ({ page }) => {
+  // WEB-01, WEB-07, MOCK-02: both functions call Spring and nothing else.
+  test('as duas funções só fazem requisições ao Spring', async ({ page }) => {
     await page.route(`${SPRING}/auth/**`, (rota) => rota.fulfill({ json: {} }));
-    const paraOMock = [];
-    page.on('request', (req) => { if (req.url().startsWith('http://127.0.0.1:3000')) paraOMock.push(req.url()); });
+    const urls = [];
+    page.on('request', (req) => urls.push(req.url()));
 
     await chamar(page, 'entrarNoServidor', { email: 'a@b.c', senha: 'x' });
     await chamar(page, 'cadastrarNoServidor', { nome: 'Ana', email: 'a@b.c', senha: 'x' });
 
-    expect(paraOMock).toEqual([]);
+    expect(urls).toEqual([`${SPRING}/auth/login`, `${SPRING}/auth/cadastro`]);
   });
 
   // Each failure class reaches the caller as one ErroApi with its status.

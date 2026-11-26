@@ -4,14 +4,19 @@ const { test, expect } = require('@playwright/test');
 // Tests derive from .specs/features/etapa05-auth/spec.md: SES-02..05 (T7) and
 // PROT-01, PROT-05 (T8).
 
+const { registrarUsuario } = require('./apoio/api');
+
 const CHAVE = 'corsino:sessao';
-const SESSAO_RYAN = { id: 1, nome: 'Ryan Corsino', email: 'ryan@exemplo.com' };
 const PAGINAS_COM_CABECALHO = ['index.html', 'packs.html', 'pack.html?id=rock-boss-gt-1000'];
 
-/** Opens a session in this tab, as a successful login would. */
-async function abrirSessao(page, sessao = SESSAO_RYAN) {
+/**
+ * Opens a session in this tab, as a successful login would. Without `sessao` it uses a new real
+ * user named Ryan Corsino: pages that read the orders need a valid token (etapa06-front-spring-loja MIG-08).
+ */
+async function abrirSessao(page, sessao) {
+  const valor = sessao ? JSON.stringify(sessao) : (await registrarUsuario(page.request, 'Ryan Corsino')).sessao;
   await page.goto('index.html');
-  await page.evaluate(([chave, valor]) => sessionStorage.setItem(chave, valor), [CHAVE, JSON.stringify(sessao)]);
+  await page.evaluate(([chave, v]) => sessionStorage.setItem(chave, v), [CHAVE, valor]);
 }
 
 const linkEntrar = (page) => page.locator('a.entrar[href="login.html"]');

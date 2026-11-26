@@ -4,7 +4,7 @@ const { test, expect } = require('@playwright/test');
 // Tests derive from .specs/features/etapa05-carrinho/spec.md: ADD-*, HDR-02,
 // EDGE-01 (T3) and PAGC-*, HDR-01 for carrinho.html, EDGE-02 (T4).
 
-const API = 'http://127.0.0.1:3000';
+const API = 'http://127.0.0.1:8081';
 const CHAVE = 'corsino:carrinho';
 
 const lerCarrinho = (page) => page.evaluate((chave) => localStorage.getItem(chave), CHAVE);

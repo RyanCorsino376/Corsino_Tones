@@ -37,8 +37,8 @@ test.describe('etapa06-front-spring-auth T11 - login page against the real Sprin
 
     await expect(page).toHaveURL(/\/frontend\/index\.html$/);
     const sessao = await lerSessao(page);
-    expect(Object.keys(sessao).sort()).toEqual(['email', 'id', 'nome']);
-    expect(sessao).toEqual({ id: expect.any(Number), nome: 'Ana Real', email });
+    expect(Object.keys(sessao).sort()).toEqual(['email', 'id', 'nome', 'token']);
+    expect(sessao).toEqual({ id: expect.any(Number), nome: 'Ana Real', email, token: expect.stringMatching(/^eyJ/) });
     expect(sessao.id).toBeGreaterThan(1);
 
     const outra = await context.newPage();
@@ -46,7 +46,10 @@ test.describe('etapa06-front-spring-auth T11 - login page against the real Sprin
     await enviarLogin(outra, email.toUpperCase(), 'senha-real-1');
 
     await expect(outra).toHaveURL(/\/frontend\/index\.html$/);
-    expect(await lerSessao(outra)).toEqual(sessao);
+    // Same user; each sign-in gets its own token, so only the user fields are compared.
+    const { token: _t1, ...usuario } = sessao;
+    const { token: _t2, ...outroUsuario } = await lerSessao(outra);
+    expect(outroUsuario).toEqual(usuario);
   });
 
   // WEB-16: the user seeded from the mock.
@@ -55,7 +58,9 @@ test.describe('etapa06-front-spring-auth T11 - login page against the real Sprin
     await enviarLogin(page, 'ryan@exemplo.com', 'teste123');
 
     await expect(page).toHaveURL(/\/frontend\/index\.html$/);
-    expect(await lerSessao(page)).toEqual({ id: 1, nome: 'Ryan Corsino', email: 'ryan@exemplo.com' });
+    const sessao = await lerSessao(page);
+    expect(sessao).toEqual({ id: 1, nome: 'Ryan Corsino', email: 'ryan@exemplo.com', token: sessao.token });
+    expect(sessao.token).toMatch(/^eyJ[\w-]+\.[\w-]+\.[\w-]+$/);
   });
 
   test('uma senha errada mostra a mensagem do servidor e não abre sessão', async ({ page }) => {
@@ -83,50 +88,45 @@ test.describe('etapa06-front-spring-auth T11 - login page against the real Sprin
     expect(await outra.evaluate((chave) => sessionStorage.getItem(chave), CHAVE)).toBeNull();
   });
 
-  // WEB-06: neither the password nor the token is kept in the browser.
-  test('depois do login o navegador não guarda a senha nem o token', async ({ page }) => {
+  // WEB-06, revised by etapa06-front-spring-loja (AD-019): the password is never kept; the token
+  // lives only in the tab's session (never in localStorage) because the order calls need it.
+  test('depois do login o navegador guarda o token só na sessão da aba, e nunca a senha', async ({ page }) => {
     await page.goto('login.html');
     await enviarLogin(page, 'ryan@exemplo.com', 'teste123');
     await expect(page).toHaveURL(/\/frontend\/index\.html$/);
 
-    const guardado = await page.evaluate(() => JSON.stringify({ ...sessionStorage }) + JSON.stringify({ ...localStorage }));
-    expect(guardado).not.toContain('teste123');
-    expect(guardado).not.toContain('eyJ');
+    const sessao = await page.evaluate(() => JSON.stringify({ ...sessionStorage }));
+    const local = await page.evaluate(() => JSON.stringify({ ...localStorage }));
+    expect(sessao + local).not.toContain('teste123');
+    expect((await lerSessao(page)).token).toMatch(/^eyJ/);
+    expect(local).not.toContain('eyJ');
   });
 
-  test('o mesmo vale depois de um cadastro: senha e token não ficam no navegador', async ({ page }) => {
+  test('o mesmo vale depois de um cadastro: o token do login seguinte fica na sessão, a senha não', async ({ page }) => {
     await page.goto('login.html');
     await enviarCadastro(page, 'Ana Real', emailUnico(), 'senha-guardada-9');
     await expect(page).toHaveURL(/\/frontend\/index\.html$/);
 
-    const guardado = await page.evaluate(() => JSON.stringify({ ...sessionStorage }) + JSON.stringify({ ...localStorage }));
-    expect(guardado).not.toContain('senha-guardada-9');
-    expect(guardado).not.toContain('eyJ');
+    const sessao = await page.evaluate(() => JSON.stringify({ ...sessionStorage }));
+    const local = await page.evaluate(() => JSON.stringify({ ...localStorage }));
+    expect(sessao + local).not.toContain('senha-guardada-9');
+    expect((await lerSessao(page)).token).toMatch(/^eyJ/);
+    expect(local).not.toContain('eyJ');
   });
 
-  // WEB-19: Spring being down must not break the pages that still use the mock.
-  test('sem resposta do Spring, a página de packs continua listando os packs do mock', async ({ page }) => {
-    await page.route('http://127.0.0.1:8081/**', (rota) => rota.abort());
-    await page.goto('packs.html');
+  // MIG-03 (etapa06-front-spring-loja) replaces WEB-19: Spring is now the only server, so with it
+  // down the catalogue pages show their error state instead of mock data. The WEB-19 cart and
+  // checkout test was removed: it only proved those pages read the mock (see validation.md).
+  for (const [pagina, mensagem] of [
+    ['packs.html', 'Não foi possível carregar'],
+    ['pack.html?id=rock-zoom-g6', 'Não foi possível carregar o pack. Verifique sua conexão e tente novamente.'],
+  ]) {
+    test(`sem resposta do Spring, ${pagina} mostra o erro com "Tentar novamente"`, async ({ page }) => {
+      await page.route('http://127.0.0.1:8081/**', (rota) => rota.abort());
+      await page.goto(pagina);
 
-    await expect(page.locator('.grade-presets .cartao-nome').first()).toBeVisible();
-    expect(await page.locator('.grade-presets .cartao-nome').count()).toBeGreaterThan(0);
-  });
-
-  // WEB-19: the cart and checkout pages also keep working on the mock with Spring down.
-  test('sem resposta do Spring, o carrinho e o checkout continuam mostrando o pack do mock', async ({ page }) => {
-    await page.route('http://127.0.0.1:8081/**', (rota) => rota.abort());
-    await page.goto('index.html');
-    await page.evaluate(() => {
-      localStorage.setItem('corsino:carrinho', JSON.stringify(['rock-zoom-g6']));
-      sessionStorage.setItem('corsino:sessao', JSON.stringify({ id: 1, nome: 'Ryan Corsino', email: 'ryan@exemplo.com' }));
+      await expect(page.getByText(mensagem)).toBeVisible();
+      await expect(page.getByRole('button', { name: 'Tentar novamente' })).toHaveCount(1);
     });
-
-    await page.goto('carrinho.html');
-    await expect(page.locator('.itens-carrinho li')).toHaveCount(1);
-    await expect(page.locator('.itens-carrinho li').first()).toContainText('Rock · Zoom G6');
-
-    await page.goto('checkout.html');
-    await expect(page.locator('.checkout-resumo .item-preco')).toHaveCount(1);
-  });
+  }
 });

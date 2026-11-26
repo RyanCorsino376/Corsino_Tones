@@ -5,7 +5,7 @@ const { test, expect } = require('@playwright/test');
 // reads), LIST-05 (card content), EDGE-02 (one read failing). Modules are
 // imported in a host page.
 
-const API = 'http://127.0.0.1:3000';
+const API = 'http://127.0.0.1:8081';
 const formatoBRL = (centavos) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(centavos / 100);
 
 /** montarPacks over the real API data, returned as plain objects. */
@@ -13,8 +13,8 @@ function packsMontados(page) {
   return page.evaluate(async () => {
     const { montarPacks } = await import('/frontend/servicos/catalogo.js');
     const [packs, presets] = await Promise.all([
-      fetch('http://127.0.0.1:3000/packs').then((r) => r.json()),
-      fetch('http://127.0.0.1:3000/presets').then((r) => r.json()),
+      fetch('http://127.0.0.1:8081/packs').then((r) => r.json()),
+      fetch('http://127.0.0.1:8081/presets').then((r) => r.json()),
     ]);
     return montarPacks(packs, presets);
   });
@@ -91,8 +91,8 @@ test.describe('etapa05-packs T2 - catalogue join, pack card and price', () => {
       const { montarPacks } = await import('/frontend/servicos/catalogo.js');
       const { criarCartaoPack } = await import('/frontend/ui/cartao.js');
       const [packs, presets] = await Promise.all([
-        fetch('http://127.0.0.1:3000/packs').then((r) => r.json()),
-        fetch('http://127.0.0.1:3000/presets').then((r) => r.json()),
+        fetch('http://127.0.0.1:8081/packs').then((r) => r.json()),
+        fetch('http://127.0.0.1:8081/presets').then((r) => r.json()),
       ]);
       const umPreset = { id: 'solo', nome: 'Pack Solo', descricao: 'x', precoCentavos: 4990, presets: [{}], data: '' };
       return [...montarPacks(packs, presets), umPreset].map((pack) => {

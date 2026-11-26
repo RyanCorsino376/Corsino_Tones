@@ -29,14 +29,14 @@ export function packsDaBiblioteca(pedidos, catalogo) {
     return resultado;
 }
 
-/** Reads the user's paid orders and the catalogue together, then joins them. */
-export async function carregarBiblioteca(usuarioId) {
-    const [pedidos, catalogo] = await Promise.all([listarPedidosPagos(usuarioId), carregarCatalogo()]);
+/** Reads the signed-in user's paid orders and the catalogue together, then joins them. */
+export async function carregarBiblioteca(token) {
+    const [pedidos, catalogo] = await Promise.all([listarPedidosPagos(token), carregarCatalogo()]);
     return packsDaBiblioteca(pedidos, catalogo);
 }
 
 /** Ids of the packs the user bought. Reads only the orders (pack.html needs no catalogue). */
-export async function idsComprados(usuarioId) {
-    const pedidos = await listarPedidosPagos(usuarioId);
+export async function idsComprados(token) {
+    const pedidos = await listarPedidosPagos(token);
     return new Set(pedidos.flatMap((pedido) => pedido.packIds));
 }

@@ -23,7 +23,8 @@ import org.testcontainers.postgresql.PostgreSQLContainer;
 import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.json.JsonMapper;
 
-// DB-01, DB-04, DB-05, DB-07: V2 loads exactly the catalogue of mock/db.seed.json, once.
+// DB-01, DB-04, DB-05, DB-07: V2 loads exactly the catalogue of the former mock seed, once. That catalogue is kept as a
+// test fixture (src/test/resources/semente/catalogo-do-mock.json) since the mock was deleted (etapa06-front-spring-loja).
 @Testcontainers
 class MigracoesCatalogoTest {
 
@@ -39,7 +40,7 @@ class MigracoesCatalogoTest {
 				.dataSource(POSTGRES.getJdbcUrl(), POSTGRES.getUsername(), POSTGRES.getPassword())
 				.load();
 		flyway.migrate();
-		semente = JsonMapper.builder().build().readTree(Files.readAllBytes(Path.of("../mock/db.seed.json")));
+		semente = JsonMapper.builder().build().readTree(Files.readAllBytes(Path.of("src/test/resources/semente/catalogo-do-mock.json")));
 	}
 
 	/** Each row of the query as a map column -> value (text), in query order. */

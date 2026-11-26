@@ -6,7 +6,7 @@ const { test, expect } = require('@playwright/test');
 // The API module is imported inside a real page, so it runs exactly as the
 // pages will run it. login.html is used only as a host page: it loads no API code.
 
-const URL_PRESETS = 'http://127.0.0.1:3000/presets';
+const URL_PRESETS = 'http://127.0.0.1:8081/presets';
 const MODULO = '/frontend/api/presets.js';
 
 /** Collects the console.error lines written by the API layer ("[api] ..."). */
@@ -37,7 +37,7 @@ test.describe('T2 - cliente da API', () => {
   });
 
   // API-02
-  test('listarPresets resolve com os 21 presets do mock, sem registrar erro', async ({ page }) => {
+  test('listarPresets resolve com os 21 presets do Spring, sem registrar erro', async ({ page }) => {
     const erros = registrosDeErro(page);
     const resultado = await chamarListarPresets(page);
     expect(resultado.ok).toBe(true);
@@ -129,37 +129,51 @@ test.describe('etapa06 T3 - servidor escolhido e corpo do erro', () => {
     }, { caminho, opcoes });
   }
 
-  // WEB-01
-  test('com servidor "spring" a requisição vai para a porta 8081', async ({ page }) => {
+  // MOCK-02 (AD-017): Spring is the default and only API.
+  test('sem opção nenhuma a requisição vai para o Spring na porta 8081', async ({ page }) => {
     await page.route('http://127.0.0.1:8081/auth/x', (rota) => rota.fulfill({ json: { de: 'spring' } }));
     const pedido = page.waitForRequest('http://127.0.0.1:8081/auth/x');
 
-    expect(await chamarRequisicao(page, '/auth/x', { servidor: 'spring' })).toEqual({ ok: true, dados: { de: 'spring' } });
+    expect(await chamarRequisicao(page, '/auth/x')).toEqual({ ok: true, dados: { de: 'spring' } });
     expect((await pedido).url()).toBe('http://127.0.0.1:8081/auth/x');
   });
 
-  // WEB-01: the default stays the mock.
-  test('sem a opção servidor a requisição continua indo para o mock na porta 3000', async ({ page }) => {
-    await page.route('http://127.0.0.1:3000/x', (rota) => rota.fulfill({ json: { de: 'mock' } }));
-
-    expect(await chamarRequisicao(page, '/x')).toEqual({ ok: true, dados: { de: 'mock' } });
+  // MOCK-02
+  test('o cliente exporta um BASE_URL do Spring e não tem mais SPRING_URL', async ({ page }) => {
+    const exportado = await page.evaluate(async () => {
+      const cliente = await import('/frontend/api/cliente.js');
+      return { base: cliente.BASE_URL, temSpringUrl: 'SPRING_URL' in cliente };
+    });
+    expect(exportado).toEqual({ base: 'http://127.0.0.1:8081', temSpringUrl: false });
   });
 
-  // WEB-01: "servidor" is an option of requisicao, not something fetch should receive.
-  test('a opção servidor não é repassada ao fetch', async ({ page }) => {
-    await page.route('http://127.0.0.1:8081/auth/x', (rota) => rota.fulfill({ json: {} }));
+  // AD-019, MIG-05: the token option becomes the Authorization header and is never handed to fetch.
+  test('a opção token vira Authorization: Bearer e não é repassada ao fetch', async ({ page }) => {
+    await page.route('http://127.0.0.1:8081/x', (rota) => rota.fulfill({ json: {} }));
+    const pedido = page.waitForRequest('http://127.0.0.1:8081/x');
     const chaves = await page.evaluate(async () => {
       const { requisicao } = await import('/frontend/api/cliente.js');
       const original = window.fetch;
       let recebidas = null;
       window.fetch = (url, init) => { recebidas = Object.keys(init); return original(url, init); };
-      await requisicao('/auth/x', { servidor: 'spring', method: 'POST' });
+      await requisicao('/x', { token: 'abc.def.ghi', method: 'POST', headers: { 'Content-Type': 'application/json' } });
       window.fetch = original;
       return recebidas;
     });
 
     expect(chaves).toContain('method');
-    expect(chaves).not.toContain('servidor');
+    expect(chaves).not.toContain('token');
+    const cabecalhos = (await pedido).headers();
+    expect(cabecalhos.authorization).toBe('Bearer abc.def.ghi');
+    expect(cabecalhos['content-type']).toBe('application/json');
+  });
+
+  // AD-019: without a token no Authorization header is sent (the catalogue is public).
+  test('sem a opção token a requisição vai sem Authorization', async ({ page }) => {
+    await page.route('http://127.0.0.1:8081/x', (rota) => rota.fulfill({ json: {} }));
+    const pedido = page.waitForRequest('http://127.0.0.1:8081/x');
+    await chamarRequisicao(page, '/x');
+    expect((await pedido).headers().authorization).toBeUndefined();
   });
 
   // WEB-04
@@ -168,7 +182,7 @@ test.describe('etapa06 T3 - servidor escolhido e corpo do erro', () => {
       status: 400, json: { status: 400, mensagem: 'Dados inválidos.', campos: { email: 'm' } },
     }));
 
-    expect(await chamarRequisicao(page, '/auth/x', { servidor: 'spring' })).toEqual({
+    expect(await chamarRequisicao(page, '/auth/x')).toEqual({
       ok: false, erroApi: true, status: 400, corpo: { status: 400, mensagem: 'Dados inválidos.', campos: { email: 'm' } },
     });
   });
@@ -177,7 +191,7 @@ test.describe('etapa06 T3 - servidor escolhido e corpo do erro', () => {
   test('um 500 com corpo que não é JSON vira ErroApi com corpo null', async ({ page }) => {
     await page.route('http://127.0.0.1:8081/auth/x', (rota) => rota.fulfill({ status: 500, body: 'erro html', contentType: 'text/html' }));
 
-    expect(await chamarRequisicao(page, '/auth/x', { servidor: 'spring' })).toEqual({
+    expect(await chamarRequisicao(page, '/auth/x')).toEqual({
       ok: false, erroApi: true, status: 500, corpo: null,
     });
   });
@@ -187,7 +201,7 @@ test.describe('etapa06 T3 - servidor escolhido e corpo do erro', () => {
     const erros = registrosDeErro(page);
     await page.route('http://127.0.0.1:8081/auth/x', (rota) => rota.abort());
 
-    expect(await chamarRequisicao(page, '/auth/x', { servidor: 'spring' })).toEqual({
+    expect(await chamarRequisicao(page, '/auth/x')).toEqual({
       ok: false, erroApi: true, status: 0, corpo: null,
     });
     await expect.poll(() => erros.length).toBe(1);

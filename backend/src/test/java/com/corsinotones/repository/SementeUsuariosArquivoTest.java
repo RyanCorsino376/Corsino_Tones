@@ -64,9 +64,6 @@ class SementeUsuariosArquivoTest {
 
 	@Test
 	void proximoCadastroRecebeId8ENadaEEscritoNoArquivo() throws Exception {
-		Path mockVivo = Path.of("../mock/db.json");
-		long mockAntes = Files.exists(mockVivo) ? Files.getLastModifiedTime(mockVivo).toMillis() : -1L;
-
 		mvc.perform(post("/auth/cadastro").contentType(MediaType.APPLICATION_JSON)
 				.content("{\"nome\":\"Eva\",\"email\":\"eva@exemplo.com\",\"senha\":\"senha-longa-1\"}"))
 				.andExpect(status().isCreated())
@@ -74,7 +71,5 @@ class SementeUsuariosArquivoTest {
 
 		assertThat(Files.readAllBytes(semente)).isEqualTo(bytesOriginais);
 		assertThat(semente.toFile().lastModified()).isEqualTo(DATA_FIXA);
-		long mockDepois = Files.exists(mockVivo) ? Files.getLastModifiedTime(mockVivo).toMillis() : -1L;
-		assertThat(mockDepois).isEqualTo(mockAntes);
 	}
 }

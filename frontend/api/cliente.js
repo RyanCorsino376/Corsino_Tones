@@ -1,12 +1,8 @@
 // The only module that performs HTTP (AD-009). Every failure, whatever its
 // cause, reaches the caller as one ErroApi, so pages handle a single error type.
 
-// The one place to change when the Spring Boot API replaces json-server (AD-008).
-export const BASE_URL = 'http://127.0.0.1:3000';
-
-// The Spring Boot API (AD-012). Calls that pass { servidor: 'spring' } go here; the
-// rest still go to the mock until their slice moves over.
-export const SPRING_URL = 'http://127.0.0.1:8081';
+// The Spring Boot API, the only server of the site (AD-017).
+export const BASE_URL = 'http://127.0.0.1:8081';
 
 // Without a limit, a server that accepts the connection but never answers
 // would leave the page in its loading state forever.
@@ -33,18 +29,19 @@ export function registrarErro(metodo, caminho, erro) {
 }
 
 /**
- * Sends a request to the API and resolves with the parsed JSON body.
+ * Sends a request to the API and resolves with the parsed JSON body. With `token`,
+ * the request carries `Authorization: Bearer <token>` (AD-019).
  * Rejects with ErroApi on network error, timeout, non-2xx status or invalid JSON.
  */
 export async function requisicao(caminho, opcoes = {}) {
-    const { servidor, ...opcoesFetch } = opcoes;
-    const base = servidor === 'spring' ? SPRING_URL : BASE_URL;
+    const { token, ...opcoesFetch } = opcoes;
+    if (token) opcoesFetch.headers = { ...opcoesFetch.headers, Authorization: `Bearer ${token}` };
     const metodo = opcoes.method ?? 'GET';
     const controle = new AbortController();
     const limite = setTimeout(() => controle.abort(), TEMPO_LIMITE_MS);
     let resposta;
     try {
-        resposta = await fetch(base + caminho, { ...opcoesFetch, signal: controle.signal });
+        resposta = await fetch(BASE_URL + caminho, { ...opcoesFetch, signal: controle.signal });
         // fetch only rejects when no response arrives; 404 and 500 resolve normally.
         if (!resposta.ok) {
             throw new ErroApi(resposta.status, `O servidor respondeu ${resposta.status}.`, undefined, await lerCorpo(resposta));

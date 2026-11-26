@@ -4,7 +4,8 @@ import { listarPacks } from '../api/packs.js';
 import { criarPedido } from '../api/pedidos.js';
 import { esvaziarCarrinho, itensDoCarrinho, removerDoCarrinho } from '../servicos/carrinho.js';
 import { PagamentoRecusado, processarPagamento, validarCampoCartao } from '../servicos/pagamento.js';
-import { usuarioAtual } from '../servicos/sessao.js';
+import { ErroApi } from '../api/cliente.js';
+import { pedirNovoLogin, sessaoExpirada, tokenAtual, usuarioAtual } from '../servicos/sessao.js';
 import { pedirLogin } from '../ui/aviso-login.js';
 import { atualizarCabecalho, atualizarContadorCarrinho } from '../ui/cabecalho.js';
 import { carregarComEstado } from '../ui/estado.js';
@@ -167,23 +168,30 @@ async function pagar() {
     botaoPagar.textContent = 'Processando pagamento...';
     try {
         await processarPagamento(document.getElementById('cartao-numero').value);
-        // Built from the session and the summary only: no card field ever goes out.
-        const pedido = await criarPedido({
-            usuarioId: usuarioAtual().id,
-            packIds: pedidoAtual.packs.map((pack) => pack.id),
-            totalCentavos: pedidoAtual.totalCentavos,
-            status: 'pago',
-            criadoEm: new Date().toISOString(),
-        });
+        // Only the pack ids go out: the server takes the user from the token and sets
+        // prices, total, status and time (MIG-05). No card field ever goes out.
+        const pedido = await criarPedido(pedidoAtual.packs.map((pack) => pack.id), tokenAtual());
         esvaziarCarrinho();
         atualizarContadorCarrinho();
         mostrarConfirmacao(pedido);
         return;
     } catch (erro) {
-        mostrarAlerta(erro instanceof PagamentoRecusado ? MSG_RECUSADO : MSG_FALHOU);
+        if (sessaoExpirada(erro)) {
+            // The cart stays in localStorage, so it is still there after the new login (MIG-08).
+            pedirNovoLogin('checkout.html');
+            return;
+        }
+        mostrarAlerta(mensagemDaFalha(erro));
     }
     botaoPagar.disabled = false;
     botaoPagar.textContent = textoOriginal;
+}
+
+/** The server's own message for a rejected pack list (MIG-09), otherwise the fixed messages. */
+function mensagemDaFalha(erro) {
+    if (erro instanceof PagamentoRecusado) return MSG_RECUSADO;
+    const doServidor = erro instanceof ErroApi && erro.status === 400 ? erro.corpo?.campos?.packIds : undefined;
+    return typeof doServidor === 'string' ? doServidor : MSG_FALHOU;
 }
 
 form.addEventListener('submit', function (evento) {

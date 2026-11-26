@@ -233,16 +233,19 @@ test.describe('T8 - preset detail, login card fit and no horizontal overflow', (
   for (const width of [320, 375, 820, 1440]) {
     test(`at ${width}px no page scrolls horizontally`, async ({ page }) => {
       await page.setViewportSize({ width, height: 900 });
-      // sessionStorage needs a loaded page before the loop can set it.
+      // sessionStorage needs a loaded page before the loop can set it. The library reads the
+      // orders, so its session is a real user with a token (etapa06-front-spring-loja MIG-08).
+      const { registrarUsuario } = require('./apoio/api');
+      const { sessao } = await registrarUsuario(page.request, 'Ryan Corsino');
       await page.goto('index.html');
 
       for (const pagina of PAGINAS) {
         // biblioteca.html redirects without a session and login.html with one
         // (etapa05-auth PROT-01, PROT-04), so each page gets the state that keeps it open.
-        await page.evaluate(([chave, comSessao]) => {
-          if (comSessao) sessionStorage.setItem(chave, '{"id":1,"nome":"Ryan Corsino","email":"ryan@exemplo.com"}');
+        await page.evaluate(([chave, comSessao, sessao]) => {
+          if (comSessao) sessionStorage.setItem(chave, sessao);
           else sessionStorage.removeItem(chave);
-        }, ['corsino:sessao', pagina === 'biblioteca.html']);
+        }, ['corsino:sessao', pagina === 'biblioteca.html', sessao]);
         await page.goto(pagina);
         const escapada = pagina.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
         await expect(page, pagina).toHaveURL(new RegExp(`/frontend/${escapada}$`));

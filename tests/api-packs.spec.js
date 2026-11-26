@@ -4,7 +4,7 @@ const { test, expect } = require('@playwright/test');
 // Tests derive from .specs/features/etapa05-packs/spec.md (PACK-*, PAG-01,
 // PAG-06 at the API layer). Modules are imported in a host page.
 
-const API = 'http://127.0.0.1:3000';
+const API = 'http://127.0.0.1:8081';
 
 /** Runs `funcao(argumento)` from `modulo` in the page; reports the value or whether it was an ErroApi. */
 function chamar(page, modulo, funcao, argumento) {

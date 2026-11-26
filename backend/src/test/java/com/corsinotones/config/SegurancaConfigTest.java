@@ -52,7 +52,7 @@ class SegurancaConfigTest {
 
 	@Test
 	void outraPortaLocalTambemERejeitada() throws Exception {
-		preflight("/auth/login", "http://localhost:3000")
+		preflight("/auth/login", "http://localhost:4200")
 				.andExpect(status().isForbidden())
 				.andExpect(header().doesNotExist("Access-Control-Allow-Origin"));
 	}
@@ -78,8 +78,24 @@ class SegurancaConfigTest {
 
 	@Test
 	void outraPortaEm127ERejeitada() throws Exception {
-		preflight("/auth/login", "http://127.0.0.1:3000")
+		preflight("/auth/login", "http://127.0.0.1:4200")
 				.andExpect(status().isForbidden())
 				.andExpect(header().doesNotExist("Access-Control-Allow-Origin"));
+	}
+
+	// MOCK-05 (etapa06-front-spring-loja): with Spring as the only API, the site's two origins still reach the order
+	// routes with the Authorization header the session token travels in.
+	@Test
+	void site8080FazPreflightDePedidosComAuthorization() throws Exception {
+		for (String origem : new String[] {"http://127.0.0.1:8080", "http://localhost:8080"}) {
+			mvc.perform(options("/pedidos")
+					.header("Origin", origem)
+					.header("Access-Control-Request-Method", "POST")
+					.header("Access-Control-Request-Headers", "authorization, content-type"))
+					.andExpect(status().isOk())
+					.andExpect(header().string("Access-Control-Allow-Origin", origem))
+					.andExpect(header().string("Access-Control-Allow-Headers",
+							org.hamcrest.Matchers.containsStringIgnoringCase("authorization")));
+		}
 	}
 }

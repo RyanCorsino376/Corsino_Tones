@@ -15,9 +15,10 @@ O projeto está na **etapa 07: persistência com PostgreSQL**. O front-end é Ja
 puro organizado em módulos ES. A API Spring Boot (porta 8081, senhas com BCrypt,
 token JWT) agora guarda usuários, equipamentos, packs, presets e pedidos em um
 **PostgreSQL 16** (Docker), e os dados sobrevivem a reiniciar a aplicação. O
-catálogo inicial é criado pelas migrações do Flyway. O site ainda lê packs e presets
-da API simulada ([json-server](https://github.com/typicode/json-server)); só o
-cadastro e o login usam o Spring. Modelo de dados, exemplos de `curl` e a escolha do
+catálogo inicial é criado pelas migrações do Flyway. O site inteiro (catálogo,
+carrinho, compra e biblioteca) fala só com o Spring; a API simulada da etapa 05 foi
+removida. Como o site se liga ao Spring (token na sessão, pedidos, `curl`):
+[`docs/etapa-06.md`](docs/etapa-06.md). Modelo de dados, exemplos de `curl` e a escolha do
 PostgreSQL: [`docs/etapa-07.md`](docs/etapa-07.md). Etapa 05, evidências e roteiro de
 teste: [`docs/etapa-05.md`](docs/etapa-05.md).
 
@@ -76,14 +77,7 @@ export CORSINO_DB_PASSWORD="<a senha do .env>"
 ./mvnw spring-boot:run
 ```
 
-Em outro terminal, a API simulada (porta 3000):
-
-```bash
-npm run api
-```
-
-Use `npm run api:lento` para atrasar cada resposta em 2 s e ver os estados de
-carregamento. Em um terceiro, o site (porta 8080). As páginas usam
+Em outro terminal, o site (porta 8080). As páginas usam
 `../imagens/` e módulos ES, então o servidor parte da raiz do repositório:
 
 ```bash
@@ -92,18 +86,12 @@ python3 -m http.server 8080
 
 Depois abra <http://127.0.0.1:8080/frontend/index.html>.
 
-**Conta de teste:** `ryan@exemplo.com`, senha `teste123` (existe no Spring e no mock).
+**Conta de teste:** `ryan@exemplo.com`, senha `teste123` (administrador). Ela é criada
+quando a tabela de usuários está vazia, a partir de `backend/src/main/resources/semente/usuarios.json`.
 
 Use `127.0.0.1` no navegador, e não `localhost`: as duas origens são aceitas pelo
-Spring, mas o mock e os testes usam `127.0.0.1`. As contas criadas no Spring ficam
-no PostgreSQL e continuam lá depois de reiniciar a API.
-
-Os dados ficam em `mock/db.json`, criado a partir de `mock/db.seed.json` na
-primeira execução. Para apagar as contas criadas e voltar aos dados originais:
-
-```bash
-npm run api:reset
-```
+Spring, mas os testes usam `127.0.0.1`. Contas, pedidos e catálogo ficam no
+PostgreSQL e continuam lá depois de reiniciar a API.
 
 ## Testes
 
@@ -115,7 +103,7 @@ npx playwright install chromium
 npm test
 ```
 
-O Playwright sobe sozinho o site, a API simulada e o Spring durante os testes
+O Playwright sobe sozinho o site e o Spring durante os testes
 (configuração em `playwright.config.js`; o banco precisa estar ligado
 (`docker compose up -d`) e `CORSINO_DB_PASSWORD` exportada; a primeira execução compila o Spring e
 demora mais). Se algum deles já estiver ligado, ele é reaproveitado. Os testes do
@@ -129,9 +117,7 @@ cd backend
 
 ## Próximos passos
 
-- Carrinho, compra simulada e biblioteca com download (fatias 4 a 6 do plano).
-- Avaliar a migração do cliente para React com TypeScript, depois da loja.
-- Mover packs, presets, pedidos e biblioteca do site para o Spring Boot, que já os
-  guarda no PostgreSQL, e guardar os arquivos dos presets no MinIO.
+- Guardar os arquivos dos presets no MinIO, com upload pelo administrador e download
+  real na biblioteca (plano em `.specs/features/etapa06-minio-arquivos/`).
 - Reescrever o cliente em React com TypeScript (especificação em
   `.specs/features/etapa06-react-catalogo/`).

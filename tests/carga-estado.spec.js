@@ -8,8 +8,8 @@ const { test, expect } = require('@playwright/test');
 // observed for as long as the test needs. packs.html reads /packs and
 // /presets; holding or breaking /presets is enough to hold or break the page.
 
-const URL_PRESETS = 'http://127.0.0.1:3000/presets';
-const URL_PACKS = 'http://127.0.0.1:3000/packs';
+const URL_PRESETS = 'http://127.0.0.1:8081/presets';
+const URL_PACKS = 'http://127.0.0.1:8081/packs';
 const CARREGANDO = 'Carregando packs...';
 // HOME-03: the home carousel uses the same texts as packs.html.
 const CARREGANDO_HOME = CARREGANDO;
@@ -63,7 +63,7 @@ test.describe('etapa05 T4 - loading state on packs.html', () => {
     liberar();
 
     // The three Boss GT-1000 packs (etapa05-packs LIST-06, rev. 2).
-    const packs = await page.request.get('http://127.0.0.1:3000/packs').then((r) => r.json());
+    const packs = await page.request.get('http://127.0.0.1:8081/packs').then((r) => r.json());
     const daBoss = packs.filter((p) => p.marca === 'boss').map((p) => p.nome);
     expect(daBoss).toHaveLength(3);
     await expect(page.locator('.grade-presets .cartao')).toHaveCount(3);

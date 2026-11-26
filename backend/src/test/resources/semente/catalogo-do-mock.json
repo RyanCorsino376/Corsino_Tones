@@ -293,14 +293,5 @@
       "descricao": "Ganho alto com gate apertado e médios recortados para afinações baixas.",
       "packId": "metal-nux-mg-30"
     }
-  ],
-  "usuarios": [
-    {
-      "id": 1,
-      "nome": "Ryan Corsino",
-      "email": "ryan@exemplo.com",
-      "senha": "teste123"
-    }
-  ],
-  "pedidos": []
+  ]
 }

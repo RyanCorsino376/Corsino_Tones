@@ -46,7 +46,10 @@ test.describe('etapa05-auth T5 - login through the API', () => {
     expect(req.method()).toBe('POST');
     expect(req.postDataJSON()).toEqual({ email: 'ryan@exemplo.com', senha: 'teste123' });
     await expect(page).toHaveURL(/\/frontend\/index\.html$/);
-    expect(JSON.parse(await lerSessao(page))).toEqual({ id: 1, nome: 'Ryan Corsino', email: 'ryan@exemplo.com' });
+    // The session also keeps the login token (etapa06-front-spring-loja, AD-019).
+    const sessao = JSON.parse(await lerSessao(page));
+    expect(sessao).toEqual({ id: 1, nome: 'Ryan Corsino', email: 'ryan@exemplo.com', token: sessao.token });
+    expect(sessao.token).toMatch(/^eyJ/);
   });
 
   // AUTH-02, EDGE-01, WEB-18: the page sends the e-mail as typed; Spring lower-cases it, so the account is found.
@@ -59,7 +62,10 @@ test.describe('etapa05-auth T5 - login through the API', () => {
     // The browser itself strips the spaces of an <input type="email">; the page must not change the casing.
     expect((await pedido).postDataJSON().email).toBe('RYAN@Exemplo.com');
     await expect(page).toHaveURL(/\/frontend\/index\.html$/);
-    expect(JSON.parse(await lerSessao(page))).toEqual({ id: 1, nome: 'Ryan Corsino', email: 'ryan@exemplo.com' });
+    // The session also keeps the login token (etapa06-front-spring-loja, AD-019).
+    const sessao = JSON.parse(await lerSessao(page));
+    expect(sessao).toEqual({ id: 1, nome: 'Ryan Corsino', email: 'ryan@exemplo.com', token: sessao.token });
+    expect(sessao.token).toMatch(/^eyJ/);
   });
 
   // PROT-02
@@ -184,7 +190,8 @@ test.describe('etapa05-auth T6 - registration through the API', () => {
     await expect(page).toHaveURL(/\/frontend\/index\.html$/);
     expect(posts).toEqual([{ nome: 'Ana Teste', email, senha: 'senha1234' }]);
     const sessao = JSON.parse(await lerSessao(page));
-    expect(sessao).toEqual({ id: expect.any(Number), nome: 'Ana Teste', email });
+    // The token comes from the sign-in that follows the registration (etapa06-front-spring-loja).
+    expect(sessao).toEqual({ id: expect.any(Number), nome: 'Ana Teste', email, token: expect.stringMatching(/^eyJ/) });
     // The account exists on the server: it signs in with the same password and the same id.
     const login = await request.post(`${API_AUTH}/login`, { data: { email, senha: 'senha1234' } });
     expect((await login.json()).usuario.id).toBe(sessao.id);

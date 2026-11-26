@@ -38,22 +38,42 @@ test.describe('etapa06-front-spring-auth T5 - auth service', () => {
     await page.goto('login.html');
   });
 
-  // WEB-02: only id, nome, email; no token and no password.
-  test('entrar resolve só com id, nome e e-mail do usuário da resposta', async ({ page }) => {
+  // WEB-02, revised by etapa06-front-spring-loja (AD-019): id, nome, email and the token; never the password.
+  test('entrar resolve com id, nome, e-mail e o token da resposta, sem a senha', async ({ page }) => {
     await responder(page, 200, { token: 'a.b.c', usuario: { id: 7, nome: 'Davi', email: 'davi@x.com', senha: 'nao-deveria' } });
 
     expect(await chamar(page, 'entrar', 'davi@x.com', 'segredo123')).toEqual({
-      ok: true, valor: { id: 7, nome: 'Davi', email: 'davi@x.com' },
+      ok: true, valor: { id: 7, nome: 'Davi', email: 'davi@x.com', token: 'a.b.c' },
     });
   });
 
-  // WEB-08
-  test('cadastrar resolve só com id, nome e e-mail do usuário criado', async ({ page }) => {
-    await responder(page, 201, { id: 9, nome: 'Eva', email: 'eva@x.com', senha: 'nao-deveria' });
+  // WEB-08, revised by etapa06-front-spring-loja: registration answers no token, so the module signs in next.
+  test('cadastrar cria a conta, entra com o mesmo e-mail e senha e resolve com o token do login', async ({ page }) => {
+    const corpos = [];
+    await page.route(`${SPRING}/auth/cadastro`, (rota) => {
+      corpos.push({ rota: 'cadastro', corpo: rota.request().postDataJSON() });
+      return rota.fulfill({ status: 201, json: { id: 9, nome: 'Eva', email: 'eva@x.com', senha: 'nao-deveria' } });
+    });
+    await page.route(`${SPRING}/auth/login`, (rota) => {
+      corpos.push({ rota: 'login', corpo: rota.request().postDataJSON() });
+      return rota.fulfill({ status: 200, json: { token: 'd.e.f', usuario: { id: 9, nome: 'Eva', email: 'eva@x.com' } } });
+    });
 
     expect(await chamar(page, 'cadastrar', { nome: 'Eva', email: 'eva@x.com', senha: 'segredo123' })).toEqual({
-      ok: true, valor: { id: 9, nome: 'Eva', email: 'eva@x.com' },
+      ok: true, valor: { id: 9, nome: 'Eva', email: 'eva@x.com', token: 'd.e.f' },
     });
+    expect(corpos).toEqual([
+      { rota: 'cadastro', corpo: { nome: 'Eva', email: 'eva@x.com', senha: 'segredo123' } },
+      { rota: 'login', corpo: { email: 'eva@x.com', senha: 'segredo123' } },
+    ]);
+  });
+
+  // The account exists, so a failed sign-in after it is a communication failure, not a field error.
+  test('se o login depois do cadastro falha, cadastrar rejeita com ErroApi', async ({ page }) => {
+    await page.route(`${SPRING}/auth/cadastro`, (rota) => rota.fulfill({ status: 201, json: { id: 9, nome: 'Eva', email: 'eva@x.com' } }));
+    await page.route(`${SPRING}/auth/login`, (rota) => rota.abort());
+
+    expect(await chamar(page, 'cadastrar', { nome: 'Eva', email: 'eva@x.com', senha: 'segredo123' })).toMatchObject({ ok: false, erro: 'ErroApi' });
   });
 
   // WEB-03
@@ -102,22 +122,24 @@ test.describe('etapa06-front-spring-auth T5 - auth service', () => {
     await chamar(page, 'entrar', '  Ryan@Exemplo.COM ', '  teste 123  ');
     await chamar(page, 'cadastrar', { nome: '  Ana ', email: '  Ana@X.COM ', senha: '  senha 1234  ' });
 
+    // The third body is the sign-in that follows the registration, with the same raw values.
     expect(corpos.map((c) => c.corpo)).toEqual([
       { email: '  Ryan@Exemplo.COM ', senha: '  teste 123  ' },
       { nome: '  Ana ', email: '  Ana@X.COM ', senha: '  senha 1234  ' },
+      { email: '  Ana@X.COM ', senha: '  senha 1234  ' },
     ]);
   });
 
-  // WEB-01, WEB-07
-  test('nem entrar nem cadastrar chamam o mock na porta 3000', async ({ page }) => {
+  // WEB-01, WEB-07, MOCK-02: every request of the module goes to Spring.
+  test('entrar e cadastrar só fazem requisições ao Spring', async ({ page }) => {
     await responder(page, 200, { token: 't', usuario: { id: 1, nome: 'A', email: 'a@b.c' } });
-    const paraOMock = [];
-    page.on('request', (req) => { if (req.url().startsWith('http://127.0.0.1:3000')) paraOMock.push(req.url()); });
+    const urls = [];
+    page.on('request', (req) => urls.push(req.url()));
 
     await chamar(page, 'entrar', 'a@b.c', 'x');
     await chamar(page, 'cadastrar', { nome: 'Ana', email: 'a@b.c', senha: 'senha1234' });
 
-    expect(paraOMock).toEqual([]);
+    expect(urls).toEqual([`${SPRING}/auth/login`, `${SPRING}/auth/cadastro`, `${SPRING}/auth/login`]);
   });
 
   // WEB-03 versus WEB-05: a wrong password is not a communication failure.

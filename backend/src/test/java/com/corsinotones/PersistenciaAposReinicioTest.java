@@ -68,6 +68,54 @@ class PersistenciaAposReinicioTest {
 		}
 	}
 
+	// RST-01 (etapa06-front-spring-loja): an order bought through the API is the same order after a restart.
+	@Test
+	void pedidoFeitoPelaApiSobreviveAoReinicio() throws Exception {
+		String email = "pedido" + UUID.randomUUID().toString().replace("-", "").substring(0, 10) + "@exemplo.com";
+		String senha = "senha-de-teste-123";
+		String credenciais = "{\"email\":\"" + email + "\",\"senha\":\"" + senha + "\"}";
+
+		try (PostgreSQLContainer banco = new PostgreSQLContainer("postgres:16-alpine")) {
+			banco.start();
+
+			long id;
+			String pedidoCriado;
+			try (ConfigurableApplicationContext app = iniciar(banco)) {
+				String base = base(app);
+				assertThat(enviar("POST", base + "/auth/cadastro", null,
+						"{\"nome\":\"Cliente\",\"email\":\"" + email + "\",\"senha\":\"" + senha + "\"}").statusCode())
+						.isEqualTo(201);
+				String token = token(base, credenciais);
+
+				HttpResponse<String> criado = enviar("POST", base + "/pedidos", token,
+						"{\"packIds\":[\"rock-boss-gt-1000\",\"clean-zoom-g6\"]}");
+				assertThat(criado.statusCode()).isEqualTo(201);
+				id = json.readTree(criado.body()).get("id").asLong();
+				pedidoCriado = enviar("GET", base + "/pedidos/" + id, token, null).body();
+			}
+
+			try (ConfigurableApplicationContext app = iniciar(banco)) {
+				String base = base(app);
+				// A new token from a new login: nothing of the first run is reused but the database.
+				String token = token(base, credenciais);
+
+				HttpResponse<String> pedido = enviar("GET", base + "/pedidos/" + id, token, null);
+				assertThat(pedido.statusCode()).isEqualTo(200);
+				assertThat(pedido.body()).isEqualTo(pedidoCriado);
+
+				JsonNode pagos = json.readTree(enviar("GET", base + "/pedidos?status=pago", token, null).body());
+				assertThat(pagos.size()).isEqualTo(1);
+				assertThat(pagos.get(0).get("id").asLong()).isEqualTo(id);
+			}
+		}
+	}
+
+	private String token(String base, String credenciais) throws Exception {
+		HttpResponse<String> login = enviar("POST", base + "/auth/login", null, credenciais);
+		assertThat(login.statusCode()).isEqualTo(200);
+		return "Bearer " + json.readTree(login.body()).get("token").asString();
+	}
+
 	private static ConfigurableApplicationContext iniciar(PostgreSQLContainer banco) {
 		return SpringApplication.run(BackendApplication.class, "--server.port=0",
 				"--spring.datasource.url=" + banco.getJdbcUrl(),

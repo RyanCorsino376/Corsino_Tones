@@ -17,7 +17,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
-// SEED-02: with the default seed (../mock/db.seed.json) the mock's user already exists and ids continue from it.
+// SEED-02: with the default seed (classpath semente/usuarios.json) the seed user already exists and ids continue from it.
 @SpringBootTest
 @Import(BancoIsolado.class)
 @AutoConfigureMockMvc

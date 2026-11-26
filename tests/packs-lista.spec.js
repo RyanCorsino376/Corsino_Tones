@@ -7,7 +7,7 @@ const { test, expect } = require('@playwright/test');
 // rules, so editing the sample data does not break the tests; the rules come
 // from the spec, not from the page code.
 
-const API = 'http://127.0.0.1:3000';
+const API = 'http://127.0.0.1:8081';
 const formatoBRL = (centavos) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(centavos / 100);
 
 /** Packs as the spec defines them: each with its presets (by packId) and newest preset date. */

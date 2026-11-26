@@ -1,5 +1,5 @@
 // The catalogue as the store sells it: packs, each joined with the presets of
-// its style. json-server cannot embed a filtered child list, so the join
+// its style. The API serves packs and presets as two lists, so the join
 // happens here, in one pure function.
 import { listarPacks } from '../api/packs.js';
 import { listarPresets } from '../api/presets.js';
