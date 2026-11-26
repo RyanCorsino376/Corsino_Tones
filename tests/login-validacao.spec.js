@@ -5,19 +5,23 @@ const { test, expect } = require('@playwright/test');
 // that they exist, differ and are linked, not their exact wording.
 // VAL-06 is superseded by .specs/features/etapa05-auth/spec.md (AUTH-01, CAD-01):
 // a valid form now reaches the server and an invalid one sends nothing. Those
-// requests are intercepted here, so validation tests never write to the database.
+// requests are intercepted here, so validation tests never create a Spring account.
+// Since etapa06-front-spring-auth (WEB-07, WEB-12) the requests are POSTs to Spring's
+// /auth/cadastro and /auth/login instead of the mock's /usuarios.
 
-const API_USUARIOS = 'http://127.0.0.1:3000/usuarios';
+const API_AUTH = 'http://127.0.0.1:8081/auth';
 
-/** Answers every /usuarios request locally and records it as "METHOD url". */
-async function interceptarUsuarios(page) {
+/** Answers every Spring auth request locally and records it as "METHOD url". */
+async function interceptarAuth(page) {
   const pedidos = [];
-  await page.route(`${API_USUARIOS}**`, (rota) => {
+  await page.route(`${API_AUTH}/**`, (rota) => {
     const req = rota.request();
     pedidos.push(`${req.method()} ${req.url()}`);
-    return req.method() === 'POST'
-      ? rota.fulfill({ status: 201, json: { id: 999, ...req.postDataJSON() } })
-      : rota.fulfill({ json: [] });
+    const { nome = 'Usuário', email } = req.postDataJSON();
+    const usuario = { id: 999, nome, email };
+    return req.url().endsWith('/login')
+      ? rota.fulfill({ json: { token: 'a.b.c', usuario } })
+      : rota.fulfill({ status: 201, json: usuario });
   });
   return pedidos;
 }
@@ -70,19 +74,18 @@ test.describe('T7 - registration validation on submit', () => {
 
   // VAL-01, CAD-02: the boundary values are accepted, so the account reaches the server.
   test('accepts "Ry", "ryan@x.com" and an 8-character password', async ({ page }) => {
-    const pedidos = await interceptarUsuarios(page);
+    const pedidos = await interceptarAuth(page);
     // The POST is left unanswered so the page stays (a success would redirect)
     // and the fields can still be checked.
-    await page.route(API_USUARIOS, (rota) => {
-      if (rota.request().method() !== 'POST') return rota.fallback();
-      pedidos.push(`POST ${API_USUARIOS}`);
+    await page.route(`${API_AUTH}/cadastro`, () => {
+      pedidos.push(`POST ${API_AUTH}/cadastro`);
     });
     await enviarCadastro(page, 'Ry', 'ryan@x.com', '12345678');
 
     for (const id of ['cadastro-nome', 'cadastro-email', 'cadastro-senha']) {
       await expect(page.locator(`#${id}`), id).not.toHaveAttribute('aria-invalid', 'true');
     }
-    await expect.poll(() => pedidos).toContain(`POST ${API_USUARIOS}`);
+    await expect.poll(() => pedidos).toContain(`POST ${API_AUTH}/cadastro`);
   });
 
   // VAL-04: focus lands on the first rejected field, not simply the first field.
@@ -117,8 +120,8 @@ test.describe('T7 - registration validation on submit', () => {
 
   // VAL-06 superseded by CAD-02/CAD-04: a valid submit sends the account to the server and signs in.
   test('a valid submit sends the account to the server and signs in', async ({ page }) => {
-    const enviado = page.waitForRequest((req) => req.url() === API_USUARIOS && req.method() === 'POST');
-    await interceptarUsuarios(page);
+    const enviado = page.waitForRequest((req) => req.url() === `${API_AUTH}/cadastro` && req.method() === 'POST');
+    await interceptarAuth(page);
 
     await enviarCadastro(page, 'Ryan Corsino', 'ryan@example.com', 'senhaForte1');
 
@@ -128,7 +131,7 @@ test.describe('T7 - registration validation on submit', () => {
 
   // VAL-04, CAD-01: an invalid submit sends nothing to the server.
   test('an invalid submit sends no request', async ({ page }) => {
-    const pedidos = await interceptarUsuarios(page);
+    const pedidos = await interceptarAuth(page);
     await enviarCadastro(page, 'R', 'ryan@', '1234567');
 
     // aria-invalid proves the script ran, so an empty list is not vacuous.
@@ -144,7 +147,7 @@ test.describe('T7 - login validation on submit', () => {
 
   // VAL-02, VAL-03, VAL-04, AUTH-01: bad e-mail and empty password are both rejected, and nothing is sent.
   test('rejects a bad e-mail and an empty password', async ({ page }) => {
-    const pedidos = await interceptarUsuarios(page);
+    const pedidos = await interceptarAuth(page);
     await enviarLogin(page, 'ryan@x', '');
 
     for (const id of ['email', 'senha']) {
@@ -157,11 +160,17 @@ test.describe('T7 - login validation on submit', () => {
 
   // VAL-02, AUTH-02: login does not apply the 8-character rule, so a short password reaches the server.
   test('accepts a short password on login', async ({ page }) => {
-    const pedidos = await interceptarUsuarios(page);
+    const pedidos = await interceptarAuth(page);
+    // The server refuses the credentials, so the page stays and the field can be checked
+    // (an accepted login would redirect). This route is registered last, so it wins.
+    await page.route(`${API_AUTH}/login`, (rota) => {
+      pedidos.push(`POST ${rota.request().url()}`);
+      return rota.fulfill({ status: 401, json: { status: 401, mensagem: 'E-mail ou senha incorretos.', campos: {} } });
+    });
     await enviarLogin(page, 'ryan@x.com', '123');
 
     await expect(page.locator('#senha')).not.toHaveAttribute('aria-invalid', 'true');
-    await expect.poll(() => pedidos).toEqual([`GET ${API_USUARIOS}?email=ryan%40x.com`]);
+    await expect.poll(() => pedidos).toEqual([`POST ${API_AUTH}/login`]);
   });
 });
 

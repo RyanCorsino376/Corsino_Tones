@@ -1,0 +1,8 @@
+{
+  "packs": [],
+  "usuarios": [
+    { "id": 1, "nome": "Ryan Corsino", "email": "ryan@exemplo.com", "senha": "teste123" },
+    { "id": 3, "nome": "Carla", "email": "carla@exemplo.com", "senha": "senha-da-carla" },
+    { "id": 7, "nome": "Davi", "email": "Davi@Exemplo.com", "senha": "senha-do-davi" }
+  ]
+}

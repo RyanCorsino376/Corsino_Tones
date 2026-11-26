@@ -30,12 +30,21 @@ module.exports = defineConfig({
       reuseExistingServer: !process.env.CI,
     },
     {
-      // Mock API (AD-008). Same data file as `npm run api`, so a dev server
-      // already on port 3000 is reused and serves the same catalogue.
-      // preparar.js creates the git-ignored db.json from the seed when missing.
-      command: 'node mock/preparar.js && npx json-server mock/db.json --port 3000 --host 127.0.0.1',
-      url: 'http://127.0.0.1:3000/presets',
+      // Spring Boot API, the only server of the site (AD-017). The database is
+      // shared by every test, so tests make their own users (tests/apoio/api.js)
+      // and never count rows they did not create. The secret below is for tests
+      // only; real runs read CORSINO_JWT_SECRET from the environment. The first
+      // start compiles the project, hence the long timeout.
+      command: 'cd backend && ./mvnw -q spring-boot:run',
+      port: 8081,
+      timeout: 120_000,
       reuseExistingServer: !process.env.CI,
+      // The data lives in PostgreSQL (docker compose up -d), so the password of
+      // the development database must be exported before running the suite.
+      env: {
+        CORSINO_JWT_SECRET: 'test-only-secret-for-playwright-0123456789',
+        CORSINO_DB_PASSWORD: process.env.CORSINO_DB_PASSWORD ?? '',
+      },
     },
   ],
 

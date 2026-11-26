@@ -5,32 +5,33 @@ const { test, expect } = require('@playwright/test');
 // (T2), DL-01..04 (T3) and REG-01. Lesson L-014: users, packs and dates differ
 // per item, and no order has id 1 by accident.
 
-const API = 'http://127.0.0.1:3000';
-const PEDIDOS = /127\.0\.0\.1:3000\/pedidos/;
-/** A random user id: orders from earlier runs stay in db.json, so a counter would meet them again. */
-const novoUsuario = () => 10000000 + Math.floor(Math.random() * 900000000);
-const sessaoDe = (id) => JSON.stringify({ id, nome: `Usuário ${id}`, email: `u${id}@exemplo.com` });
-const pedidoDe = (usuarioId, packIds, criadoEm, status = 'pago') => ({ usuarioId, packIds, totalCentavos: 0, status, criadoEm });
+// Since etapa06-front-spring-loja (MIG-06, MIG-08, MIG-11, EDG-03) the orders are real Spring
+// orders of users made by tests/apoio/api.js, created oldest first (the server sets criadoEm).
+// Spring creates every order paid and rejects unknown pack ids, so the old "pending order" and
+// "unknown pack in an order" setups are built by intercepting GET /pedidos instead.
+const { SPRING, comprar, registrarUsuario } = require('./apoio/api');
+const API = SPRING;
+const PEDIDOS = /127\.0\.0\.1:8081\/pedidos/;
 
 const ROCK = 'rock-boss-gt-1000';
 const BLUES = 'blues-line6-hx-stomp';
-const METAL = 'metal-nux-mg-30';
 const CLEAN = 'clean-zoom-g6';
 
-/** Opens biblioteca.html signed in as `id`. */
-async function abrir(page, id) {
+/** Opens biblioteca.html signed in as `conta` (from registrarUsuario). */
+async function abrir(page, conta) {
   await page.goto('login.html');
-  await page.evaluate((s) => sessionStorage.setItem('corsino:sessao', s), sessaoDe(id));
+  await page.evaluate((s) => sessionStorage.setItem('corsino:sessao', s), conta.sessao);
   await page.goto('biblioteca.html');
 }
 
-const criar = (request, dados) => request.post(`${API}/pedidos`, { data: dados });
+/** A paid order of `conta` with these packs; call oldest first. */
+const criar = (request, conta, packIds) => comprar(request, conta.token, packIds);
 const blocos = (page) => page.locator('.biblioteca-pack');
 const textoDe = (n) => (n === 1 ? '1 preset' : `${n} presets`);
 
 async function catalogo(page) {
-  const packs = await page.request.get(`${API}/packs`).then((r) => r.json());
-  const presets = await page.request.get(`${API}/presets`).then((r) => r.json());
+  const packs = await page.request.get(`${SPRING}/packs`).then((r) => r.json());
+  const presets = await page.request.get(`${SPRING}/presets`).then((r) => r.json());
   return {
     pack: (id) => packs.find((p) => p.id === id),
     presets: (id) => presets.filter((p) => p.packId === id),
@@ -60,17 +61,16 @@ test.describe('etapa05-biblioteca T2 - signed out (REG-01)', () => {
 test.describe('etapa05-biblioteca T2 - the library of bought packs', () => {
   // LIB-01, LIB-02, LIB-03, LIB-05
   test('lista só os packs pagos do usuário, do pedido mais novo ao mais antigo, com seus presets', async ({ page, request }) => {
-    const eu = novoUsuario();
-    const outro = novoUsuario();
-    await criar(request, pedidoDe(eu, [ROCK], '2026-11-01T10:00:00.000Z'));
-    await criar(request, pedidoDe(eu, [BLUES], '2026-11-03T10:00:00.000Z'));
-    await criar(request, pedidoDe(eu, [METAL], '2026-11-04T10:00:00.000Z', 'pendente'));
-    await criar(request, pedidoDe(outro, [CLEAN], '2026-11-05T10:00:00.000Z'));
+    const eu = await registrarUsuario(request);
+    const outro = await registrarUsuario(request);
+    await criar(request, eu, [ROCK]);
+    await criar(request, eu, [BLUES]);
+    await criar(request, outro, [CLEAN]);
     const cat = await catalogo(page);
-    const pedido = page.waitForRequest((r) => r.url() === `${API}/pedidos?usuarioId=${eu}&status=pago`);
+    const pedido = page.waitForRequest((r) => r.url() === `${API}/pedidos?status=pago`);
 
     await abrir(page, eu);
-    await pedido;
+    expect((await pedido).headers().authorization).toBe(`Bearer ${eu.token}`);
 
     await expect(blocos(page)).toHaveCount(2);
     await expect(blocos(page).first()).toBeVisible();
@@ -88,7 +88,6 @@ test.describe('etapa05-biblioteca T2 - the library of bought packs', () => {
       }
     }
     expect(cat.presets(BLUES).length).not.toBe(cat.presets(ROCK).length);
-    await expect(page.locator('main')).not.toContainText(cat.pack(METAL).nome);
     await expect(page.locator('main')).not.toContainText(cat.pack(CLEAN).nome);
     await expect(page.getByText('Sua biblioteca ainda está vazia.')).toBeHidden();
     await expect(page.getByRole('link', { name: 'Explorar packs' })).toBeHidden();
@@ -96,11 +95,11 @@ test.describe('etapa05-biblioteca T2 - the library of bought packs', () => {
 
   // LIB-03 (singular)
   test('um pack com um único preset mostra "1 preset" e uma linha', async ({ page, request }) => {
-    const eu = novoUsuario();
-    await criar(request, pedidoDe(eu, [ROCK], '2026-11-01T10:00:00.000Z'));
+    const eu = await registrarUsuario(request);
+    await criar(request, eu, [ROCK]);
     const cat = await catalogo(page);
     const unico = cat.presets(ROCK)[1];
-    await page.route(`${API}/presets`, async (route) => {
+    await page.route(`${SPRING}/presets`, async (route) => {
       const resposta = await route.fetch();
       const todos = await resposta.json();
       await route.fulfill({ response: resposta, json: todos.filter((p) => p.packId !== ROCK || p.id === unico.id) });
@@ -114,9 +113,9 @@ test.describe('etapa05-biblioteca T2 - the library of bought packs', () => {
 
   // LIB-04
   test('um pack em dois pedidos pagos aparece uma vez', async ({ page, request }) => {
-    const eu = novoUsuario();
-    await criar(request, pedidoDe(eu, [ROCK], '2026-11-01T10:00:00.000Z'));
-    await criar(request, pedidoDe(eu, [ROCK, BLUES], '2026-11-02T10:00:00.000Z'));
+    const eu = await registrarUsuario(request);
+    await criar(request, eu, [ROCK]);
+    await criar(request, eu, [ROCK, BLUES]);
     const cat = await catalogo(page);
     await abrir(page, eu);
 
@@ -127,8 +126,14 @@ test.describe('etapa05-biblioteca T2 - the library of bought packs', () => {
 
   // LIB-07
   test('um packId que o catálogo não conhece não aparece nem gera aviso', async ({ page, request }) => {
-    const eu = novoUsuario();
-    await criar(request, pedidoDe(eu, ['fantasma-xx-1', ROCK], '2026-11-01T10:00:00.000Z'));
+    const eu = await registrarUsuario(request);
+    await criar(request, eu, [ROCK]);
+    // Spring rejects an unknown pack id on creation, so the stale id is added to the answer.
+    await page.route(PEDIDOS, async (route) => {
+      const resposta = await route.fetch();
+      const pedidos = await resposta.json();
+      await route.fulfill({ response: resposta, json: pedidos.map((p) => ({ ...p, packIds: ['fantasma-xx-1', ...p.packIds] })) });
+    });
     await abrir(page, eu);
 
     await expect(blocos(page)).toHaveCount(1);
@@ -138,8 +143,7 @@ test.describe('etapa05-biblioteca T2 - the library of bought packs', () => {
 
   // LIB-06
   test('sem pedido pago: texto de biblioteca vazia e "Explorar packs"', async ({ page, request }) => {
-    const eu = novoUsuario();
-    await criar(request, pedidoDe(eu, [ROCK], '2026-11-01T10:00:00.000Z', 'pendente'));
+    const eu = await registrarUsuario(request);
     await abrir(page, eu);
 
     await expect(page.getByText('Sua biblioteca ainda está vazia.')).toBeVisible();
@@ -149,8 +153,8 @@ test.describe('etapa05-biblioteca T2 - the library of bought packs', () => {
 
   // LIB-08
   test('enquanto carrega mostra "Carregando biblioteca..." e nenhum bloco', async ({ page, request }) => {
-    const eu = novoUsuario();
-    await criar(request, pedidoDe(eu, [ROCK], '2026-11-01T10:00:00.000Z'));
+    const eu = await registrarUsuario(request);
+    await criar(request, eu, [ROCK]);
     let liberar = () => {};
     const segurado = new Promise((resolve) => { liberar = resolve; });
     await page.route(PEDIDOS, async (route) => { await segurado; await route.continue(); });
@@ -166,8 +170,8 @@ test.describe('etapa05-biblioteca T2 - the library of bought packs', () => {
 
   // LIB-09
   test('falha de comunicação mostra o erro com "Tentar novamente" e, ao tentar, a biblioteca', async ({ page, request }) => {
-    const eu = novoUsuario();
-    await criar(request, pedidoDe(eu, [ROCK], '2026-11-01T10:00:00.000Z'));
+    const eu = await registrarUsuario(request);
+    await criar(request, eu, [ROCK]);
     await page.route(PEDIDOS, (route) => route.abort());
     await abrir(page, eu);
 
@@ -179,13 +183,25 @@ test.describe('etapa05-biblioteca T2 - the library of bought packs', () => {
     await expect(blocos(page)).toHaveCount(1);
     await expect(page.getByText('Não foi possível carregar a biblioteca.')).toHaveCount(0);
   });
+
+  // MIG-08: a rejected token is not a connection problem; it asks for a new login.
+  test('um 401 nos pedidos encerra a sessão e leva ao login com voltar=biblioteca.html', async ({ page, request }) => {
+    const eu = await registrarUsuario(request);
+    await page.route(PEDIDOS, (route) => route.fulfill({
+      status: 401, json: { status: 401, mensagem: 'Faça login para continuar.', campos: {} },
+    }));
+    await abrir(page, eu);
+
+    await expect(page).toHaveURL(/\/frontend\/login\.html\?voltar=biblioteca\.html$/);
+    expect(await page.evaluate(() => sessionStorage.getItem('corsino:sessao'))).toBeNull();
+  });
 });
 
 test.describe('etapa05-biblioteca T3 - download of each preset', () => {
   // DL-01
   test('cada linha de preset tem um botão "Download"', async ({ page, request }) => {
-    const eu = novoUsuario();
-    await criar(request, pedidoDe(eu, [ROCK, BLUES], '2026-11-01T10:00:00.000Z'));
+    const eu = await registrarUsuario(request);
+    await criar(request, eu, [ROCK, BLUES]);
     const cat = await catalogo(page);
     await abrir(page, eu);
 
@@ -199,8 +215,8 @@ test.describe('etapa05-biblioteca T3 - download of each preset', () => {
 
   // DL-02, DL-03
   test('"Download" do segundo preset salva preset-{id}.json com os dados desse preset', async ({ page, request }) => {
-    const eu = novoUsuario();
-    await criar(request, pedidoDe(eu, [ROCK], '2026-11-01T10:00:00.000Z'));
+    const eu = await registrarUsuario(request);
+    await criar(request, eu, [ROCK]);
     const cat = await catalogo(page);
     const alvo = cat.presets(ROCK)[1];
     await abrir(page, eu);
@@ -225,10 +241,10 @@ test.describe('etapa05-biblioteca T3 - download of each preset', () => {
 
   // DL-04
   test('pack.html, packs.html e index.html não têm "Download"', async ({ page, request }) => {
-    const eu = novoUsuario();
-    await criar(request, pedidoDe(eu, [ROCK], '2026-11-01T10:00:00.000Z'));
+    const eu = await registrarUsuario(request);
+    await criar(request, eu, [ROCK]);
     await page.goto('login.html');
-    await page.evaluate((s) => sessionStorage.setItem('corsino:sessao', s), sessaoDe(eu));
+    await page.evaluate((s) => sessionStorage.setItem('corsino:sessao', s), eu.sessao);
     const paginas = [
       ['pack.html?id=' + ROCK, '.pack-presets li'],
       ['packs.html', '.grade-presets .cartao'],

@@ -4,13 +4,11 @@ const { test, expect } = require('@playwright/test');
 // Tests derive from .specs/features/etapa05-biblioteca/spec.md: the orders
 // request (LIB-01), ownership (LIB-02), ordering and de-duplication (LIB-04,
 // LIB-05), a pack the catalogue lacks (LIB-07) and the pack-page read (OWN-01).
-// Modules are imported inside a host page.
-
-const API = 'http://127.0.0.1:3000';
-/** A random user id: orders from earlier runs stay in db.json, so a counter would meet them again. */
-const novoUsuario = () => 10000000 + Math.floor(Math.random() * 900000000);
-
-const pedidoDe = (usuarioId, packIds, criadoEm, status = 'pago') => ({ usuarioId, packIds, totalCentavos: 0, status, criadoEm });
+// Modules are imported inside a host page. Since etapa06-front-spring-loja (MIG-06,
+// MIG-07, EDG-03) the orders are real Spring orders of users made by tests/apoio/api.js.
+// Spring creates every order paid, so the "pending order is ignored" setups of the mock
+// era cannot be built any more; the server's status filter is tested by PedidoControllerTest.
+const { SPRING, comprar, registrarUsuario } = require('./apoio/api');
 
 /** Calls an exported function of servicos/biblioteca.js in the page. */
 function chamar(page, nome, ...args) {
@@ -26,20 +24,22 @@ test.describe('etapa05-biblioteca T1 - paid orders and the library service', () 
     await page.goto('login.html');
   });
 
-  // LIB-01 (request half)
-  test('listarPedidosPagos pede GET /pedidos com o usuário e status=pago e devolve a lista', async ({ page, request }) => {
-    const id = novoUsuario();
-    await request.post(`${API}/pedidos`, { data: pedidoDe(id, ['rock-boss-gt-1000'], '2026-11-01T10:00:00.000Z') });
-    const pedido = page.waitForRequest((req) => req.url().startsWith(`${API}/pedidos`) && req.method() === 'GET');
+  // LIB-01 (request half), MIG-06: the user comes from the token, not from the URL.
+  test('listarPedidosPagos pede GET /pedidos?status=pago com o token e devolve a lista', async ({ page, request }) => {
+    const { token, usuario } = await registrarUsuario(request);
+    await comprar(request, token, ['rock-boss-gt-1000']);
+    const pedido = page.waitForRequest((req) => req.url().startsWith(`${SPRING}/pedidos`) && req.method() === 'GET');
 
-    const lista = await page.evaluate(async (id) => {
+    const lista = await page.evaluate(async (token) => {
       const { listarPedidosPagos } = await import('/frontend/api/pedidos.js');
-      return listarPedidosPagos(id);
-    }, id);
+      return listarPedidosPagos(token);
+    }, token);
 
-    expect((await pedido).url()).toBe(`${API}/pedidos?usuarioId=${id}&status=pago`);
+    const enviado = await pedido;
+    expect(enviado.url()).toBe(`${SPRING}/pedidos?status=pago`);
+    expect(enviado.headers().authorization).toBe(`Bearer ${token}`);
     expect(lista).toHaveLength(1);
-    expect(lista[0]).toMatchObject({ usuarioId: id, packIds: ['rock-boss-gt-1000'], status: 'pago' });
+    expect(lista[0]).toMatchObject({ usuarioId: usuario.id, packIds: ['rock-boss-gt-1000'], status: 'pago' });
   });
 
   // LIB-04, LIB-05
@@ -84,30 +84,29 @@ test.describe('etapa05-biblioteca T1 - paid orders and the library service', () 
     expect(resultado.vazio).toEqual([]);
   });
 
-  // LIB-02, LIB-05 against real mock data
+  // LIB-02, LIB-05, MIG-06, EDG-03 against real Spring orders (created in time order).
   test('carregarBiblioteca devolve só os packs pagos do usuário, do pedido mais novo ao mais antigo', async ({ page, request }) => {
-    const eu = novoUsuario();
-    const outro = novoUsuario();
-    await request.post(`${API}/pedidos`, { data: pedidoDe(eu, ['rock-boss-gt-1000'], '2026-11-01T10:00:00.000Z') });
-    await request.post(`${API}/pedidos`, { data: pedidoDe(eu, ['metal-nux-mg-30', 'rock-boss-gt-1000'], '2026-11-03T10:00:00.000Z') });
-    await request.post(`${API}/pedidos`, { data: pedidoDe(eu, ['clean-nux-mg-30'], '2026-11-04T10:00:00.000Z', 'pendente') });
-    await request.post(`${API}/pedidos`, { data: pedidoDe(outro, ['blues-line6-hx-stomp'], '2026-11-02T10:00:00.000Z') });
+    const eu = await registrarUsuario(request);
+    const outro = await registrarUsuario(request);
+    await comprar(request, eu.token, ['rock-boss-gt-1000']);
+    await comprar(request, outro.token, ['blues-line6-hx-stomp']);
+    await comprar(request, eu.token, ['metal-nux-mg-30', 'rock-boss-gt-1000']);
 
-    const packs = await chamar(page, 'carregarBiblioteca', eu);
+    const packs = await chamar(page, 'carregarBiblioteca', eu.token);
 
     expect(packs.map((p) => p.id)).toEqual(['metal-nux-mg-30', 'rock-boss-gt-1000']);
     expect(packs[0].presets.length).toBeGreaterThan(0);
     expect(packs[0]).toMatchObject({ nome: 'Metal · NUX MG-30' });
   });
 
-  // OWN-01 (read)
+  // OWN-01 (read), MIG-07
   test('idsComprados devolve os ids distintos dos packs pagos do usuário', async ({ page, request }) => {
-    const eu = novoUsuario();
-    await request.post(`${API}/pedidos`, { data: pedidoDe(eu, ['rock-boss-gt-1000', 'metal-nux-mg-30'], '2026-11-01T10:00:00.000Z') });
-    await request.post(`${API}/pedidos`, { data: pedidoDe(eu, ['rock-boss-gt-1000'], '2026-11-02T10:00:00.000Z') });
-    await request.post(`${API}/pedidos`, { data: pedidoDe(eu, ['clean-nux-mg-30'], '2026-11-03T10:00:00.000Z', 'pendente') });
+    const eu = await registrarUsuario(request);
+    const novo = await registrarUsuario(request);
+    await comprar(request, eu.token, ['rock-boss-gt-1000', 'metal-nux-mg-30']);
+    await comprar(request, eu.token, ['rock-boss-gt-1000']);
 
-    expect(await chamar(page, 'idsComprados', eu)).toEqual(['metal-nux-mg-30', 'rock-boss-gt-1000']);
-    expect(await chamar(page, 'idsComprados', novoUsuario())).toEqual([]);
+    expect(await chamar(page, 'idsComprados', eu.token)).toEqual(['metal-nux-mg-30', 'rock-boss-gt-1000']);
+    expect(await chamar(page, 'idsComprados', novo.token)).toEqual([]);
   });
 });

@@ -21,7 +21,7 @@ export function itensDoCarrinho() {
     }
     localStorage.removeItem(CHAVE_CARRINHO);
     return [];
-}
+} 
 
 function guardar(itens) {
     localStorage.setItem(CHAVE_CARRINHO, JSON.stringify(itens));

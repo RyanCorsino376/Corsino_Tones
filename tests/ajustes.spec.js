@@ -19,7 +19,7 @@ test.describe('etapa05-packs T7 - leftovers from slice 2', () => {
 
   // FIX-02
   test('um botão desativado aparece apagado e com cursor de bloqueio', async ({ page }) => {
-    await page.route('http://127.0.0.1:3000/usuarios**', () => {}); // never answers: the button stays pending
+    await page.route('http://127.0.0.1:8081/auth/**', () => {}); // never answers: the button stays pending
     await page.goto('login.html');
     await page.locator('#email').fill('ryan@exemplo.com');
     await page.locator('#senha').fill('teste123');
@@ -34,7 +34,7 @@ test.describe('etapa05-packs T7 - leftovers from slice 2', () => {
 
   // FIX-02 "any button": the registration button too, in its own form (Verifier gap, M22).
   test('o botão "Cadastrando..." também aparece apagado e com cursor de bloqueio', async ({ page }) => {
-    await page.route('http://127.0.0.1:3000/usuarios**', () => {});
+    await page.route('http://127.0.0.1:8081/auth/**', () => {});
     await page.goto('login.html');
     await page.locator('[data-alvo="cadastro"]').click();
     await page.locator('#cadastro-nome').fill('Ana Teste');
@@ -75,10 +75,11 @@ test.describe('etapa05-packs T7 - leftovers from slice 2', () => {
     expect(readme).toMatch(/etapa 05/i);
     expect(readme).toMatch(/um estilo\s+musical\s+para\s+um\s+único\s+modelo\s+de\s+pedaleira/i);
     expect(readme).not.toMatch(/qualquer equipamento/i);
-    for (const trecho of ['npm run api', 'npm run api:lento', 'npm run api:reset', 'ryan@exemplo.com', 'teste123', 'docs/etapa-05.md']) {
+    for (const trecho of ['ryan@exemplo.com', 'teste123', 'docs/etapa-05.md']) {
       expect(readme, trecho).toContain(trecho);
     }
-    for (const removido of ['frontend/login.js', 'preset.html', 'presets.html']) {
+    // The mock commands went away with json-server (etapa06-front-spring-loja MOCK-01, DOC-02).
+    for (const removido of ['frontend/login.js', 'preset.html', 'presets.html', 'npm run api', 'json-server']) {
       expect(readme, removido).not.toContain(removido);
     }
   });
@@ -89,7 +90,7 @@ test.describe('etapa05-packs T7 - leftovers from slice 2', () => {
     const ids = [...readme.matchAll(/pack\.html\?id=([a-z0-9-]+)/g)].map((m) => m[1]);
     expect(ids.length).toBeGreaterThan(0);
     for (const id of ids) {
-      expect((await request.get(`http://127.0.0.1:3000/packs/${id}`)).status(), id).toBe(200);
+      expect((await request.get(`http://127.0.0.1:8081/packs/${id}`)).status(), id).toBe(200);
     }
   });
 });

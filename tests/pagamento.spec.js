@@ -5,7 +5,7 @@ const { test, expect } = require('@playwright/test');
 // (FORM-02..05, EDGE-02, EDGE-03), the simulated payment (PAY-01, PAY-03) and
 // the order request (PED-01). Modules are imported inside a host page.
 
-const API = 'http://127.0.0.1:3000';
+const { SPRING: API, pedidosPagos, registrarUsuario } = require('./apoio/api');
 const MSG = {
   numero: 'Informe os 16 dígitos do cartão.',
   nome: 'Informe o nome como está no cartão.',
@@ -103,25 +103,21 @@ test.describe('etapa05-checkout T1 - simulated payment', () => {
 });
 
 test.describe('etapa05-checkout T1 - orders API', () => {
-  // PED-01 (request half)
-  test('criarPedido envia POST /pedidos em JSON e o pedido passa a existir', async ({ page, request }) => {
+  // PED-01 (request half), MIG-05: only the pack ids go out, with the session token.
+  test('criarPedido envia POST /pedidos em JSON só com packIds e o token, e o pedido passa a existir', async ({ page, request }) => {
     await page.goto('login.html');
-    const pedido = { usuarioId: 1, packIds: ['rock-zoom-g6'], totalCentavos: 4990, status: 'pago', criadoEm: new Date().toISOString() };
+    const { token, usuario } = await registrarUsuario(request);
     const enviado = page.waitForRequest((req) => req.url() === `${API}/pedidos` && req.method() === 'POST');
 
-    const criado = await page.evaluate(async (p) => (await import('/frontend/api/pedidos.js')).criarPedido(p), pedido);
+    const criado = await page.evaluate(async (t) => (await import('/frontend/api/pedidos.js')).criarPedido(['rock-zoom-g6'], t), token);
 
     const req = await enviado;
     expect(req.headers()['content-type']).toBe('application/json');
-    expect(req.postDataJSON()).toEqual(pedido);
-    expect(criado).toMatchObject(pedido);
+    expect(req.headers().authorization).toBe(`Bearer ${token}`);
+    expect(req.postDataJSON()).toEqual({ packIds: ['rock-zoom-g6'] });
+    // The server filled in the rest: owner from the token, price of the catalogue, paid status.
+    expect(criado).toMatchObject({ usuarioId: usuario.id, packIds: ['rock-zoom-g6'], totalCentavos: 4990, status: 'pago' });
     expect(typeof criado.id).toBe('number');
-    const lista = await request.get(`${API}/pedidos?usuarioId=1`).then((r) => r.json());
-    expect(lista.some((p) => p.id === criado.id)).toBe(true);
-  });
-
-  test('a semente começa sem pedidos', () => {
-    const semente = require('../mock/db.seed.json');
-    expect(semente.pedidos).toEqual([]);
+    expect((await pedidosPagos(request, token)).map((p) => p.id)).toEqual([criado.id]);
   });
 });

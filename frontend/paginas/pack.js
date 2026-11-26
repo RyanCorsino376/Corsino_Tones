@@ -5,7 +5,7 @@ import { buscarPack } from '../api/packs.js';
 import { listarPresetsDoPack } from '../api/presets.js';
 import { idsComprados } from '../servicos/biblioteca.js';
 import { adicionarAoCarrinho, estaNoCarrinho } from '../servicos/carrinho.js';
-import { usuarioAtual } from '../servicos/sessao.js';
+import { pedirNovoLogin, sessaoExpirada, tokenAtual, usuarioAtual } from '../servicos/sessao.js';
 import { atualizarCabecalho, atualizarContadorCarrinho } from '../ui/cabecalho.js';
 import { carregarComEstado } from '../ui/estado.js';
 import { formatarPreco, ROTULOS } from '../ui/formato.js';
@@ -47,11 +47,12 @@ function criarItem(preset) {
  * page still works: the library, not this page, is what proves ownership.
  */
 async function jaComprou(id) {
-    const usuario = usuarioAtual();
-    if (!usuario) return false;
+    if (!usuarioAtual()) return false;
     try {
-        return (await idsComprados(usuario.id)).has(id);
-    } catch {
+        return (await idsComprados(tokenAtual())).has(id);
+    } catch (erro) {
+        // An expired token ends the session (MIG-08); other failures leave the page usable.
+        if (sessaoExpirada(erro)) pedirNovoLogin(`pack.html?id=${id}`);
         return false;
     }
 }

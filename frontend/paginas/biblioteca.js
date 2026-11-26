@@ -2,7 +2,7 @@
 // visitor gets a pop-up offering the login, which comes back here afterwards.
 // A signed-in user sees the packs of their paid orders (servicos/biblioteca.js).
 import { carregarBiblioteca } from '../servicos/biblioteca.js';
-import { usuarioAtual } from '../servicos/sessao.js';
+import { pedirNovoLogin, sessaoExpirada, tokenAtual, usuarioAtual } from '../servicos/sessao.js';
 import { pedirLogin } from '../ui/aviso-login.js';
 import { atualizarCabecalho } from '../ui/cabecalho.js';
 import { baixarPreset } from '../ui/download.js';
@@ -60,7 +60,18 @@ if (!usuario) {
 } else {
     carregarComEstado({
         alvo,
-        buscar: () => carregarBiblioteca(usuario.id),
+        async buscar() {
+            try {
+                return await carregarBiblioteca(tokenAtual());
+            } catch (erro) {
+                // An expired token is not a connection problem: ask for a new login (MIG-08).
+                if (sessaoExpirada(erro)) {
+                    pedirNovoLogin('biblioteca.html');
+                    return new Promise(() => {}); // the page is leaving; keep the loading state
+                }
+                throw erro;
+            }
+        },
         aoCarregar: mostrar,
         mensagens: {
             carregando: 'Carregando biblioteca...',

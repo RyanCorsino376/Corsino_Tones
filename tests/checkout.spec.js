@@ -4,20 +4,25 @@ const { test, expect } = require('@playwright/test');
 // Tests derive from .specs/features/etapa05-checkout/spec.md: CK-* (T2),
 // ACC-*, RES-* (T3), FORM-* (T4), PAY-*, PED-*, OK-*, EDGE-01 (T5).
 
-const API = 'http://127.0.0.1:3000';
+// Since etapa06-front-spring-loja (MIG-05, MIG-08 to MIG-10) everything goes to Spring, and a
+// signed-in test uses a real user made by tests/apoio/api.js, because /pedidos needs its token.
+const { SPRING, pedidosPagos, registrarUsuario } = require('./apoio/api');
+const API = SPRING;
 const CHAVE_CARRINHO = 'corsino:carrinho';
-const SESSAO_RYAN = '{"id":1,"nome":"Ryan Corsino","email":"ryan@exemplo.com"}';
 const formatoBRL = (centavos) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(centavos / 100);
 
-/** Stores the cart (and optionally a session) before the page under test opens. */
+/**
+ * Stores the cart (and, with `sessao`, the session of a newly registered user) before the
+ * page under test opens. Resolves with that user's { token, usuario }, or null.
+ */
 async function preparar(page, { carrinho = [], sessao = false } = {}) {
   await page.goto('login.html');
-  // `sessao` is true (Ryan, id 1) or a session JSON string for another user.
-  const sessaoJson = sessao === true ? SESSAO_RYAN : sessao || null;
+  const conta = sessao ? await registrarUsuario(page.request) : null;
   await page.evaluate(([chave, valor, sessaoJson]) => {
     localStorage.setItem(chave, valor);
     if (sessaoJson) sessionStorage.setItem('corsino:sessao', sessaoJson);
-  }, [CHAVE_CARRINHO, JSON.stringify(carrinho), sessaoJson]);
+  }, [CHAVE_CARRINHO, JSON.stringify(carrinho), conta?.sessao ?? null]);
+  return conta;
 }
 
 const finalizar = (page) => page.getByRole('link', { name: 'Finalizar compra' });
@@ -40,7 +45,7 @@ test.describe('etapa05-checkout T2 - Finalizar compra on the cart page', () => {
     await preparar(page, { carrinho: ['rock-zoom-g6'] });
     let liberar;
     const liberado = new Promise((r) => { liberar = r; });
-    await page.route(`${API}/packs`, async (rota) => { await liberado; await rota.abort(); });
+    await page.route(`${SPRING}/packs`, async (rota) => { await liberado; await rota.abort(); });
     await page.goto('carrinho.html');
     await expect(page.getByRole('status').filter({ hasText: 'Carregando carrinho...' })).toBeVisible();
     // The link exists in the page (inside the hidden list), so "hidden" is not vacuous (lesson L-001).
@@ -57,18 +62,17 @@ const dialogo = (page) => page.getByRole('dialog');
 
 /** Packs as the API serves them, by id. */
 async function packsPorId(page) {
-  const packs = await page.request.get(`${API}/packs`).then((r) => r.json());
+  const packs = await page.request.get(`${SPRING}/packs`).then((r) => r.json());
   return Object.fromEntries(packs.map((p) => [p.id, p]));
 }
 
 // Distinct prices (lesson L-014): the seed prices every pack at 4990, which hides
 // where a price or a total comes from.
 const PRECOS = { 'rock-zoom-g6': 4990, 'clean-nux-mg-30': 2590 };
-const OUTRA_SESSAO = '{"id":7,"nome":"Outra Pessoa","email":"outra@exemplo.com"}';
 
 /** Serves GET /packs with the PRECOS prices so every pack differs. */
 async function precosDistintos(page) {
-  await page.route(`${API}/packs`, async (route) => {
+  await page.route(`${SPRING}/packs`, async (route) => {
     const resposta = await route.fetch();
     const packs = await resposta.json();
     await route.fulfill({
@@ -144,7 +148,7 @@ test.describe('etapa05-checkout T3 - order summary', () => {
     // Cart order is not alphabetical, so "cart order" differs from a sorted list.
     const carrinho = ['rock-zoom-g6', 'clean-nux-mg-30'];
     await preparar(page, { carrinho, sessao: true });
-    const pedido = page.waitForRequest(`${API}/packs`);
+    const pedido = page.waitForRequest(`${SPRING}/packs`);
     await page.goto('checkout.html');
     await pedido;
 
@@ -188,7 +192,7 @@ test.describe('etapa05-checkout T3 - order summary', () => {
     await preparar(page, { carrinho: ['rock-zoom-g6'], sessao: true });
     let liberar;
     const liberado = new Promise((r) => { liberar = r; });
-    await page.route(`${API}/packs`, async (rota) => { await liberado; await rota.continue(); });
+    await page.route(`${SPRING}/packs`, async (rota) => { await liberado; await rota.continue(); });
     await page.goto('checkout.html');
     await expect(page.getByRole('status').filter({ hasText: 'Carregando carrinho...' })).toBeVisible();
     await expect(formulario(page)).toHaveCount(1);
@@ -201,7 +205,7 @@ test.describe('etapa05-checkout T3 - order summary', () => {
   test('falha ao carregar mostra o erro com "Tentar novamente" e nenhum formulário', async ({ page }) => {
     await preparar(page, { carrinho: ['rock-zoom-g6'], sessao: true });
     let tentativas = 0;
-    await page.route(`${API}/packs`, (rota) => {
+    await page.route(`${SPRING}/packs`, (rota) => {
       tentativas += 1;
       return tentativas === 1 ? rota.abort() : rota.continue();
     });
@@ -223,9 +227,10 @@ const CAMPOS = {
 
 /** Opens a signed-in checkout with one pack and waits for the form. */
 async function abrirCheckout(page, carrinho = ['rock-zoom-g6']) {
-  await preparar(page, { carrinho, sessao: true });
+  const conta = await preparar(page, { carrinho, sessao: true });
   await page.goto('checkout.html');
   await expect(formulario(page)).toBeVisible();
+  return conta;
 }
 
 async function preencher(page, valores) {
@@ -318,19 +323,19 @@ function gravarRequisicoes(page) {
 }
 
 test.describe('etapa05-checkout T5 - payment, order and confirmation', () => {
-  // PAY-01, PAY-02, PED-01, PED-02, OK-01..03, PAY-04
+  // PAY-01, PAY-02, PED-01, PED-02, OK-01..03, PAY-04, MIG-05, MIG-10. Real catalogue prices: the seed
+  // prices every pack at 4990 (lesson L-014 limit), so the total still tells one pack from two.
   test('cartão válido: processa, grava um pedido exato e mostra a confirmação', async ({ page, request }) => {
     const porId = await packsPorId(page);
-    await precosDistintos(page);
-    // An earlier order makes the new id differ from 1, so a fixed "Pedido nº 1" fails.
-    await request.post(`${API}/pedidos`, { data: { usuarioId: 99, packIds: [], totalCentavos: 0, status: 'pago', criadoEm: new Date().toISOString() } });
-    // Not alphabetical, and a user whose id is not 1.
+    // Not alphabetical, so "cart order" differs from a sorted list.
     const carrinho = ['rock-zoom-g6', 'clean-nux-mg-30'];
-    await preparar(page, { carrinho, sessao: OUTRA_SESSAO });
+    const { token, usuario } = await preparar(page, { carrinho, sessao: true });
     await page.goto('checkout.html');
     await expect(formulario(page)).toBeVisible();
-    const totalCentavos = carrinho.reduce((s, id) => s + PRECOS[id], 0);
+    const totalCentavos = carrinho.reduce((s, id) => s + porId[id].precoCentavos, 0);
+    await expect(page.locator('.checkout-resumo .total-carrinho')).toHaveText(`Total: ${formatoBRL(totalCentavos)}`);
     const requisicoes = gravarRequisicoes(page);
+    const enviado = page.waitForRequest((r) => r.url() === `${API}/pedidos` && r.method() === 'POST');
     const resposta = page.waitForResponse((r) => r.url() === `${API}/pedidos` && r.request().method() === 'POST');
 
     await preencher(page, CARTAO_OK);
@@ -343,21 +348,22 @@ test.describe('etapa05-checkout T5 - payment, order and confirmation', () => {
     const pedidoCriado = await (await resposta).json();
     const posts = requisicoes.filter((r) => r.method === 'POST');
     expect(posts).toHaveLength(1);
-    const corpo = JSON.parse(posts[0].body);
-    expect(Object.keys(corpo).sort()).toEqual(['criadoEm', 'packIds', 'status', 'totalCentavos', 'usuarioId']);
-    expect(corpo).toMatchObject({ usuarioId: 7, packIds: carrinho, totalCentavos, status: 'pago' });
-    expect(new Date(corpo.criadoEm).toISOString()).toBe(corpo.criadoEm);
+    // MIG-05: only the pack ids, with the session token.
+    expect(JSON.parse(posts[0].body)).toEqual({ packIds: carrinho });
+    expect((await enviado).headers().authorization).toBe(`Bearer ${token}`);
+    // MIG-10: the server stored the total the checkout displayed, for this user.
+    expect(pedidoCriado).toMatchObject({ usuarioId: usuario.id, packIds: carrinho, totalCentavos, status: 'pago' });
+    expect((await pedidosPagos(request, token)).map((p) => [p.id, p.totalCentavos])).toEqual([[pedidoCriado.id, totalCentavos]]);
 
     // OK-01
     const confirmacao = page.locator('.checkout-confirmacao');
     await expect(confirmacao.getByRole('heading', { name: 'Compra aprovada!' })).toBeVisible();
-    expect(pedidoCriado.id).not.toBe(1);
     await expect(confirmacao.getByText(/^Pedido nº/)).toHaveText(`Pedido nº ${pedidoCriado.id}`);
     const itensOk = confirmacao.locator('li');
     await expect(itensOk).toHaveCount(2);
     for (const [i, id] of carrinho.entries()) {
       await expect(itensOk.nth(i)).toContainText(porId[id].nome);
-      await expect(itensOk.nth(i).locator('.item-preco')).toHaveText(formatoBRL(PRECOS[id]));
+      await expect(itensOk.nth(i).locator('.item-preco')).toHaveText(formatoBRL(porId[id].precoCentavos));
     }
     await expect(confirmacao).toContainText(`Total: ${formatoBRL(totalCentavos)}`);
     await expect(confirmacao.getByRole('link', { name: 'Ir para a biblioteca' })).toHaveAttribute('href', 'biblioteca.html');
@@ -419,6 +425,37 @@ test.describe('etapa05-checkout T5 - payment, order and confirmation', () => {
     await botaoPagar(page).click();
     await expect(page.locator('.checkout-confirmacao').getByRole('heading', { name: 'Compra aprovada!' })).toBeVisible();
     expect(tentativas).toBe(2);
+  });
+
+  // MIG-09: the server's packIds message is shown and nothing is lost.
+  test('um 400 do servidor com campos.packIds mostra essa mensagem e mantém o carrinho', async ({ page }) => {
+    await abrirCheckout(page);
+    const mensagem = 'Pack não encontrado: rock-zoom-g6.';
+    await page.route(`${API}/pedidos`, (rota) => rota.fulfill({
+      status: 400, json: { status: 400, mensagem: 'Dados inválidos.', campos: { packIds: mensagem } },
+    }));
+
+    await preencher(page, CARTAO_OK);
+    await botaoPagar(page).click();
+
+    await expect(formulario(page).getByRole('alert')).toHaveText(mensagem);
+    expect(await page.evaluate((c) => localStorage.getItem(c), CHAVE_CARRINHO)).toBe('["rock-zoom-g6"]');
+    await expect(botaoPagar(page)).toBeEnabled();
+  });
+
+  // MIG-08: an expired token ends the session and asks for a new login, keeping the cart.
+  test('um 401 no pedido encerra a sessão e leva ao login com voltar=checkout.html', async ({ page }) => {
+    await abrirCheckout(page);
+    await page.route(`${API}/pedidos`, (rota) => rota.fulfill({
+      status: 401, json: { status: 401, mensagem: 'Faça login para continuar.', campos: {} },
+    }));
+
+    await preencher(page, CARTAO_OK);
+    await botaoPagar(page).click();
+
+    await expect(page).toHaveURL(/\/frontend\/login\.html\?voltar=checkout\.html$/);
+    expect(await page.evaluate(() => sessionStorage.getItem('corsino:sessao'))).toBeNull();
+    expect(await page.evaluate((c) => localStorage.getItem(c), CHAVE_CARRINHO)).toBe('["rock-zoom-g6"]');
   });
 
   // EDGE-01

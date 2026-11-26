@@ -60,18 +60,59 @@ We will load page code with `<script type="module">` and split it into `frontend
 
 Rejected: keeping classic scripts with `window.*` globals, which hide dependencies and are what stage 05 asks to replace. The layering also keeps `api/` and `servicos/` portable to a later React rewrite. Pages must be served over HTTP; `file://` blocks modules. Feature: `etapa05-api-modulos`.
 
+### AD-010: The server is Spring MVC layers over a repository interface
+
+We will build `backend/` as a REST API with the packages `controller`, `service`, `repository`, `model` and `dto` under `com.corsinotones`. Controllers parse JSON and call services; services hold the rules; only `repository` touches stored data, behind an interface. The first implementation keeps users in memory, seeded from `mock/db.seed.json`.
+
+The View of MVC is the React app, so the server renders no HTML. The interface lets PostgreSQL replace the in-memory class later without touching controller or service. Rejected: Thymeleaf pages (contradict the React migration) and reading or writing `mock/db.json` directly (two processes on one file). Feature: `etapa06-spring-cadastro`.
+
+### AD-011: Tokens are JWTs from Spring Security, signed with an environment secret
+
+We will issue HS256 JWTs with `spring-security-oauth2-jose` (Nimbus). The secret comes from `CORSINO_JWT_SECRET` (at least 32 characters) and the app refuses to start without it; tokens last 2 hours. Passwords are stored only as BCrypt hashes, and login answers the same `401` for an unknown e-mail and a wrong password.
+
+Rejected: the `jjwt` library (a second JWT stack next to the one protected routes will use) and a hand-built token. Secrets never go in git. Feature: `etapa06-spring-cadastro`.
+
+### AD-012: Auth goes to Spring while the catalogue and orders stay on the mock
+
+We will keep two API base URLs in `frontend/api/cliente.js`: `BASE_URL` (json-server, port 3000) and `SPRING_URL` (Spring Boot, port 8081). `requisicao` takes a `servidor` option to pick one; the default stays the mock. Only `/auth/*` calls use Spring for now, and each later slice moves its resource over.
+
+Extends AD-008 (which assumed one switch of `BASE_URL`): the migration is gradual, so both servers must coexist. Rejected: a proxy in front of both, which adds a process for a temporary state. Feature: `etapa06-front-spring-auth`.
+
+### AD-013: PostgreSQL holds the server data, and Flyway owns the schema
+
+We will store users, equipments, packs, presets and orders in PostgreSQL 16. Versioned SQL migrations in `backend/src/main/resources/db/migration/` create and change every table; Hibernate runs with `ddl-auto=validate` and never alters the schema. Connection settings come from `CORSINO_DB_URL`, `CORSINO_DB_USER` and `CORSINO_DB_PASSWORD`; development uses the repo-root `docker-compose.yml`. Preset files will live in MinIO, with only their key in `preset.arquivo_chave`.
+
+Extends AD-010, whose in-memory store this replaces. Rejected: `ddl-auto=update` (unreviewed schema changes), a NoSQL store (the data is relational, with foreign keys between all six tables) and file contents in the database (`bytea` bloats backups). Feature: `etapa07-persistencia`.
+
+### AD-014: The model stays plain records; JPA lives only in `repository/jpa`
+
+We will keep `model` as Java records without persistence annotations. Each repository interface in `repository` gets one adapter in `repository/jpa`, which owns the `@Entity` class, a package-private Spring Data interface and the conversion. Adapters flush writes and translate named constraint violations into `Duplicado` and `EmUso`. Classes in `controller` and `service` never import `jakarta.persistence`, `org.springframework.data` or `org.hibernate`.
+
+Rejected: annotating the model as entities, which lets lazy proxies and open sessions reach the services. Feature: `etapa07-persistencia`.
+
+### AD-015: Protected routes use the Spring Security resource server with a `perfil` claim
+
+We will validate bearer tokens with `spring-boot-starter-security-oauth2-resource-server` and the `JwtDecoder` of AD-011. The token's `perfil` claim (`COMUM` or `ADMIN`) becomes the role. Catalogue reads are public, catalogue writes need `ADMIN`, orders need any signed-in user. Registration always creates `COMUM`; only the seeder grants `ADMIN`.
+
+Rejected: a hand-written token filter. Feature: `etapa07-persistencia`.
+
+### AD-016: Backend tests run on PostgreSQL through Testcontainers
+
+We will run `./mvnw test` against a real `postgres:16-alpine` container started by Testcontainers and wired with `@ServiceConnection`. The Docker daemon must be running. Tests that need an empty database use their own container.
+
+Rejected: H2, which hides PostgreSQL-specific SQL and constraint behaviour. Feature: `etapa07-persistencia`.
+
 ---
 
 ## Handoff
 
-**Feature**: `etapa05-loja` (stage 05), slices 1-6 implemented
-**Branch**: `feat/etapa05-loja`, not pushed
-**Phase**: all slices done and Verifier PASS (api-modulos, packs, carrinho, biblioteca, checkout iteration 3). auth closed by user decision after iteration 3 (P07e now killed).
-
-**Gate**: `npx playwright test` = 327 passed (2026-11-11).
-
-**Next step**: decide about `frontend/servicos/carrinho.js` (whitespace only), commit the pending work, then open the PR. Minor library gaps are listed in `etapa05-biblioteca/validation.md`.
-
-**Uncommitted**: `frontend/servicos/carrinho.js` (whitespace only, not from the specs; decide whether to discard), `.specs` edits of 2026-11-11 (STATE, biblioteca tasks and validation, checkout validation).
-
-**Dev servers**: not running.
+- **Feature**: `etapa07-persistencia` (`.specs/features/etapa07-persistencia/`)
+- **Phase / Task**: all 27 tasks implemented (T21-T27 finished on 2026-11-25). Next: the independent Verifier (fresh sub-agent, writes `validation.md`), then `validate_state.py`.
+- **Completed**: T1-T20 committed (7917fa5..c7cf0a9, plus 4269a43). T21-T27 are done on disk but **not committed**: gate green, 267 backend tests, 354 Playwright tests.
+- **In-progress** (file:line): none.
+- **Next step**: commit T21-T27 as separate atomic commits when the user asks (messages are in `tasks.md`), then run the Verifier. Open assumption to log: an unknown `?status=` on `GET /pedidos` answers `[]` (no spec AC, no test).
+- **Blockers**: none. Port 8081 is free now; never touch the `pedalpacks-*` containers.
+- **Environment**: dev database `corsino_tones-postgres-1` on host port 5433 (`docker compose up -d`); `.env` holds its password (git-ignored). Docker must be running for `./mvnw test`. Node needs `export NVM_DIR="$HOME/.nvm"; . "$NVM_DIR/nvm.sh"`. The dev database now holds one extra order and the pack `funk-boss-gt-1000` from the T25 curl examples.
+- **Uncommitted files**: T21-T27 work (`PedidoController`, `PedidoRequest`, `PedidoResponse`, `PedidoControllerTest`, `PedidoControllerFalhaTest`, `ArquiteturaTest`, `plantado/Plantados.java`, `PersistenciaAposReinicioTest`, `playwright.config.js`, `docs/etapa-07.md`, `README.md`, `docs/proposta.md`, `tasks.md`) plus the user's own pending files (`.specs/LESSONS.md`, `.specs/lessons.json`, `AuthControllerCadastroTest.java`, `frontend/servicos/carrinho.js`, `.specs/features/etapa06-react-catalogo/`).
+- **Branch**: `feat/etapa07-persistencia`, not pushed, no PR.
+- **Carried over from stage 06**: non-blocking gaps of `etapa06-spring-cadastro/validation.md` (SRV-02, SRV-03, LOG-09, SEED-04, M8), deferred by the user; `etapa06-react-catalogo` has a spec only.
